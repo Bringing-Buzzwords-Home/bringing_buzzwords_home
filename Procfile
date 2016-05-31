@@ -1,0 +1,1 @@
+web: gunicorn bringing_buzzwords_home.wsgi --log-file -

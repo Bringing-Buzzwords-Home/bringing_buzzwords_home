@@ -1,0 +1,9 @@
+venv
+*.pyc
+staticfiles
+.DS_Store
+.env
+__pycache__
+.envrc
+.direnv
+visualize/migrations/*
