@@ -12,11 +12,12 @@ def handle_guardian_counted_csv(csv_path):
         counted_reader = csv.DictReader(f)
         for row in counted_reader:
             try:
-                victim_age = int(row['age'])
+                person_age = int(row['age'])
+            # if age is unknown, age will be NULL in the db
             except ValueError:
-                victim_age = None
+                person_age = None
             counted = GuardianDeaths(name=row['name'],
-                                     age=victim_age,
+                                     age=person_age,
                                      gender=row['gender'],
                                      race_ethnicity=row['raceethnicity'],
                                      date=datetime.date(

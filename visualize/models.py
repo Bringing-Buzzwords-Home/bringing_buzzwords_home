@@ -25,3 +25,7 @@ class GuardianDeaths(models.Model):
     law_enforcement_agency = models.CharField(max_length=255)
     armed = models.CharField(max_length=100)
     county = models.ForeignKey('County', null=True, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "{}, Age: {}, Location: {},{}".format(self.name, self.age,
+                                                     self.city, self.state)
