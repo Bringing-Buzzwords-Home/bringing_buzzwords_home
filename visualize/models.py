@@ -14,7 +14,7 @@ class County(models.Model):
 
 class GuardianDeaths(models.Model):
     name = models.CharField(max_length=255)
-    age = models.IntegerField()
+    age = models.IntegerField(null=True)
     gender = models.CharField(max_length=30)
     race_ethnicity = models.CharField(max_length=30)
     date = models.DateField()

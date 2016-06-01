@@ -11,8 +11,12 @@ def handle_guardian_counted_csv(csv_path):
     with open(csv_path) as f:
         counted_reader = csv.DictReader(f)
         for row in counted_reader:
+            try:
+                victim_age = int(row['age'])
+            except ValueError:
+                victim_age = None
             counted = GuardianDeaths(name=row['name'],
-                                     age=int(row['age']),
+                                     age=victim_age,
                                      gender=row['gender'],
                                      race_ethnicity=row['raceethnicity'],
                                      date=datetime.date(
