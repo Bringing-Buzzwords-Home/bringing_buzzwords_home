@@ -7,7 +7,7 @@ months = {'January': 1, 'February': 2, 'March': 3, 'April': 4,
           'October': 10, 'November': 11, 'December': 12}
 
 
-def handle_guardian_counted_csv(csv_path):
+def handle_guardian_counted_csv(csv_path, months):
     with open(csv_path) as f:
         counted_reader = csv.DictReader(f)
         for row in counted_reader:
@@ -31,3 +31,7 @@ def handle_guardian_counted_csv(csv_path):
                                      law_enforcement_agency=row['lawenforcementagency'],
                                      armed=row['armed'])
             counted.save()
+
+def guardian_pop(months):
+    handle_guardian_counted_csv('data/thecounted-data/the-counted-2015.csv', months)
+    handle_guardian_counted_csv('data/thecounted-data/the-counted-2016.csv', months)
