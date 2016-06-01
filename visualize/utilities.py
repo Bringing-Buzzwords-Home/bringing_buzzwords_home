@@ -10,13 +10,19 @@ months = {'January': 1, 'February': 2, 'March': 3, 'April': 4,
 def handle_guardian_counted_csv(csv_path):
     with open(csv_path) as f:
         counted_reader = csv.DictReader(f)
-        counted = GuardianDeaths(name=counted_reader['name'],
-                                 age=int(counted_reader['age']),
-                                 gender=counted_reader['gender'],
-                                 race_ethnicity=counted_reader['raceethnicity'],
-                                 date=datetime.date(
-                                    year=int(counted_reader['year']),
-                                    month=months[counted_reader['month']],
-                                    day=int(counted_reader['day'])),
-                                 street_address=counted_reader['streetaddress'],
-                                 )
+        for row in counted_reader:
+            counted = GuardianDeaths(name=row['name'],
+                                     age=int(row['age']),
+                                     gender=row['gender'],
+                                     race_ethnicity=row['raceethnicity'],
+                                     date=datetime.date(
+                                        year=int(row['year']),
+                                        month=months[row['month']],
+                                        day=int(row['day'])),
+                                     street_address=row['streetaddress'],
+                                     city=row['city'],
+                                     state=row['state'],
+                                     classification=row['classification'],
+                                     law_enforcement_agency=row['lawenforcementagency'],
+                                     armed=row['armed'])
+            counted.save()

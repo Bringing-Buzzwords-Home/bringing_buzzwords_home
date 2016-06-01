@@ -1,6 +1,17 @@
 from django.db import models
 
 
+class County(models.Model):
+    population = models.IntegerField()
+    county_name = models.CharField(max_length=300)
+    state = models.CharField(max_length=300)
+    FIPS_state = models.CharField(max_length=300)
+    FIPS_county = models.CharField(max_length=300)
+
+    def __str__(self):
+        return self.county_name
+
+
 class GuardianDeaths(models.Model):
     name = models.CharField(max_length=255)
     age = models.IntegerField()
@@ -13,3 +24,4 @@ class GuardianDeaths(models.Model):
     classification = models.CharField(max_length=255)
     law_enforcement_agency = models.CharField(max_length=255)
     armed = models.CharField(max_length=100)
+    county = models.ForeignKey('County', null=True, on_delete=models.CASCADE)
