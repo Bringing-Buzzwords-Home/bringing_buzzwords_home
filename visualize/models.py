@@ -5,15 +5,13 @@ class County(models.Model):
     population = models.IntegerField()
     county_name = models.CharField(max_length=300)
     state = models.CharField(max_length=300)
-    FIPS_state = models.CharField(max_length=300)
-    FIPS_county = models.CharField(max_length=300)
+    FIPS = models.CharField(max_length=300)
 
     def __str__(self):
         return self.county_name
 
 class Geo(models.Model):
     zip_code = models.TextField()
-    county_name = models.CharField(max_length=300)
     city = models.CharField(max_length=300)
     state = models.CharField(max_length=300)
     county = models.ForeignKey(County, on_delete=models.CASCADE, null=True)

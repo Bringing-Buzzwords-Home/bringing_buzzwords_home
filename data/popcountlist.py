@@ -1,4 +1,4 @@
-poplist = [["POP","GEONAME","state","county"],
+poplist = [
 ["55347","Autauga County, Alabama, East South Central, South, United States","01","001"],
 ["203709","Baldwin County, Alabama, East South Central, South, United States","01","003"],
 ["26489","Barbour County, Alabama, East South Central, South, United States","01","005"],
