@@ -12,11 +12,11 @@ class County(models.Model):
         return self.county_name
 
 class Geo(models.Model):
-    zip_code = models.CharField(max_length=300)
+    zip_code = models.TextField()
     county_name = models.CharField(max_length=300)
     city = models.CharField(max_length=300)
     state = models.CharField(max_length=300)
-    county = models.ForeignKey(County, on_delete=models.CASCADE)
+    county = models.ForeignKey(County, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.county_name
@@ -28,11 +28,11 @@ class Item(models.Model):
     Item_Name = models.CharField(max_length=200)
     Quantity = models.IntegerField()
     UI = models.CharField(max_length=200)
-    Acquisition_Value = models.CharField(max_length=200)
+    Acquisition_Value = models.IntegerField()
     DEMIL_Code = models.CharField(max_length=200)
     DEMIL_IC = models.CharField(max_length=200)
     Ship_Date = models.CharField(max_length=200)
-    county = models.ForeignKey(County, on_delete=models.CASCADE)
+    county = models.ForeignKey(County, on_delete=models.CASCADE, null=True)
 
 
     def __str__(self):
@@ -44,7 +44,7 @@ class Station(models.Model):
     lat = models.CharField(max_length=300)
     lng = models.CharField(max_length=300)
     goog_id_num = models.CharField(max_length=300)
-    county = models.ForeignKey(County, on_delete=models.CASCADE)
+    county = models.ForeignKey(County, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.station_name
