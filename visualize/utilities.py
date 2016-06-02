@@ -5,6 +5,7 @@ from django.db.models import Sum
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import seaborn
 
 
 states = {
