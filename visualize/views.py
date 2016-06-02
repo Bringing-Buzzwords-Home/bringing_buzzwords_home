@@ -8,4 +8,5 @@ def index(request):
 
 
 def state(request, state):
-    return HttpResponse("You're looking at %s." % state)
+    context = {'state': state}
+    return render(request, "visualize/state.html", context)
