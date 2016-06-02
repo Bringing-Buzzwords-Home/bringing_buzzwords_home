@@ -4,7 +4,7 @@
     Here's a graph:
 </p>
 <p>
-    <img src="{% get_static_prefix %}visualize/{{state}}.png" alt={{state}}/>
+    <img src="{% get_static_prefix %}visualize/2015{{state}}.png" alt={{state}}/>
 </p>
 <table border="1">
     <caption>2015 Deaths for {{state}}</caption>
@@ -25,3 +25,6 @@
         </td>
     </tr>
 </table>
+<p>
+    <img src="{% get_static_prefix %}visualize/{{state}}-line.png" alt="line graph for {{state}}" />
+</p>
