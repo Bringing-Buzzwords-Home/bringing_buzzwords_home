@@ -49,6 +49,7 @@ class Item(models.Model):
     UI = models.CharField(max_length=200)
     Acquisition_Value = models.IntegerField()
     Total_Value = models.DecimalField(decimal_places=2, max_digits=50)
+    Category = models.CharField(max_length=200)
     DEMIL_Code = models.CharField(max_length=200)
     DEMIL_IC = models.CharField(max_length=200)
     Ship_Date = models.CharField(max_length=200)
