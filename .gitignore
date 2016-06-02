@@ -7,3 +7,4 @@ __pycache__
 .envrc
 .direnv
 visualize/migrations/*
+visualize/static/visualize/*.png
