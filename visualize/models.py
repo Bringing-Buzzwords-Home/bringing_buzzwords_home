@@ -29,6 +29,7 @@ class GuardianCounted(models.Model):
         return "{}, Age: {}, Location: {},{}".format(self.name, self.age,
                                                      self.city, self.state)
 
+
 class Geo(models.Model):
     zip_code = models.TextField()
     city = models.CharField(max_length=300)
@@ -47,6 +48,7 @@ class Item(models.Model):
     Quantity = models.IntegerField()
     UI = models.CharField(max_length=200)
     Acquisition_Value = models.IntegerField()
+    Total_Value = models.DecimalField(decimal_places=2, max_digits=50)
     DEMIL_Code = models.CharField(max_length=200)
     DEMIL_IC = models.CharField(max_length=200)
     Ship_Date = models.CharField(max_length=200)
