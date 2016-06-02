@@ -1,6 +1,11 @@
-from .models import GuardianCounted
+from .models import County, GuardianCounted
 import csv
 import datetime
+from django.db.models import Sum
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+
 
 states = {
         'AK': 'Alaska',
@@ -89,5 +94,36 @@ def handle_guardian_counted_csv(csv_path, months):
 
 
 def guardian_pop(months):
-    handle_guardian_counted_csv('data/thecounted-data/the-counted-2015.csv', months)
-    handle_guardian_counted_csv('data/thecounted-data/the-counted-2016.csv', months)
+    handle_guardian_counted_csv('data/thecounted-data/the-counted-2015.csv',
+                                months)
+    handle_guardian_counted_csv('data/thecounted-data/the-counted-2016.csv',
+                                months)
+
+
+def draw_state_deaths(state):
+    twenty_fifteen = GuardianCounted.objects.filter(date__year=2015)
+    twenty_sixteen = GuardianCounted.objects.filter(date__year=2016)
+
+    us_population = County.objects.aggregate(total=Sum('population'))
+    state_population = County.objects.filter(
+        state=states[state]).aggregate(total=Sum('population'))
+
+    twenty_fifteen_state_deaths = twenty_fifteen.filter(state=state).count()
+    twenty_sixteen_state_deaths = twenty_sixteen.filter(state=state).count()
+    twenty_fifteen_deaths = twenty_fifteen.count()
+    twenty_sixteen_deaths = twenty_sixteen.count()
+    twenty_fifteen_avg_deaths = twenty_fifteen_deaths / 50
+    twenty_sixteen_avg_deaths = twenty_sixteen_deaths / 50
+    twenty_fifteen_state_per_capita = twenty_fifteen_state_deaths / state_population['total']
+    twenty_sixteen_state_per_capita = twenty_sixteen_state_deaths / state_population['total']
+    twenty_fifteen_per_capita = twenty_fifteen_deaths / us_population['total']
+    twenty_sixteen_per_capita = twenty_sixteen_deaths / us_population['total']
+
+    plt.bar([0, 1], [twenty_fifteen_state_deaths, twenty_fifteen_avg_deaths])
+    plt.ylabel('People Killed by Police')
+    plt.title('2015 Killings by Police in {} and the US'.format(states[state]))
+    plt.xticks([.5, 1.5], ('{} Deaths'.format(states[state]),
+                           'Average Deaths Per State'))
+    plt.savefig('visualize/static/visualize/{}.png'.format(state))
+    plt.close()
+    return twenty_fifteen_state_deaths, twenty_fifteen_avg_deaths

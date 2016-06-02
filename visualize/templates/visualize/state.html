@@ -1,8 +1,27 @@
-{% load staticfiles %}
+{% load static %}
 <h2>You're looking at the state profile for {{state}}</h2>
 <p>
     Here's a graph:
 </p>
 <p>
-    <img src="{% static 'visualize/'state'.png' %}" alt={{state}}/>
+    <img src="{% get_static_prefix %}visualize/{{state}}.png" alt={{state}}/>
 </p>
+<table border="1">
+    <caption>2015 Deaths for {{state}}</caption>
+    <tr>
+        <td>
+            {{state}} Deaths
+        </td>
+        <td>
+            {{state_num}}
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Average by state
+        </td>
+        <td>
+            {{average}}
+        </td>
+    </tr>
+</table>
