@@ -1,6 +1,61 @@
-from .models import GuardianDeaths
+from .models import GuardianCounted
 import csv
 import datetime
+
+states = {
+        'AK': 'Alaska',
+        'AL': 'Alabama',
+        'AR': 'Arkansas',
+        'AZ': 'Arizona',
+        'CA': 'California',
+        'CO': 'Colorado',
+        'CT': 'Connecticut',
+        'DC': 'District of Columbia',
+        'DE': 'Delaware',
+        'FL': 'Florida',
+        'GA': 'Georgia',
+        'HI': 'Hawaii',
+        'IA': 'Iowa',
+        'ID': 'Idaho',
+        'IL': 'Illinois',
+        'IN': 'Indiana',
+        'KS': 'Kansas',
+        'KY': 'Kentucky',
+        'LA': 'Louisiana',
+        'MA': 'Massachusetts',
+        'MD': 'Maryland',
+        'ME': 'Maine',
+        'MI': 'Michigan',
+        'MN': 'Minnesota',
+        'MO': 'Missouri',
+        'MS': 'Mississippi',
+        'MT': 'Montana',
+        'NC': 'North Carolina',
+        'ND': 'North Dakota',
+        'NE': 'Nebraska',
+        'NH': 'New Hampshire',
+        'NJ': 'New Jersey',
+        'NM': 'New Mexico',
+        'NV': 'Nevada',
+        'NY': 'New York',
+        'OH': 'Ohio',
+        'OK': 'Oklahoma',
+        'OR': 'Oregon',
+        'PA': 'Pennsylvania',
+        'RI': 'Rhode Island',
+        'SC': 'South Carolina',
+        'SD': 'South Dakota',
+        'TN': 'Tennessee',
+        'TX': 'Texas',
+        'UT': 'Utah',
+        'VA': 'Virginia',
+        'VT': 'Vermont',
+        'WA': 'Washington',
+        'WI': 'Wisconsin',
+        'WV': 'West Virginia',
+        'WY': 'Wyoming'
+        }
+
 
 months = {'January': 1, 'February': 2, 'March': 3, 'April': 4,
           'May': 5, 'June': 6, 'July': 7, 'August': 8, 'September': 9,
@@ -16,21 +71,22 @@ def handle_guardian_counted_csv(csv_path, months):
             # if age is unknown, age will be NULL in the db
             except ValueError:
                 person_age = None
-            counted = GuardianDeaths(name=row['name'],
-                                     age=person_age,
-                                     gender=row['gender'],
-                                     race_ethnicity=row['raceethnicity'],
-                                     date=datetime.date(
+            counted = GuardianCounted(name=row['name'],
+                                      age=person_age,
+                                      gender=row['gender'],
+                                      race_ethnicity=row['raceethnicity'],
+                                      date=datetime.date(
                                         year=int(row['year']),
                                         month=months[row['month']],
                                         day=int(row['day'])),
-                                     street_address=row['streetaddress'],
-                                     city=row['city'],
-                                     state=row['state'],
-                                     classification=row['classification'],
-                                     law_enforcement_agency=row['lawenforcementagency'],
-                                     armed=row['armed'])
+                                      street_address=row['streetaddress'],
+                                      city=row['city'],
+                                      state=row['state'],
+                                      classification=row['classification'],
+                                      law_enforcement_agency=row['lawenforcementagency'],
+                                      armed=row['armed'])
             counted.save()
+
 
 def guardian_pop(months):
     handle_guardian_counted_csv('data/thecounted-data/the-counted-2015.csv', months)

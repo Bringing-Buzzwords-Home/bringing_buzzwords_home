@@ -11,7 +11,6 @@ class County(models.Model):
         return self.county_name
 
 
-
 class GuardianCounted(models.Model):
     name = models.CharField(max_length=255)
     age = models.IntegerField(null=True)
@@ -39,6 +38,7 @@ class Geo(models.Model):
     def __str__(self):
         return self.county_name
 
+
 class Item(models.Model):
     state = models.CharField(max_length=200)
     station_name = models.CharField(max_length=200)
@@ -52,9 +52,9 @@ class Item(models.Model):
     Ship_Date = models.CharField(max_length=200)
     county = models.ForeignKey(County, on_delete=models.CASCADE, null=True)
 
-
     def __str__(self):
         return self.Item_Name
+
 
 class Station(models.Model):
     station_name = models.CharField(max_length=300)

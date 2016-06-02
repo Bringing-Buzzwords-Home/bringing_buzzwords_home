@@ -1,3 +1,8 @@
-
-
-You're looking at the state profile for {{state}}
+{% load staticfiles %}
+<h2>You're looking at the state profile for {{state}}</h2>
+<p>
+    Here's a graph:
+</p>
+<p>
+    <img src="{% static 'visualize/'state'.png' %}" alt={{state}}/>
+</p>
