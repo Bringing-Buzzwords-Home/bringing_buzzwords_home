@@ -6,6 +6,7 @@ class County(models.Model):
     county_name = models.CharField(max_length=300)
     state = models.CharField(max_length=300)
     FIPS = models.CharField(max_length=300)
+    google_county_name = models.CharField(max_length=300, null=True)
 
     def __str__(self):
         return self.county_name

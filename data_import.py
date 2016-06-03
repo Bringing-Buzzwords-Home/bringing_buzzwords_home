@@ -1,4 +1,4 @@
-from visualize.models import County, Geo, Item, Station
+from visualize.models import County, Geo, Item, Station, GuardianCounted
 import glob
 import pandas as pd
 from data.popcountlist import *
@@ -138,3 +138,113 @@ def station_pop():
         #     station_info = Station(
         #     station_name = row['station_name'])
         #     station_info.save()
+
+
+counties = County.objects.all()
+for county in counties:
+    try:
+        address_info = county.county_name
+        r = requests.get('https://maps.googleapis.com/maps/api/geocode/json?address={}&sensor=true&key=AIzaSyAXFVf8VWCuK1kzQicEazzMlCPPku2DHyQ'.format(address_info))
+        r = r.json()
+        print(r)
+        add_comp=r['results'][0]['address_components']
+        for comp in add_comp:
+            if comp['types'] == ['administrative_area_level_2', 'political']:
+                county_goog = comp['long_name']
+                print(county_goog)
+                county.google_county_name = county_goog
+                county.save()
+                print('success')
+    except:
+        print('fail')
+
+
+stations = Station.objects.all()
+for station in stations:
+    if station.address[-23:-21] not in states:
+        continue
+    station_state = states[station.address[-23:-21]]
+    try:
+        address_info = station.address[-20:-15]
+        r = requests.get('https://maps.googleapis.com/maps/api/geocode/json?address={}&sensor=true&key=AIzaSyAXFVf8VWCuK1kzQicEazzMlCPPku2DHyQ'.format(address_info))
+        r = r.json()
+        print(r)
+        add_comp=r['results'][0]['address_components']
+        for comp in add_comp:
+            if comp['types'] == ['administrative_area_level_2', 'political']:
+                county_goog = comp['long_name']
+                print(county_goog)
+                print('api success #1')
+        county_obj = County.objects.get(google_county_name=county_goog, state=station_state)
+        station.county = county_obj
+        station.save()
+        print('FK assignment success #1')
+    except:
+        print('fail')
+        try:
+            for comp in add_comp:
+                if comp['types'] == ['locality', 'political']:
+                    address_info = comp['long_name'] + ' ' + station_state
+                    r = requests.get('https://maps.googleapis.com/maps/api/geocode/json?address={}&sensor=true&key=AIzaSyAXFVf8VWCuK1kzQicEazzMlCPPku2DHyQ'.format(address_info))
+                    r = r.json()
+                    print(r)
+                    add_comp=r['results'][0]['address_components']
+                    for comp in add_comp:
+                        if comp['types'] == ['administrative_area_level_2', 'political']:
+                            county_goog = comp['long_name']
+                            print(county_goog)
+                            print('api success #2')
+                    county_obj = County.objects.get(google_county_name=county_goog, state=station_state)
+                    station.county = county_obj
+                    station.save()
+                    print('FK assignment success #2')
+        except:
+            print('epic fail')
+
+
+guardian = GuardianCounted.objects.all()
+for guard in guardian:
+    try:
+        if (guard.state in states):
+            address_info = guard.city + ' ' + guard.state
+            print(address_info)
+            r = requests.get('https://maps.googleapis.com/maps/api/geocode/json?address={}&sensor=true&key=AIzaSyB8HQrjyVgQCJv9vcXKy_zB7ALgwl2jk7E'.format(address_info))
+            r = r.json()
+            print(r)
+        add_comp=r['results'][0]['address_components']
+        for comp in add_comp:
+            if comp['types'] == ['administrative_area_level_2', 'political']:
+                county_goog = comp['long_name']
+                print(county_goog)
+                print('api success #1')
+        county_obj = County.objects.get(google_county_name=county_goog, state=states[guard.state])
+        guard.county = county_obj
+        guard.save()
+        print('FK assignment success #1')
+    except:
+        print('fail')
+        try:
+            for comp in add_comp:
+                if comp['types'] == ['locality', 'political']:
+                    address_info = comp['long_name'] + ' ' + station_state
+                    r = requests.get('https://maps.googleapis.com/maps/api/geocode/json?address={}&sensor=true&key=AIzaSyAXFVf8VWCuK1kzQicEazzMlCPPku2DHyQ'.format(address_info))
+                    r = r.json()
+                    print(r)
+                    add_comp=r['results'][0]['address_components']
+                    for comp in add_comp:
+                        if comp['types'] == ['administrative_area_level_2', 'political']:
+                            county_goog = comp['long_name']
+                            print(county_goog)
+                            print('api success #2')
+                    county_obj = County.objects.get(google_county_name=county_goog, state=states[guard.state])
+                    guard.county = county_obj
+                    guard.save()
+                    print('FK assignment success #2')
+        except:
+            print('epic fail')
+
+items = Item.objects.all()
+for item in items:
+    station = Station.objects.get(station_name=item.station_name)
+    item.county = station.county
+    item.save()
