@@ -122,6 +122,10 @@ def guardian_pop(months):
                                 months)
 
 
+def draw_state_categories(state):
+    pass
+
+
 def draw_state_deaths(state):
     guardian_month_dict = GuardianCounted.objects.annotate(
         year=Extract(F('date'), what_to_extract='year'),
@@ -135,8 +139,8 @@ def draw_state_deaths(state):
                             key=lambda k: (k['year'], k['month']))
     state_ordered_months = sorted(state_month_dict,
                                   key=lambda k: (k['year'], k['month']))
-    month_list = ["{}{}".format(numbered_months[x['month']], x['year']) for
-                  x in ordered_months]
+    month_list = ["{} {}".format(numbered_months[x['month']], int(x['year']))
+                  for x in ordered_months]
 
     if len(ordered_months) != len(state_ordered_months):
         for num, month in enumerate(ordered_months):
@@ -175,8 +179,8 @@ def draw_state_deaths(state):
     plt.bar([0, 1], [twenty_fifteen_state_deaths, twenty_fifteen_avg_deaths])
     plt.ylabel('People Killed by Police')
     plt.title('2015 Killings by Police in {} and the US'.format(states[state]))
-    plt.xticks([.5, 1.5], ('{} Deaths'.format(states[state]),
-                           'Average Deaths Per State'))
+    plt.xticks([0, 1], ('{} Deaths'.format(states[state]),
+                        'Average Deaths Per State'))
     plt.savefig('visualize/static/visualize/2015{}.png'.format(state))
     plt.close()
 
@@ -185,7 +189,7 @@ def draw_state_deaths(state):
     state_plot = plt.plot(months_nums, state_deaths_per_month, 'r')
     plt.ylabel('People Killed by Police')
     plt.title('Deaths in 2015 and 2016 By Month')
-    plt.xticks(months_nums, month_list)
+    plt.xticks(months_nums, month_list, rotation=25)
     plt.legend((national[0], state_plot[0]), ('National', states[state]))
     plt.savefig('visualize/static/visualize/{}-line.png'.format(state))
     plt.close()
