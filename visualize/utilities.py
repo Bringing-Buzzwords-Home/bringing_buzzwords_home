@@ -1,4 +1,4 @@
-from .models import County, GuardianCounted
+from .models import County, GuardianCounted, Item
 import csv
 import datetime
 from django.db.models import Sum, Func, Count, F
@@ -194,3 +194,132 @@ def draw_state_deaths(state):
     plt.savefig('visualize/static/visualize/{}-line.png'.format(state))
     plt.close()
     return twenty_fifteen_state_deaths, twenty_fifteen_avg_deaths
+
+
+def item_categories(apps, schema_editor):
+    items = Item.objects.all()
+    for item in items:
+        if item.Item_Name in ['AIRCRAFT, ROTARY WING',
+                              'AIRCRAFT, FIXED WING',
+                              'AIRPLANE,CARGO-TRANSPORT',
+                              'AIRPLANE,UTILITY U8F'
+                              ]:
+
+            item.Category = 'Aircraft'
+            item.save()
+
+        elif item.Item_Name in ['HELICOPTER,SEARCH AND RESCUE',
+                                'HELICOPTER,FLIGHT TRAINER',
+                                'HELICOPTER,FLIGHT TRAINER TH55A',
+                                'HELICOPTER,MEDEVAC ',
+                                'HELICOPTER,OBSERVATION',
+                                'HELICOPTER,SEARCH AND RESCUE',
+                                'HELICOPTER,UTILITY'
+                                ]:
+
+            item.Category = 'Helicopter'
+            item.save()
+
+        elif item.Item_Name in ['RIFLE',
+                                'RIFLE,5.56 MILLIMETER',
+                                'RIFLE,7.62 MILLIMETER',
+                                'SIMULATED,M16A2 RIFLE,5.56MM',
+                                'SIMULATED,M16A4-203 RIFLE W-GRENADE LAUNCHER,5.56MM-40MM',
+                                'GUNS, THROUGH 30MM',
+                                'SIMULATED,M4-203 RIFLE W-GRENADE LAUNCHER,5.56MM-40MM',
+                                ]:
+
+            item.Category = "Assualt Rifle"
+            item.save()
+
+        elif item.Item_Name in ['SMALL CRAFT BOAT',
+                                'BOAT,INFLATABLE    ',
+                                'BOAT,LANDING,INFLATABLE',
+                                'BOAT,PERSONNEL',
+                                'BOAT,PICKET',
+                                'BOAT,RECONNAISSANCE,PNEUMATIC',
+                                'BOAT,RIGID INFLATABLE',
+                                'BOAT,RIGID RAIDING',
+                                'BOAT,SEMI-VEE      ',
+                                'BOAT,UTILITY',
+                                'MOTORBOAT',
+                                'BOAT,RIGID RAIDING',
+                                ]:
+
+            item.Category = "Boat"
+            item.save()
+
+        elif item.Item_Name in ["EOD ROBOT",
+                                "ROBOT,EXPLOSIVE ORDNANCE DISPO",
+                                "ROBOT,EXPLOSIVE ORDNANCE DISPOSAL",
+                                'PACKBOT 510 WITH FASTAC REMOTELY CONTROLLED VEHICLE',
+                                'UNMANNED VEHICLE',
+                                'ROBOT,EXPLOSIVE,SPE',
+                                ]:
+
+            item.Category = "Bomb-Disposal Robot"
+            item.save()
+
+        elif item.Item_Name in ['ALL TERRAIN VEHICLE WHEELED',
+                                'ALL TERRAIN VEHICLE, 4 WHEEL',
+                                'ALL TERRAIN VEHICLE, AG/BVUS',
+                                ]:
+
+            item.Category = 'ATV'
+            item.save()
+
+        elif item.Item_Name == 'MINE RESISTANT VEHICLE':
+            item.Category = 'Mine Resistant Vehicle'
+            item.save()
+
+        elif item.Item_Name in ['ONLY COMPLETE COMBAT/ASSAULT/TACTICAL WHEELED VEHICLES',
+                                'LIGHT ARMORED VEHICLE',
+                                'FAST ATTACK VEHICLE',
+                                'PASSENGER MOTOR VEHICLES',
+                                'UTILITY VEHICLE,4WD',
+                                'UTILITY VEHICLE',
+                                'UTILITY VEHICLE,ALL-TERRAIN',
+                                'UTILITY VEHICLE,OFF ROAD',
+                                'SPECIAL PURPOSE VEHICLE',
+                                ]:
+
+            item.Category = 'Assault/Tactical Vehicle'
+            item.save()
+
+        elif item.Item_Name in ['MACHETE,RIGID HANDLE',
+                                'BAYONET-KNIFE',
+                                'HOOK KNIFE,RESCUE  ',
+                                'Knife',
+                                'KNIFE,COMBAT',
+                                'KNIFE,COMBAT,WITH SHEATH',
+                                "KNIFE,CRAFTSMAN'S",
+                                "KNIFE,CRAFTSMANS",
+                                "KNIFE,FIELD MESS",
+                                'KNIFE,FIXED,CAMO   ',
+                                'KNIFE,GENERAL SURGICAL',
+                                'KNIFE,HOT TIP,ELECTRIC',
+                                'KNIFE,HUNTING',
+                                'KNIFE,POCKET',
+                                'KNIFE,RESCUE       ',
+                                'SCABBARD,BAYONET-KNIFE',
+                                'SWITCH,KNIFE',
+                                "KNIFE,STRAP CUTTING,FIREMAN'S",
+                                ]:
+
+            item.Category = 'Machete/Bayonnet/Knife'
+            item.save()
+
+        elif item.Item_Name in ["PISTOL,CALIBER .38 SPECIAL,AUTOMATIC",
+                                "PISTOL,CALIBER .45,AUTOMATIC",
+                                "PISTOL, 40CAL, GLOCK GEN 3",
+                                ]:
+
+            item.Category = 'Pistol'
+            item.save()
+
+        elif item.Item_Name in ['SHOTGUN,12 GAGE',
+                                'SHOTGUN,12 GAGE,RIOT TYPE',
+                                ]:
+
+            item.Category = "Shotgun"
+            item.save()
