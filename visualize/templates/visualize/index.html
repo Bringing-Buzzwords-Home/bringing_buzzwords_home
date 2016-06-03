@@ -1,3 +1,9 @@
-<p>Welcome to Bringing Buzzwords Home Home</p>
+<h1>Bringing Buzzwords Home</h1>
 
-<a href="/state/NC">North Carolina</a>
+<h3>Click a State</h3>
+
+{% for state in states %}
+<p>
+    <a href="{% url 'state' state.0 %}">{{state.1}}</a>
+</p>
+{% endfor %}
