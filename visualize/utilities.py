@@ -137,6 +137,20 @@ def draw_state_deaths(state):
                                   key=lambda k: (k['year'], k['month']))
     month_list = ["{}{}".format(numbered_months[x['month']], x['year']) for
                   x in ordered_months]
+
+    if len(ordered_months) != len(state_ordered_months):
+        for num, month in enumerate(ordered_months):
+            try:
+                if month['year'] == state_ordered_months[num]['year'] and month['month'] == state_ordered_months[num]['month']:
+                    continue
+                else:
+                    state_ordered_months.insert(num, {'year': month['year'],
+                                                      'month': month['month'],
+                                                      'pk__count': 0})
+            except IndexError:
+                state_ordered_months.insert(num, {'year': month['year'],
+                                                  'month': month['month'],
+                                                  'pk__count': 0})
     deaths_per_month = [x['pk__count'] for x in ordered_months]
     state_deaths_per_month = [x['pk__count'] for x in state_ordered_months]
 
@@ -167,11 +181,12 @@ def draw_state_deaths(state):
     plt.close()
 
     months_nums = range(len(ordered_months))
-    plt.plot(months_nums, deaths_per_month)
-    plt.plot(months_nums, state_deaths_per_month, 'r')
+    national = plt.plot(months_nums, deaths_per_month)
+    state_plot = plt.plot(months_nums, state_deaths_per_month, 'r')
     plt.ylabel('People Killed by Police')
-    plt.title('Deaths in 2015 and 2016')
+    plt.title('Deaths in 2015 and 2016 By Month')
     plt.xticks(months_nums, month_list)
+    plt.legend((national[0], state_plot[0]), ('National', states[state]))
     plt.savefig('visualize/static/visualize/{}-line.png'.format(state))
     plt.close()
     return twenty_fifteen_state_deaths, twenty_fifteen_avg_deaths
