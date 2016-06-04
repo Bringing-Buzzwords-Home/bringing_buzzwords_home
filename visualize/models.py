@@ -22,10 +22,6 @@ class County(models.Model):
     pop_est_2002 = models.IntegerField(null=True)
     pop_est_2001 = models.IntegerField(null=True)
     pop_est_2000 = models.IntegerField(null=True)
-    pop_est_1999 = models.IntegerField(null=True)
-    pop_est_1998 = models.IntegerField(null=True)
-    pop_est_1997 = models.IntegerField(null=True)
-    pop_est_1996 = models.IntegerField(null=True)
 
 
     def __str__(self):

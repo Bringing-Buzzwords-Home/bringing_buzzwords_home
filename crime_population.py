@@ -352,3 +352,33 @@ for crime in crimes:
         print('FK assignment success #1')
     except:
         print('fail')
+
+crimes = Crime.objects.all()
+for crime in crimes:
+    crime.population = (crime.population).replace(',', '')
+    crime.save()
+
+for crime in crimes:
+    try:
+        crime.violent_crime = (crime.violent_crime).replace(',', '')
+        crime.murder_manslaughter = (crime.murder_manslaughter).replace(',', '')
+        crime.rape_legacy_def = (crime.rape_legacy_def).replace(',', '')
+        crime.rape_revised_def = (crime.rape_revised_def).replace(',', '')
+        crime.robbery = (crime.robbery).replace(',', '')
+        crime.aggravated_assault = (crime.aggravated_assault).replace(',', '')
+        crime.property_crime = (crime.property_crime).replace(',', '')
+        crime.burglary = (crime.burglary).replace(',', '')
+        crime.larceny_theft = (crime.larceny_theft).replace(',', '')
+        crime.motor_vehicle_theft = (crime.motor_vehicle_theft).replace(',', '')
+        crime.arson = (crime.arson).replace(',', '')
+        crime.save()
+    except AttributeError:
+        print('Nan')
+
+crimes_2013 = Crime.objects.filter(year='2013')
+for crime in crimes_2013:
+    if crime.county:
+        crimes_other_year = Crime.objects.filter(city=crime.city, state=crime.state)
+        for crime_other_year in crimes_other_year:
+            crime_other_year.county=crime.county
+            crime_other_year.save()
