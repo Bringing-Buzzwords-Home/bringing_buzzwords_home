@@ -1,4 +1,4 @@
-from visualize.models import County, Geo, Item, Station, GuardianCounted
+from visualize.models import County, Geo, Item, Station, GuardianCounted, Crime
 import glob
 import pandas as pd
 from data.popcountlist import *
@@ -248,3 +248,38 @@ for item in items:
     station = Station.objects.get(station_name=item.station_name)
     item.county = station.county
     item.save()
+
+
+df = pd.read_csv('data/2000-2010_pop.csv',index_col=None, header=0, encoding="ISO-8859-1")
+for index, row in df.iterrows():
+    try:
+        print(row['STNAME'], row['CTYNAME'])
+        county_object = County.objects.get(state=row['STNAME'], county_name=row['CTYNAME'])
+        county_object.pop_est_2010 = row['CENSUS2010POP']
+        county_object.pop_est_2009 = row['POPESTIMATE2009']
+        county_object.pop_est_2008 = row['POPESTIMATE2008']
+        county_object.pop_est_2007 = row['POPESTIMATE2007']
+        county_object.pop_est_2006 = row['POPESTIMATE2006']
+        county_object.pop_est_2005 = row['POPESTIMATE2005']
+        county_object.pop_est_2004 = row['POPESTIMATE2004']
+        county_object.pop_est_2003 = row['POPESTIMATE2003']
+        county_object.pop_est_2002 = row['POPESTIMATE2002']
+        county_object.pop_est_2001 = row['POPESTIMATE2001']
+        county_object.pop_est_2000 = row['POPESTIMATE2000']
+        county_object.save()
+    except:
+        print('fail')
+
+
+df = pd.read_csv('data/2010-2014_pop.csv',index_col=None, header=0, encoding="ISO-8859-1")
+for index, row in df.iterrows():
+    try:
+        print(row['STNAME'], row['CTYNAME'])
+        county_object = County.objects.get(state=row['STNAME'], county_name=row['CTYNAME'])
+        county_object.pop_est_2011 = row['POPESTIMATE2011']
+        county_object.pop_est_2012 = row['POPESTIMATE2012']
+        county_object.pop_est_2013 = row['POPESTIMATE2013']
+        county_object.pop_est_2014 = row['POPESTIMATE2014']
+        county_object.save()
+    except:
+        print('fail')

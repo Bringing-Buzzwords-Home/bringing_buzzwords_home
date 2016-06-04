@@ -2,11 +2,31 @@ from django.db import models
 
 
 class County(models.Model):
-    population = models.IntegerField()
+    pop_est_2015 = models.IntegerField()
     county_name = models.CharField(max_length=300)
     state = models.CharField(max_length=300)
     FIPS = models.CharField(max_length=300)
     google_county_name = models.CharField(max_length=300, null=True)
+    pop_est_2014 = models.IntegerField(null=True)
+    pop_est_2013 = models.IntegerField(null=True)
+    pop_est_2012 = models.IntegerField(null=True)
+    pop_est_2011 = models.IntegerField(null=True)
+    pop_est_2010 = models.IntegerField(null=True)
+    pop_est_2009 = models.IntegerField(null=True)
+    pop_est_2008 = models.IntegerField(null=True)
+    pop_est_2007 = models.IntegerField(null=True)
+    pop_est_2006 = models.IntegerField(null=True)
+    pop_est_2005 = models.IntegerField(null=True)
+    pop_est_2004 = models.IntegerField(null=True)
+    pop_est_2003 = models.IntegerField(null=True)
+    pop_est_2002 = models.IntegerField(null=True)
+    pop_est_2001 = models.IntegerField(null=True)
+    pop_est_2000 = models.IntegerField(null=True)
+    pop_est_1999 = models.IntegerField(null=True)
+    pop_est_1998 = models.IntegerField(null=True)
+    pop_est_1997 = models.IntegerField(null=True)
+    pop_est_1996 = models.IntegerField(null=True)
+
 
     def __str__(self):
         return self.county_name
@@ -70,3 +90,22 @@ class Station(models.Model):
 
     def __str__(self):
         return self.station_name
+
+
+class Crime(models.Model):
+    year = models.CharField(max_length=300)
+    state = models.CharField(max_length=300)
+    city = models.CharField(max_length=300)
+    population = models.CharField(max_length=300, null=True)
+    violent_crime = models.CharField(max_length=300, null=True)
+    murder_manslaughter = models.CharField(max_length=300, null=True)
+    rape_revised_def = models.CharField(max_length=300, null=True)
+    rape_legacy_def = models.CharField(max_length=300, null=True)
+    robbery = models.CharField(max_length=300, null=True)
+    aggravated_assault = models.CharField(max_length=300, null=True)
+    property_crime = models.CharField(max_length=300, null=True)
+    burglary = models.CharField(max_length=300, null=True)
+    larceny_theft = models.CharField(max_length=300, null=True)
+    motor_vehicle_theft = models.CharField(max_length=300, null=True)
+    arson = models.CharField(max_length=300, null=True)
+    county = models.ForeignKey(County, on_delete=models.CASCADE, null=True)
