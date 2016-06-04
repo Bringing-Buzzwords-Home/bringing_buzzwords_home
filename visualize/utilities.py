@@ -1,7 +1,9 @@
 from .models import County, GuardianCounted, Item
 import csv
 import datetime
+from operator import itemgetter
 from django.db.models import Sum, Func, Count, F
+import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -122,11 +124,78 @@ def guardian_pop(months):
                                 months)
 
 
+def remove_none_from_categories(category_list):
+    for num, category in enumerate(category_list):
+        if category['Category'] is None:
+            del category_list[num]
+            break
+    return category_list
+
+
+def compare_category_lists(category_list, state_category_list):
+    state_categories = [x['Category'] for x in state_category_list]
+    for num, category in enumerate(category_list):
+        if category['Category'] not in state_categories:
+            state_category_list.insert(num, {'Category': category['Category'],
+                                             'pk__count': 0})
+    return state_category_list
+
+
+def make_state_categories(state):
+    item_categories = Item.objects.values('Category').annotate(Count('pk'))
+    category_list = list(item_categories)
+    category_list = sorted(remove_none_from_categories(category_list), key=itemgetter('Category'))
+
+    state_item_categories = Item.objects.filter(state=state).values('Category').annotate(Count('pk'))
+    state_category_list = list(state_item_categories)
+    state_category_list = sorted(remove_none_from_categories(state_category_list), key=itemgetter('Category'))
+    state_category_list = compare_category_lists(category_list, state_category_list)
+
+    counts = [x['pk__count'] for x in category_list]
+    state_counts = [x['pk__count'] for x in state_category_list]
+    categories = [x['Category'] for x in category_list]
+
+    x_label = 'Items'
+    title = 'Number of Items Donated in the 1033 Program'
+    return counts, state_counts, categories, x_label, title
+
+
 def draw_state_categories(state):
-    pass
+    counts, state_counts, categories, x_label, title = make_state_categories(state)
+
+    y_pos = np.arange(len(categories))
+    width = .50
+    plt.barh(y_pos, counts, width, align='center', log=True)
+    plt.barh(y_pos+width, state_counts, width, align='center', color='red', log=True)
+    plt.yticks(y_pos, categories)
+    plt.xlabel(x_label)
+    plt.title(title)
+    plt.savefig('visualize/static/visualize/items-{}.png'.format(state))
+    plt.close()
 
 
-def draw_state_deaths(state):
+def get_state_deaths(state):
+    twenty_fifteen = GuardianCounted.objects.filter(date__year=2015)
+    twenty_sixteen = GuardianCounted.objects.filter(date__year=2016)
+
+    us_population = County.objects.aggregate(total=Sum('population'))
+    state_population = County.objects.filter(
+        state=states[state]).aggregate(total=Sum('population'))
+
+    twenty_fifteen_state_deaths = twenty_fifteen.filter(state=state).count()
+    twenty_sixteen_state_deaths = twenty_sixteen.filter(state=state).count()
+    twenty_fifteen_deaths = twenty_fifteen.count()
+    twenty_sixteen_deaths = twenty_sixteen.count()
+    twenty_fifteen_avg_deaths = twenty_fifteen_deaths / 50
+    twenty_sixteen_avg_deaths = twenty_sixteen_deaths / 50
+    twenty_fifteen_state_per_capita = twenty_fifteen_state_deaths / state_population['total']
+    twenty_sixteen_state_per_capita = twenty_sixteen_state_deaths / state_population['total']
+    twenty_fifteen_per_capita = twenty_fifteen_deaths / us_population['total']
+    twenty_sixteen_per_capita = twenty_sixteen_deaths / us_population['total']
+    return twenty_fifteen_state_deaths, twenty_fifteen_avg_deaths
+
+
+def get_state_deaths_over_time(state):
     guardian_month_dict = GuardianCounted.objects.annotate(
         year=Extract(F('date'), what_to_extract='year'),
         month=Extract(F('date'), what_to_extract='month')).values(
@@ -157,25 +226,12 @@ def draw_state_deaths(state):
                                                   'pk__count': 0})
     deaths_per_month = [x['pk__count'] for x in ordered_months]
     state_deaths_per_month = [x['pk__count'] for x in state_ordered_months]
+    return ordered_months, deaths_per_month, state_deaths_per_month, month_list
 
-    twenty_fifteen = GuardianCounted.objects.filter(date__year=2015)
-    twenty_sixteen = GuardianCounted.objects.filter(date__year=2016)
 
-    us_population = County.objects.aggregate(total=Sum('population'))
-    state_population = County.objects.filter(
-        state=states[state]).aggregate(total=Sum('population'))
-
-    twenty_fifteen_state_deaths = twenty_fifteen.filter(state=state).count()
-    twenty_sixteen_state_deaths = twenty_sixteen.filter(state=state).count()
-    twenty_fifteen_deaths = twenty_fifteen.count()
-    twenty_sixteen_deaths = twenty_sixteen.count()
-    twenty_fifteen_avg_deaths = twenty_fifteen_deaths / 50
-    twenty_sixteen_avg_deaths = twenty_sixteen_deaths / 50
-    twenty_fifteen_state_per_capita = twenty_fifteen_state_deaths / state_population['total']
-    twenty_sixteen_state_per_capita = twenty_sixteen_state_deaths / state_population['total']
-    twenty_fifteen_per_capita = twenty_fifteen_deaths / us_population['total']
-    twenty_sixteen_per_capita = twenty_sixteen_deaths / us_population['total']
-
+def draw_state_deaths(state):
+    twenty_fifteen_state_deaths, twenty_fifteen_avg_deaths = get_state_deaths(state)
+    ordered_months, deaths_per_month, state_deaths_per_month, month_list = get_state_deaths_over_time(state)
     plt.bar([0, 1], [twenty_fifteen_state_deaths, twenty_fifteen_avg_deaths])
     plt.ylabel('People Killed by Police')
     plt.title('2015 Killings by Police in {} and the US'.format(states[state]))

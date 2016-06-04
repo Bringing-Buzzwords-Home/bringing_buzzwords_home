@@ -1,6 +1,9 @@
 {% load static %}
 <h2>You're looking at the state profile for {{long_state_name}}</h2>
 <p>
+    <a href="{% url 'homepage' %}">Go Home</a>
+</p>
+<p>
     Here's a graph:
 </p>
 <p>
@@ -27,4 +30,7 @@
 </table>
 <p>
     <img src="{% get_static_prefix %}visualize/{{state}}-line.png" alt="line graph for {{state}}" />
+</p>
+<p>
+    <img src="{% get_static_prefix %}visualize/items-{{state}}.png" alt="horizontal bar graph detail 1033 donations" />
 </p>
