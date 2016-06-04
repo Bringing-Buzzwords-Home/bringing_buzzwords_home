@@ -165,11 +165,12 @@ def draw_state_categories(state):
 
     y_pos = np.arange(len(categories))
     width = .50
-    plt.barh(y_pos, counts, width, align='center', log=True)
-    plt.barh(y_pos+width, state_counts, width, align='center', color='red', log=True)
+    national = plt.barh(y_pos, counts, width, align='center', log=True)
+    state_plot = plt.barh(y_pos+width, state_counts, width, align='center', color='red', log=True)
     plt.yticks(y_pos, categories)
     plt.xlabel(x_label)
     plt.title(title)
+    plt.legend((national[0], state_plot[0]), ('National', states[state]))
     plt.savefig('visualize/static/visualize/items-{}.png'.format(state))
     plt.close()
 
@@ -195,6 +196,23 @@ def get_state_deaths(state):
     return twenty_fifteen_state_deaths, twenty_fifteen_avg_deaths
 
 
+def compare_ordered_months(ordered_months, state_ordered_months):
+    if len(ordered_months) != len(state_ordered_months):
+        for num, month in enumerate(ordered_months):
+            try:
+                if month['year'] == state_ordered_months[num]['year'] and month['month'] == state_ordered_months[num]['month']:
+                    continue
+                else:
+                    state_ordered_months.insert(num, {'year': month['year'],
+                                                      'month': month['month'],
+                                                      'pk__count': 0})
+            except IndexError:
+                state_ordered_months.insert(num, {'year': month['year'],
+                                                  'month': month['month'],
+                                                  'pk__count': 0})
+    return state_ordered_months
+
+
 def get_state_deaths_over_time(state):
     guardian_month_dict = GuardianCounted.objects.annotate(
         year=Extract(F('date'), what_to_extract='year'),
@@ -211,19 +229,7 @@ def get_state_deaths_over_time(state):
     month_list = ["{} {}".format(numbered_months[x['month']], int(x['year']))
                   for x in ordered_months]
 
-    if len(ordered_months) != len(state_ordered_months):
-        for num, month in enumerate(ordered_months):
-            try:
-                if month['year'] == state_ordered_months[num]['year'] and month['month'] == state_ordered_months[num]['month']:
-                    continue
-                else:
-                    state_ordered_months.insert(num, {'year': month['year'],
-                                                      'month': month['month'],
-                                                      'pk__count': 0})
-            except IndexError:
-                state_ordered_months.insert(num, {'year': month['year'],
-                                                  'month': month['month'],
-                                                  'pk__count': 0})
+    state_ordered_months = compare_ordered_months(ordered_months, state_ordered_months)
     deaths_per_month = [x['pk__count'] for x in ordered_months]
     state_deaths_per_month = [x['pk__count'] for x in state_ordered_months]
     return ordered_months, deaths_per_month, state_deaths_per_month, month_list
