@@ -313,9 +313,9 @@ def get_state_deaths(state):
     twenty_fifteen = GuardianCounted.objects.filter(date__year=2015)
     twenty_sixteen = GuardianCounted.objects.filter(date__year=2016)
 
-    us_population = County.objects.aggregate(total=Sum('population'))
+    us_population = County.objects.aggregate(total=Sum('pop_est_2015'))
     state_population = County.objects.filter(
-        state=states[state]).aggregate(total=Sum('population'))
+        state=states[state]).aggregate(total=Sum('pop_est_2015'))
 
     twenty_fifteen_state_deaths = twenty_fifteen.filter(state=state).count()
     twenty_sixteen_state_deaths = twenty_sixteen.filter(state=state).count()
