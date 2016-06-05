@@ -1,0 +1,5 @@
+.statelist {
+    -webkit-columns: 100px 9; /* Chrome, Safari, Opera */
+    -moz-columns: 100px 9; /* Firefox */
+    columns: 100px 9;
+}
