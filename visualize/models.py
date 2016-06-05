@@ -2,10 +2,27 @@ from django.db import models
 
 
 class County(models.Model):
-    population = models.IntegerField()
+    pop_est_2015 = models.IntegerField()
     county_name = models.CharField(max_length=300)
     state = models.CharField(max_length=300)
     FIPS = models.CharField(max_length=300)
+    google_county_name = models.CharField(max_length=300, null=True)
+    pop_est_2014 = models.IntegerField(null=True)
+    pop_est_2013 = models.IntegerField(null=True)
+    pop_est_2012 = models.IntegerField(null=True)
+    pop_est_2011 = models.IntegerField(null=True)
+    pop_est_2010 = models.IntegerField(null=True)
+    pop_est_2009 = models.IntegerField(null=True)
+    pop_est_2008 = models.IntegerField(null=True)
+    pop_est_2007 = models.IntegerField(null=True)
+    pop_est_2006 = models.IntegerField(null=True)
+    pop_est_2005 = models.IntegerField(null=True)
+    pop_est_2004 = models.IntegerField(null=True)
+    pop_est_2003 = models.IntegerField(null=True)
+    pop_est_2002 = models.IntegerField(null=True)
+    pop_est_2001 = models.IntegerField(null=True)
+    pop_est_2000 = models.IntegerField(null=True)
+
 
     def __str__(self):
         return self.county_name
@@ -47,12 +64,12 @@ class Item(models.Model):
     Item_Name = models.CharField(max_length=200)
     Quantity = models.IntegerField()
     UI = models.CharField(max_length=200)
-    Acquisition_Value = models.IntegerField()
-    Total_Value = models.DecimalField(decimal_places=2, max_digits=50, null=True)
-    Category = models.CharField(max_length=200, null=True)
+    Acquisition_Value = models.DecimalField(decimal_places=2, max_digits=50)
+    Total_Value = models.DecimalField(decimal_places=2, max_digits=50)
+    Category = models.CharField(max_length=200)
     DEMIL_Code = models.CharField(max_length=200)
     DEMIL_IC = models.CharField(max_length=200)
-    Ship_Date = models.CharField(max_length=200)
+    Ship_Date = models.DateTimeField()
     county = models.ForeignKey(County, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
@@ -69,3 +86,22 @@ class Station(models.Model):
 
     def __str__(self):
         return self.station_name
+
+
+class Crime(models.Model):
+    year = models.DateField()
+    state = models.CharField(max_length=300)
+    city = models.CharField(max_length=300)
+    population = models.IntegerField()
+    violent_crime = models.IntegerField()
+    murder_manslaughter = models.IntegerField()
+    rape_revised_def = models.IntegerField()
+    rape_legacy_def = models.IntegerField()
+    robbery = models.IntegerField()
+    aggravated_assault = models.IntegerField()
+    property_crime = models.IntegerField()
+    burglary = models.IntegerField()
+    larceny_theft = models.IntegerField()
+    motor_vehicle_theft = models.IntegerField()
+    arson = models.IntegerField()
+    county = models.ForeignKey(County, on_delete=models.CASCADE, null=True)
