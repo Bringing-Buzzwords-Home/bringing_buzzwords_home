@@ -291,19 +291,22 @@ def make_state_categories(state):
 
     x_label = 'Items'
     title = 'Number of Items Donated in the 1033 Program'
-    return counts, state_counts, categories, x_label, title
+    category_data = {'counts': counts, 'state_counts': state_counts,
+                     'categories': categories, 'x_label': x_label,
+                     'title': title}
+    return category_data
 
 
 def draw_state_categories(state):
-    counts, state_counts, categories, x_label, title = make_state_categories(state)
+    category_data = make_state_categories(state)
 
-    y_pos = np.arange(len(categories))
+    y_pos = np.arange(len(category_data['categories']))
     width = .50
-    national = plt.barh(y_pos, counts, width, align='center', log=True)
-    state_plot = plt.barh(y_pos+width, state_counts, width, align='center', color='red', log=True)
-    plt.yticks(y_pos, categories)
-    plt.xlabel(x_label)
-    plt.title(title)
+    national = plt.barh(y_pos, category_data['counts'], width, align='center', log=True)
+    state_plot = plt.barh(y_pos+width, category_data['state_counts'], width, align='center', color='red', log=True)
+    plt.yticks(y_pos, category_data['categories'])
+    plt.xlabel(category_data['x_label'])
+    plt.title(category_data['title'])
     plt.legend((national[0], state_plot[0]), ('National', states[state]))
     plt.savefig('visualize/static/visualize/items-{}.png'.format(state))
     plt.close()
@@ -327,7 +330,9 @@ def get_state_deaths(state):
     twenty_sixteen_state_per_capita = twenty_sixteen_state_deaths / state_population['total']
     twenty_fifteen_per_capita = twenty_fifteen_deaths / us_population['total']
     twenty_sixteen_per_capita = twenty_sixteen_deaths / us_population['total']
-    return twenty_fifteen_state_deaths, twenty_fifteen_avg_deaths
+    state_deaths = {'twenty_fifteen_state_deaths': twenty_fifteen_state_deaths,
+                    'twenty_fifteen_avg_deaths': twenty_fifteen_avg_deaths}
+    return state_deaths
 
 
 def compare_ordered_months(ordered_months, state_ordered_months):
@@ -366,13 +371,17 @@ def get_state_deaths_over_time(state):
     state_ordered_months = compare_ordered_months(ordered_months, state_ordered_months)
     deaths_per_month = [x['pk__count'] for x in ordered_months]
     state_deaths_per_month = [x['pk__count'] for x in state_ordered_months]
-    return ordered_months, deaths_per_month, state_deaths_per_month, month_list
+    deaths_over_time = {'ordered_months': ordered_months,
+                        'deaths_per_month': deaths_per_month,
+                        'state_deaths_per_month': state_deaths_per_month,
+                        'month_list': month_list}
+    return deaths_over_time
 
 
 def draw_state_deaths(state):
-    twenty_fifteen_state_deaths, twenty_fifteen_avg_deaths = get_state_deaths(state)
-    ordered_months, deaths_per_month, state_deaths_per_month, month_list = get_state_deaths_over_time(state)
-    plt.bar([0, 1], [twenty_fifteen_state_deaths, twenty_fifteen_avg_deaths])
+    state_deaths = get_state_deaths(state)
+    deaths_over_time = get_state_deaths_over_time(state)
+    plt.bar([0, 1], [state_deaths['twenty_fifteen_state_deaths'], state_deaths['twenty_fifteen_avg_deaths']])
     plt.ylabel('People Killed by Police')
     plt.title('2015 Killings by Police in {} and the US'.format(states[state]))
     plt.xticks([0, 1], ('{} Deaths'.format(states[state]),
@@ -380,16 +389,16 @@ def draw_state_deaths(state):
     plt.savefig('visualize/static/visualize/2015{}.png'.format(state))
     plt.close()
 
-    months_nums = range(len(ordered_months))
-    national = plt.plot(months_nums, deaths_per_month)
-    state_plot = plt.plot(months_nums, state_deaths_per_month, 'r')
+    months_nums = range(len(deaths_over_time['ordered_months']))
+    national = plt.plot(months_nums, deaths_over_time['deaths_per_month'])
+    state_plot = plt.plot(months_nums, deaths_over_time['state_deaths_per_month'], 'r')
     plt.ylabel('People Killed by Police')
     plt.title('Deaths in 2015 and 2016 By Month')
-    plt.xticks(months_nums, month_list, rotation=25)
+    plt.xticks(months_nums, deaths_over_time['month_list'], rotation=25)
     plt.legend((national[0], state_plot[0]), ('National', states[state]))
     plt.savefig('visualize/static/visualize/{}-line.png'.format(state))
     plt.close()
-    return twenty_fifteen_state_deaths, twenty_fifteen_avg_deaths
+    return state_deaths
 
 
 def remove_periods_commas(pd_object):
