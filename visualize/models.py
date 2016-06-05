@@ -89,7 +89,7 @@ class Station(models.Model):
 
 
 class Crime(models.Model):
-    year = models.CharField(max_length=300)
+    year = models.DateField()
     state = models.CharField(max_length=300)
     city = models.CharField(max_length=300)
     population = models.IntegerField()

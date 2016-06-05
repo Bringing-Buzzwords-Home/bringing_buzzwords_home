@@ -1,5 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
-from .models import GuardianCounted, County, Item
+from .models import GuardianCounted, County, Item, Crime
 import csv
 import datetime
 import pandas as pd
@@ -146,7 +146,7 @@ def handle_guardian_counted_csv(csv_path, months):
                 place = guardian_csv[(guardian_csv['state'] == row['state']) & (guardian_csv['name'] == row['name']) & (guardian_csv['city'] == row['city'])]
                 county_id = place['county_id'][place.index[0]]
                 county_obj = County.objects.get(id=county_id)
-            except (ValueError, ObjectDoesNotExist):
+            except (ValueError, IndexError, ObjectDoesNotExist):
                 county_obj = None
             counted = GuardianCounted(name=row['name'],
                                       age=person_age,
@@ -171,20 +171,72 @@ def guardian_pop(months):
     handle_guardian_counted_csv('data/thecounted-data/the-counted-2016.csv', months)
 
 
-def populate_crime_from_csv():
-    with open('data/DC_model_csv/visualize_crime.csv') as f:
-        crime_reader = csv.DictReader(f)
-        for row in crime_reader:
-            if row['county_id'] == '':
-                county_obj = None
-            else:
-                try:
-                    county_obj = County.objects.get(id=row['county_id'])
-                except ObjectDoesNotExist:
-                    county_obj = None
-            
+def remove_periods_commas(pd_object):
+    if type(pd_object) == str:
+        new_string = pd_object.strip()
+        if ',' in new_string:
+            new_string = new_string.replace(',', '')
+        if '.' in new_string:
+            new_string = new_string.replace('.', '')
+        if new_string:
+            return new_string
+        else:
+            return 0
+    else:
+        return pd_object
 
-def item_categories(apps, schema_editor):
+
+def populate_crime_from_csv():
+    crime_csv = pd.read_csv('data/DC_model_csv/visualize_crime.csv')
+    column_dict = {'population': 0, 'violent_crime': 0,
+                   'murder_manslaughter': 0, 'rape_revised_def': 0,
+                   'rape_legacy_def': 0, 'robbery': 0, 'aggravated_assault': 0,
+                   'property_crime': 0, 'burglary': 0, 'larceny_theft': 0,
+                   'motor_vehicle_theft': 0, 'arson': 0}
+    crime_csv.fillna(value=column_dict, inplace=True)
+    for index, row in crime_csv.iterrows():
+        if pd.isnull(row['county_id']):
+            county_obj = None
+        else:
+            try:
+                county_obj = County.objects.get(id=row['county_id'])
+            except ObjectDoesNotExist:
+                county_obj = None
+        try:
+            csv_violent_crime = int(remove_periods_commas(row['violent_crime']))
+        except AttributeError:
+            csv_violent_crime = row['violent_crime']
+        try:
+            csv_rape_legacy_def = int(remove_periods_commas(row['rape_legacy_def']))
+        except AttributeError:
+            csv_rape_legacy_def = row['rape_legacy_def']
+        try:
+            csv_arson = int(remove_periods_commas(row['arson']))
+        except AttributeError:
+            csv_arson = row['arson']
+        new_crime = Crime(population=int(row['population']),
+                          year=datetime.date(year=row['year'],
+                                             month=1,
+                                             day=1),
+                          state=row['state'],
+                          city=row['city'],
+                          violent_crime=csv_violent_crime,
+                          murder_manslaughter=row['murder_manslaughter'],
+                          rape_revised_def=int(row['rape_revised_def']),
+                          rape_legacy_def=csv_rape_legacy_def,
+                          robbery=int(remove_periods_commas(row['robbery'])),
+                          aggravated_assault=int(remove_periods_commas(row['aggravated_assault'])),
+                          property_crime=int(remove_periods_commas(row['property_crime'])),
+                          burglary=int(remove_periods_commas(row['burglary'])),
+                          larceny_theft=int(remove_periods_commas(row['larceny_theft'])),
+                          motor_vehicle_theft=int(remove_periods_commas(row['motor_vehicle_theft'])),
+                          arson=csv_arson,
+                          county=county_obj)
+        new_crime.save()
+
+
+def item_categories():
+    # apps, schema_editor <-- function arguments for migration function def.
     items = Item.objects.all()
     for item in items:
         if item.Item_Name in ['AIRCRAFT, ROTARY WING',
