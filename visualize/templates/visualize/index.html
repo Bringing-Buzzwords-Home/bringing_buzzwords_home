@@ -1,4 +1,5 @@
-{% load staticfiles %}
+{% extends 'visualize/base.html' %}
+{% load static %}
 {% block content %}
 
 <!DOCTYPE html>
@@ -12,23 +13,33 @@
 
 <body>
 
-  <h1>Bringing Buzzwords Home</h1>
 
-  <h3>Click a State</h3>
+  <div id="myCarousel" class="carousel slide" data-ride="carousel">
+    <!-- Indicators -->
+    <ol class="carousel-indicators">
+      <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+      <div class="item active">
+        <img class="first-slide">
+        <div class="container">
+          <div class="carousel-caption">
+            <div id="tooltip"></div><!-- div to hold tooltip. -->
+            <svg width="960" height="600" id="statesvg"></svg> <!-- svg to hold the map. -->
+            <script src="../static/visualize/uStates.js"></script> <!-- creates uStates. -->
+            <script src="http://d3js.org/d3.v3.min.js"></script>
+            <script src="../static/visualize/mapping.js"></script>
 
-  <div class="statelist">
-  {% for state in states %}
-      <p>
-          <a href="{% url 'state' state.0 %}">{{state.1}}</a>
-      </p>
-  {% endfor %}
-  </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /.carousel -->
 
-<div id="tooltip"></div><!-- div to hold tooltip. -->
-<svg width="960" height="600" id="statesvg"></svg> <!-- svg to hold the map. -->
-<script src="../static/visualize/uStates.js"></script> <!-- creates uStates. -->
-<script src="http://d3js.org/d3.v3.min.js"></script>
-<script src="../static/visualize/mapping.js"></script>
+
+
+
+
 
 </body>
 
