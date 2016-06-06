@@ -261,10 +261,11 @@ def guardian_pop(months):
 
 def remove_none_from_categories(category_list):
     for num, category in enumerate(category_list):
-        if category['Category'] is None:
+        if bool(category['Category']) is False:
             del category_list[num]
             break
     return category_list
+
 
 
 def compare_category_lists(category_list, state_category_list):
@@ -372,35 +373,39 @@ def get_state_deaths_over_time(state):
     state_ordered_months = compare_ordered_months(ordered_months, state_ordered_months)
     deaths_per_month = [x['pk__count'] for x in ordered_months]
     state_deaths_per_month = [x['pk__count'] for x in state_ordered_months]
-    deaths_over_time = {'ordered_months': ordered_months,
-                        'deaths_per_month': deaths_per_month,
-                        'state_deaths_per_month': state_deaths_per_month,
-                        'month_list': month_list}
+    deaths_over_time = [{'key': 'National Deaths Per Month',
+                         'values': [dict(x=make_timestamp_from_string(month), y=deaths) for month, deaths in zip(month_list, deaths_per_month)],
+                         'color': '#3d40a2'},
+                        {'key': '{} Deaths Per Month'.format(states[state]),
+                         'values': [dict(x=make_timestamp_from_string(month), y=deaths) for month, deaths in zip(month_list, state_deaths_per_month)],
+                         'color': '#d64d4d'}]
     return deaths_over_time
 
 
-def draw_state_deaths(state):
-    state_deaths = get_state_deaths(state)
-    deaths_over_time = get_state_deaths_over_time(state)
-    plt.bar([0, 1], [state_deaths['twenty_fifteen_state_deaths'], state_deaths['twenty_fifteen_avg_deaths']])
-    plt.ylabel('People Killed by Police')
-    plt.title('2015 Killings by Police in {} and the US'.format(states[state]))
-    plt.xticks([0, 1], ('{} Deaths'.format(states[state]),
-                        'Average Deaths Per State'))
-    plt.savefig('visualize/static/visualize/2015{}.png'.format(state))
-    plt.close()
-
-    months_nums = range(len(deaths_over_time['ordered_months']))
-    national = plt.plot(months_nums, deaths_over_time['deaths_per_month'])
-    state_plot = plt.plot(months_nums, deaths_over_time['state_deaths_per_month'], 'r')
-    plt.ylabel('People Killed by Police')
-    plt.title('Deaths in 2015 and 2016 By Month')
-    plt.xticks(months_nums, deaths_over_time['month_list'], rotation=25)
-    plt.legend((national[0], state_plot[0]), ('National', states[state]))
-    plt.savefig('visualize/static/visualize/{}-line.png'.format(state))
-    plt.close()
-    return state_deaths
-
+def make_timestamp_from_string(string):
+    month_year = datetime.datetime.strptime(string, '%B %Y')
+    return month_year.timestamp() * 1000
+# def draw_state_deaths(state):
+#     state_deaths = get_state_deaths(state)
+#     deaths_over_time = get_state_deaths_over_time(state)
+#     plt.bar([0, 1], [state_deaths['twenty_fifteen_state_deaths'], state_deaths['twenty_fifteen_avg_deaths']])
+#     plt.ylabel('People Killed by Police')
+#     plt.title('2015 Killings by Police in {} and the US'.format(states[state]))
+#     plt.xticks([0, 1], ('{} Deaths'.format(states[state]),
+#                         'Average Deaths Per State'))
+#     plt.savefig('visualize/static/visualize/2015{}.png'.format(state))
+#     plt.close()
+#
+#     months_nums = range(len(deaths_over_time['ordered_months']))
+#     national = plt.plot(months_nums, deaths_over_time['deaths_per_month'])
+#     state_plot = plt.plot(months_nums, deaths_over_time['state_deaths_per_month'], 'r')
+#     plt.ylabel('People Killed by Police')
+#     plt.title('Deaths in 2015 and 2016 By Month')
+#     plt.xticks(months_nums, deaths_over_time['month_list'], rotation=25)
+#     plt.legend((national[0], state_plot[0]), ('National', states[state]))
+#     plt.savefig('visualize/static/visualize/{}-line.png'.format(state))
+#     plt.close()
+#     return state_deaths
 
 def remove_periods_commas(pd_object):
     if type(pd_object) == str:

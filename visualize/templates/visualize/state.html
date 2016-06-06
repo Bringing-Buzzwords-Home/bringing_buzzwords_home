@@ -15,10 +15,10 @@
            display: block;
        }
        html, body, #chart1, svg {
-           margin: 0px;
-           padding: 0px;
-           height: 100%;
-           width: 100%;
+           margin: 10px;
+           padding: 10px;
+           height: 75%;
+           width: 75%;
        }
    </style>
 
@@ -54,7 +54,10 @@
             </tr>
         </table>
         <p>
-            <img src="{% get_static_prefix %}visualize/{{state}}-line.png" alt="line graph for {{state}}" />
+            <div id="chart2">
+                <svg></svg>
+            </div>
+            {#<img src="{% get_static_prefix %}visualize/{{state}}-line.png" alt="line graph for {{state}}" />#}
         </p>
         <p>
             <img src="{% get_static_prefix %}visualize/items-{{state}}.png" alt="horizontal bar graph detail 1033 donations" />
@@ -64,7 +67,7 @@
 
         d3.json("{% url 'state_json' state %}", function(error, json) {
           if (error) return console.warn(error);
-          data = json.state_deaths;
+          data = json;
 
           nv.addGraph(function() {
               var chart = nv.models.discreteBarChart()
@@ -77,12 +80,78 @@
                   ;
 
                   d3.select('#chart1 svg')
-                      .datum(data)
+                      .datum(data.state_deaths)
                       .call(chart);
 
                   nv.utils.windowResize(chart.update);
                   return chart;
                });
+               nv.addGraph(function() {
+              chart = nv.models.lineChart()
+                  .options({
+                      transitionDuration: 300,
+                      useInteractiveGuideline: true
+                  })
+              ;
+              // chart sub-models (ie. xAxis, yAxis, etc) when accessed directly, return themselves, not the parent chart, so need to chain separately
+              chart.xAxis
+                  .axisLabel("Months")
+                  .tickFormat(function (d){
+                        return d3.time.format('%B %Y')(new Date(d))
+                  })
+                  .staggerLabels(true)
+              ;
+              chart.yAxis
+                  .axisLabel('Deaths')
+                  .tickFormat(function(d) {
+                      if (d == null) {
+                          return 'N/A';
+                      }
+                      return d3.format(',.2f')(d);
+                  })
+              ;
+
+              d3.select('#chart2').append('svg')
+                  .datum(data.deaths_over_time)
+                  .call(chart);
+              nv.utils.windowResize(chart.update);
+              return chart;
+          });
+          nv.addGraph(function() {
+        chart = nv.models.multiBarChart()
+            .barColor(d3.scale.category20().range())
+            .duration(300)
+            .margin({bottom: 100, left: 70})
+            .rotateLabels(45)
+            .groupSpacing(0.1)
+        ;
+        chart.reduceXTicks(false).staggerLabels(true);
+        chart.xAxis
+            .axisLabel("Categories")
+            .axisLabelDistance(35)
+            .showMaxMin(false)
+            .tickFormat(d3.format(',.6f'))
+        ;
+        chart.yAxis
+            .axisLabel("Number of Items")
+            .axisLabelDistance(-5)
+            .tickFormat(d3.format(',.01f'))
+        ;
+        chart.dispatch.on('renderEnd', function(){
+            nv.log('Render Complete');
+        });
+        d3.select('#chart1 svg')
+            .datum(negative_test_data)
+            .call(chart);
+        nv.utils.windowResize(chart.update);
+        chart.dispatch.on('stateChange', function(e) {
+            nv.log('New State:', JSON.stringify(e));
+        });
+        chart.state.dispatch.on('change', function(state){
+            nv.log('state', JSON.stringify(state));
+        });
+        });
+
         });
 
         </script>
