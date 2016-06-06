@@ -593,3 +593,33 @@ def item_categories():
 
             item.Category = "Shotgun"
             item.save()
+
+
+
+def get_county_deaths(county):
+    counties = list(County.objects.filter(state = county.state))
+    twenty_fifteen = GuardianCounted.objects.filter(date__year=2015, county=county)
+    twenty_sixteen = GuardianCounted.objects.filter(date__year=2016, county=county)
+
+    county_population = (County.objects.get(id=county)).pop_est_2015
+    state_population = (County.objects.filter(state=county.state)).aggregate(total=Sum('pop_est_2015'))
+
+    twenty_fifteen_county_deaths = twenty_fifteen.filter(county=county).count()
+    twenty_sixteen_county_deaths = twenty_sixteen.filter(county=county).count()
+    twenty_fifteen_deaths = twenty_fifteen.count()
+    twenty_sixteen_deaths = twenty_sixteen.count()
+
+    twenty_fifteen_avg_deaths = twenty_fifteen_deaths / len(counties)
+    twenty_sixteen_avg_deaths = twenty_sixteen_deaths / len(counties)
+    twenty_fifteen_state_per_capita = twenty_fifteen_state_deaths / state_population['total']
+    twenty_sixteen_state_per_capita = twenty_sixteen_state_deaths / state_population['total']
+    twenty_fifteen_county_per_capita = twenty_fifteen_deaths / county_population
+    twenty_sixteen_county_per_capita = twenty_sixteen_deaths / county_population
+    state_deaths = {'twenty_fifteen_state_deaths': twenty_fifteen_state_deaths,
+                    'twenty_fifteen_county_deaths': twenty_fifteen_county_deaths}
+    return county_deaths
+
+
+def counties_list(state):
+    counties = list(County.objects.filter(state = states[state]))
+    return counties

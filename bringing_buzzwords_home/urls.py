@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^state/(?P<state>\D+)$', views.state, name='state'),
     url(r'^json/(?P<state>\D+)$', views.state_json, name='state_json'),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^county/(?P<county>\d+)$', views.county, name='county'),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

@@ -126,6 +126,13 @@
   </div>
 
   <hr class="featurette-divider">
+  {% for county in counties_list %}
+      <p>
+          <a href='/../county/{{county.id}}' >{{county}}</a>
+      </p>
+  {% endfor %}
+
+
 </body>
 
 {% endblock %}
