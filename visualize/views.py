@@ -25,7 +25,7 @@ def state(request, state):
 
 def state_json(request, state):
     state_deaths = get_state_deaths(state)
-    data = {'state_deaths': [dict(label=key, value=value) for key, value in state_deaths.items()],
+    data = {'state_deaths': [dict(key='State Deaths', values=[dict(label=key, value=value) for key, value in state_deaths.items()])],
             'deaths_over_time': get_state_deaths_over_time(state),
             'category_data': make_state_categories(state)}
     return HttpResponse(json.dumps(data), content_type='application/json')

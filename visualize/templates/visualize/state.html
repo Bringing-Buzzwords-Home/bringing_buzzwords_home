@@ -21,40 +21,7 @@
            width: 100%;
        }
    </style>
-   <script >
-   var data; // a global
 
-   d3.json("{% url 'state_json' state %}", function(error, json) {
-     if (error) return console.warn(error);
-     data = json.state_deaths;
-     console.log("Json scope")
-     console.log(data);
-     return data;
-   });
-   console.log("global scope")
-   console.log(data)
-   nv.addGraph(function() {
-       console.log("graph scope")
-       console.log(data)
-       var chart = nv.models.discreteBarChart()
-           .x(function(d) { return data.label })
-           .y(function(d) { return data.value })
-           .staggerLabels(true)
-           //.staggerLabels(historicalBarChart[0].values.length > 8)
-           .showValues(true)
-           .duration(250)
-           ;
-
-           d3.select('#chart1 svg')
-               .datum(data)
-               .call(chart);
-
-           nv.utils.windowResize(chart.update);
-           return chart;
-        });
-
-
-   </script>
     </head>
     <body>
         <h2>You're looking at the state profile for {{long_state_name}}</h2>
@@ -95,6 +62,32 @@
         <p>
             <img src="{% get_static_prefix %}visualize/items-{{state}}.png" alt="horizontal bar graph detail 1033 donations" />
         </p>
+        <script >
+        var data; // a global
 
+        d3.json("{% url 'state_json' state %}", function(error, json) {
+          if (error) return console.warn(error);
+          data = json.state_deaths;
+
+          nv.addGraph(function() {
+              var chart = nv.models.discreteBarChart()
+                  .x(function(d) { return d.label })
+                  .y(function(d) { return d.value })
+                  .staggerLabels(true)
+                  //.staggerLabels(historicalBarChart[0].values.length > 8)
+                  .showValues(true)
+                  .duration(250)
+                  ;
+
+                  d3.select('#chart1 svg')
+                      .datum(data)
+                      .call(chart);
+
+                  nv.utils.windowResize(chart.update);
+                  return chart;
+               });
+        });
+
+        </script>
     </body>
 </html>
