@@ -382,8 +382,8 @@ def get_state_deaths_over_time(state):
     state_ordered_months = compare_ordered_months(ordered_months, state_ordered_months)
     deaths_per_month = [x['pk__count'] for x in ordered_months]
     state_deaths_per_month = [x['pk__count'] for x in state_ordered_months]
-    deaths_over_time = [{'key': 'National Deaths Per Month',
-                         'values': [dict(x=make_jstimestamp_from_string(month), y=deaths) for month, deaths in zip(month_list, deaths_per_month)],
+    deaths_over_time = [{'key': 'Average National Deaths Per Month',
+                         'values': [dict(x=make_jstimestamp_from_string(month), y=(deaths / 51)) for month, deaths in zip(month_list, deaths_per_month)],
                          'color': '#3d40a2'},
                         {'key': '{} Deaths Per Month'.format(states[state]),
                          'values': [dict(x=make_jstimestamp_from_string(month), y=deaths) for month, deaths in zip(month_list, state_deaths_per_month)],
