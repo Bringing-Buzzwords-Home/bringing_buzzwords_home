@@ -94,6 +94,8 @@ months = {'January': 1, 'February': 2, 'March': 3, 'April': 4,
           'May': 5, 'June': 6, 'July': 7, 'August': 8, 'September': 9,
           'October': 10, 'November': 11, 'December': 12}
 
+colors = ['#3d40a2', '#d64d4d']
+
 county_csv_path = 'data/DC_model_csv/visualize_county.csv'
 xl_path = 'data/DISP_AllStatesAndTerritories_160401.xlsx'
 
@@ -293,25 +295,28 @@ def make_state_categories(state):
 
     x_label = 'Items'
     title = 'Number of Items Donated in the 1033 Program'
-    category_data = {'counts': counts, 'state_counts': state_counts,
-                     'categories': categories, 'x_label': x_label,
-                     'title': title}
-    return category_data
+    category_data = [{'key': 'Items Nationwide',
+                      'values': [dict(label=category, y=count, x=1) for category, count in zip(categories, counts)],
+                      'color': '#3d40a2'},
+                     {'key': '{} Items'.format(states[state]),
+                      'values': [dict(label=category, y=count, x=1) for category, count in zip(categories, state_counts)],
+                      'color': '#d64d4d'}]
+    return category_data, categories
 
 
-def draw_state_categories(state):
-    category_data = make_state_categories(state)
-
-    y_pos = np.arange(len(category_data['categories']))
-    width = .50
-    national = plt.barh(y_pos, category_data['counts'], width, align='center', log=True)
-    state_plot = plt.barh(y_pos+width, category_data['state_counts'], width, align='center', color='red', log=True)
-    plt.yticks(y_pos, category_data['categories'])
-    plt.xlabel(category_data['x_label'])
-    plt.title(category_data['title'])
-    plt.legend((national[0], state_plot[0]), ('National', states[state]))
-    plt.savefig('visualize/static/visualize/items-{}.png'.format(state))
-    plt.close()
+# def draw_state_categories(state):
+#     category_data = make_state_categories(state)
+#
+#     y_pos = np.arange(len(category_data['categories']))
+#     width = .50
+#     national = plt.barh(y_pos, category_data['counts'], width, align='center', log=True)
+#     state_plot = plt.barh(y_pos+width, category_data['state_counts'], width, align='center', color='red', log=True)
+#     plt.yticks(y_pos, category_data['categories'])
+#     plt.xlabel(category_data['x_label'])
+#     plt.title(category_data['title'])
+#     plt.legend((national[0], state_plot[0]), ('National', states[state]))
+#     plt.savefig('visualize/static/visualize/items-{}.png'.format(state))
+#     plt.close()
 
 
 def get_state_deaths(state):
@@ -353,6 +358,10 @@ def compare_ordered_months(ordered_months, state_ordered_months):
                                                   'pk__count': 0})
     return state_ordered_months
 
+def make_jstimestamp_from_string(string):
+    month_year = datetime.datetime.strptime(string, '%B %Y')
+    return month_year.timestamp() * 1000.0
+
 
 def get_state_deaths_over_time(state):
     guardian_month_dict = GuardianCounted.objects.annotate(
@@ -374,17 +383,13 @@ def get_state_deaths_over_time(state):
     deaths_per_month = [x['pk__count'] for x in ordered_months]
     state_deaths_per_month = [x['pk__count'] for x in state_ordered_months]
     deaths_over_time = [{'key': 'National Deaths Per Month',
-                         'values': [dict(x=make_timestamp_from_string(month), y=deaths) for month, deaths in zip(month_list, deaths_per_month)],
+                         'values': [dict(x=make_jstimestamp_from_string(month), y=deaths) for month, deaths in zip(month_list, deaths_per_month)],
                          'color': '#3d40a2'},
                         {'key': '{} Deaths Per Month'.format(states[state]),
-                         'values': [dict(x=make_timestamp_from_string(month), y=deaths) for month, deaths in zip(month_list, state_deaths_per_month)],
+                         'values': [dict(x=make_jstimestamp_from_string(month), y=deaths) for month, deaths in zip(month_list, state_deaths_per_month)],
                          'color': '#d64d4d'}]
     return deaths_over_time
 
-
-def make_timestamp_from_string(string):
-    month_year = datetime.datetime.strptime(string, '%B %Y')
-    return month_year.timestamp() * 1000
 # def draw_state_deaths(state):
 #     state_deaths = get_state_deaths(state)
 #     deaths_over_time = get_state_deaths_over_time(state)

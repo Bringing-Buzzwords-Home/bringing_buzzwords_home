@@ -60,11 +60,15 @@
             {#<img src="{% get_static_prefix %}visualize/{{state}}-line.png" alt="line graph for {{state}}" />#}
         </p>
         <p>
-            <img src="{% get_static_prefix %}visualize/items-{{state}}.png" alt="horizontal bar graph detail 1033 donations" />
+            <div id="chart3">
+                <svg></svg>
+            </div>
+            {#<img src="{% get_static_prefix %}visualize/items-{{state}}.png" alt="horizontal bar graph detail 1033 donations" />#}
         </p>
         <script >
         var data; // a global
-
+        var categories = ["ATV", "Aircraft", "Assault/Tactical Vehicle", "Assualt Rifle", "Boat", "Bomb-Disposal Robot", "Helicopter", "Machete/Bayonnet/Knife", "Mine Resistant Vehicle", "Pistol", "Shotgun"]
+        var categoryNums = Array.apply(null, Array(categories.length)).map(function (_, i) {return i;});
         d3.json("{% url 'state_json' state %}", function(error, json) {
           if (error) return console.warn(error);
           data = json;
@@ -130,7 +134,11 @@
             .axisLabel("Categories")
             .axisLabelDistance(35)
             .showMaxMin(false)
-            .tickFormat(d3.format(',.6f'))
+            .tickValues(categoryNums)
+            .tickFormat(function (d){
+                console.log(data.category_data[0].values[d].label)
+                return data.category_data[0].values[d].label;
+            })
         ;
         chart.yAxis
             .axisLabel("Number of Items")
@@ -140,8 +148,8 @@
         chart.dispatch.on('renderEnd', function(){
             nv.log('Render Complete');
         });
-        d3.select('#chart1 svg')
-            .datum(negative_test_data)
+        d3.select('#chart3 svg')
+            .datum(data.category_data)
             .call(chart);
         nv.utils.windowResize(chart.update);
         chart.dispatch.on('stateChange', function(e) {
