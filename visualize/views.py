@@ -33,8 +33,10 @@ def state_json(request, state):
 def county(request, county):
     county_obj = County.objects.get(id=county)
     crimes_list = list(Crime.objects.filter(county=county))
+    county_items = (Item.objects.filter(county=county.id, category='Assault rifle')).aggregate(total=Sum('quantity'))
     context = {'county': county,
                'county_obj':county_obj,
                'crimes_list':crimes_list,
+               'county_items':county_items
     }
     return render(request, "visualize/county.html", context)
