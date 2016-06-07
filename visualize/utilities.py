@@ -1,6 +1,6 @@
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
+# import matplotlib
+# matplotlib.use('Agg')
+# import matplotlib.pyplot as plt
 from django.core.exceptions import ObjectDoesNotExist
 from .models import County, GuardianCounted, Item, Crime
 import csv
@@ -8,8 +8,8 @@ import datetime
 from operator import itemgetter
 from django.db.models import Sum, Func, Count, F
 import numpy as np
-import seaborn
-import pandas as pd
+# import seaborn
+# import pandas as pd
 
 
 
@@ -296,10 +296,10 @@ def make_state_categories(state):
     x_label = 'Items'
     title = 'Number of Items Donated in the 1033 Program'
     category_data = [{'key': 'Items Nationwide',
-                      'values': [dict(label=category, y=count, x=1) for category, count in zip(categories, counts)],
+                      'values': [dict(label=category, y=count, x=num) for category, count, num in zip(categories, counts, list(range(len(categories))))],
                       'color': '#3d40a2'},
                      {'key': '{} Items'.format(states[state]),
-                      'values': [dict(label=category, y=count, x=1) for category, count in zip(categories, state_counts)],
+                      'values': [dict(label=category, y=count, x=num) for category, count, num in zip(categories, state_counts, list(range(len(categories))))],
                       'color': '#d64d4d'}]
     return category_data, categories
 
@@ -382,8 +382,8 @@ def get_state_deaths_over_time(state):
     state_ordered_months = compare_ordered_months(ordered_months, state_ordered_months)
     deaths_per_month = [x['pk__count'] for x in ordered_months]
     state_deaths_per_month = [x['pk__count'] for x in state_ordered_months]
-    deaths_over_time = [{'key': 'National Deaths Per Month',
-                         'values': [dict(x=make_jstimestamp_from_string(month), y=deaths) for month, deaths in zip(month_list, deaths_per_month)],
+    deaths_over_time = [{'key': 'Average National Deaths Per Month',
+                         'values': [dict(x=make_jstimestamp_from_string(month), y=(deaths / 51)) for month, deaths in zip(month_list, deaths_per_month)],
                          'color': '#3d40a2'},
                         {'key': '{} Deaths Per Month'.format(states[state]),
                          'values': [dict(x=make_jstimestamp_from_string(month), y=deaths) for month, deaths in zip(month_list, state_deaths_per_month)],
