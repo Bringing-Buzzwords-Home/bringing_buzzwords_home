@@ -296,10 +296,10 @@ def make_state_categories(state):
     x_label = 'Items'
     title = 'Number of Items Donated in the 1033 Program'
     category_data = [{'key': 'Items Nationwide',
-                      'values': [dict(label=category, y=count, x=1) for category, count in zip(categories, counts)],
+                      'values': [dict(label=category, y=count, x=num) for category, count, num in zip(categories, counts, list(range(len(categories))))],
                       'color': '#3d40a2'},
                      {'key': '{} Items'.format(states[state]),
-                      'values': [dict(label=category, y=count, x=1) for category, count in zip(categories, state_counts)],
+                      'values': [dict(label=category, y=count, x=num) for category, count, num in zip(categories, state_counts, list(range(len(categories))))],
                       'color': '#d64d4d'}]
     return category_data, categories
 
