@@ -8,8 +8,8 @@ import datetime
 from operator import itemgetter
 from django.db.models import Sum, Func, Count, F
 import numpy as np
-import seaborn
-import pandas as pd
+# import seaborn
+# import pandas as pd
 
 
 
