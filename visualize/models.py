@@ -105,3 +105,12 @@ class Crime(models.Model):
     motor_vehicle_theft = models.IntegerField()
     arson = models.IntegerField()
     county = models.ForeignKey(County, on_delete=models.CASCADE, null=True)
+
+
+class State(models.Model):
+    state = models.CharField(max_length=2, null=True)
+    total_military_dollars = models.FloatField()
+    total_deaths_twentyfifteen = models.IntegerField()
+    total_violent_crime = models.IntegerField(null=True)
+    total_property_crime = models.IntegerField(null=True)
+    total_population_twentyfifteen = models.IntegerField()

@@ -2,11 +2,17 @@ import operator
 import json
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
+from .models import County, GuardianCounted, Geo, Item, Station, Crime, State
+from .utilities import states, get_dollars_donated_by_year, get_categories_per_capita
+from .utilities import get_state_deaths, get_state_deaths_over_time, make_state_categories
+from .utilities import get_state_crime, get_county_deaths, counties_list
+from rest_framework import viewsets
+from .serializers import StateSerializer
 
-from .models import County, GuardianCounted, Geo, Item, Station, Crime
-from .utilities import states
-from .utilities import get_state_deaths, get_state_deaths_over_time, make_state_categories, get_county_deaths, counties_list
 
+class StateViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = State.objects.all().order_by('state')
+    serializer_class = StateSerializer
 
 
 def index(request):
@@ -32,14 +38,18 @@ def state_json(request, state):
     category_data, categories = make_state_categories(state)
     data = {'state_deaths': [dict(key='State Deaths', values=[dict(label=key, value=value) for key, value in state_deaths.items()])],
             'deaths_over_time': get_state_deaths_over_time(state),
-            'category_data': category_data}
+            'category_data': category_data,
+            'categories_per_capita': get_categories_per_capita(state, category_data),
+            'dollars_by_year': get_dollars_donated_by_year(state),
+            'state_crime': get_state_crime(state)}
     return HttpResponse(json.dumps(data), content_type='application/json')
+
 
 def county(request, county):
     county_obj = County.objects.get(id=county)
     crimes_list = list(Crime.objects.filter(county=county))
     context = {'county': county,
-               'county_obj':county_obj,
-               'crimes_list':crimes_list,
+               'county_obj': county_obj,
+               'crimes_list': crimes_list,
     }
     return render(request, "visualize/county.html", context)
