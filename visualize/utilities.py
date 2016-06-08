@@ -634,3 +634,6 @@ def get_county_deaths(county):
 def counties_list(state):
     counties = list(County.objects.filter(state = states[state]))
     return counties
+
+def get_violent_crime(county):
+    twenty_fourteen_violent = Crime.objects.filter(year='2014-01-01', county=county).aggregate(Sum('violent_crime'))
