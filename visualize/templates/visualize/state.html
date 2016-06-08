@@ -199,6 +199,9 @@ html, body, #chart1, svg {
       </div>
       {#<img src="{% get_static_prefix %}visualize/items-{{state}}.png" alt="horizontal bar graph detail 1033 donations" />#}
   </p>
+  <div id="chart4">
+      <svg></svg>
+  </div>
   <script >
   var data; // a global
   var categories = ["ATV", "Aircraft", "Assault/Tactical Vehicle", "Assualt Rifle", "Boat", "Bomb-Disposal Robot", "Helicopter", "Machete/Bayonnet/Knife", "Mine Resistant Vehicle", "Pistol", "Shotgun"]
@@ -293,6 +296,38 @@ html, body, #chart1, svg {
       nv.log('state', JSON.stringify(state));
   });
   });
+      nv.addGraph(function() {
+     chart = nv.models.lineChart()
+         .options({
+             transitionDuration: 300,
+             useInteractiveGuideline: true
+         })
+     ;
+     // chart sub-models (ie. xAxis, yAxis, etc) when accessed directly, return themselves, not the parent chart, so need to chain separately
+     chart.xAxis
+         .axisLabel("Years")
+         .tickFormat(function (d){
+             console.log(data.dollars_by_year[0].values[d].label)
+             return data.dollars_by_year[0].values[d].label;
+         })
+         .staggerLabels(true)
+     ;
+     chart.yAxis
+         .axisLabel('$ Value Donated')
+         .tickFormat(function(d) {
+             if (d == null) {
+                 return 'N/A';
+             }
+             return d3.format(',.2f')(d);
+         })
+     ;
+
+     d3.select('#chart4').append('svg')
+         .datum(data.dollars_by_year)
+         .call(chart);
+     nv.utils.windowResize(chart.update);
+     return chart;
+    });
 
   });
 

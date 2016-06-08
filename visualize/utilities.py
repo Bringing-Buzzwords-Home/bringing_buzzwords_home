@@ -632,5 +632,39 @@ def get_county_deaths(county):
 
 
 def counties_list(state):
-    counties = list(County.objects.filter(state = states[state]))
+    counties = list(County.objects.filter(state=states[state]))
     return counties
+
+
+def compare_ordered_years(national_ordered, state_ordered):
+    if len(national_ordered) != len(state_ordered):
+        for num, year in enumerate(national_ordered):
+            try:
+                if year['year'] == state_ordered[num]['year']:
+                    continue
+                else:
+                    state_ordered.insert(num, {'year': year['year'],
+                                               'Total_Value__sum': 0.0})
+            except IndexError:
+                state_ordered.insert(num, {'year': year['year'],
+                                           'Total_Value__sum': 0.0})
+    return state_ordered
+
+
+def get_dollars_donated_by_year(state):
+    national_money = Item.objects.annotate(year=Extract(F('Ship_Date'), what_to_extract='year')).values('year').annotate(Sum('Total_Value'))
+    state_money = Item.objects.filter(state=state).annotate(year=Extract(F('Ship_Date'), what_to_extract='year')).values('year').annotate(Sum('Total_Value'))
+    national_ordered = sorted(national_money, key=itemgetter('year'))
+    state_ordered = sorted(state_money, key=itemgetter('year'))
+    state_ordered = compare_ordered_years(national_ordered, state_ordered)
+    year_list = ['{}'.format(int(x['year'])) for x in national_ordered]
+    national_money_years = [x['Total_Value__sum'] for x in national_ordered]
+    state_money_years = [x['Total_Value__sum'] for x in state_ordered]
+    dollars_by_year = [{'key': 'Average Dollar Value Donated Nationally',
+                        'values': [dict(x=num, y=(float(amount) / 51), label=year) for year, amount, num in zip(year_list, national_money_years, list(range(len(year_list))))],
+                        'color': '#3d40a2'},
+                       {'key': '{} Dollars Per Year'.format(states[state]),
+                        'values': [dict(x=num, y=float(amount)) for year, amount, num in zip(year_list, state_money_years, list(range(len(year_list))))],
+                        'color': '#d64d4d'}]
+
+    return dollars_by_year
