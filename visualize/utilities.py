@@ -693,3 +693,28 @@ def get_categories_per_capita(state, category_data):
                                              'values': values})
     del categories_per_capita[2:]
     return categories_per_capita
+
+
+def get_state_crime(state):
+    twenty_fourteen_national_crime = Crime.objects.filter(
+        year__year=2014).aggregate(Sum('violent_crime'), Sum('property_crime'))
+    twenty_fourteen_state_crime = Crime.objects.filter(
+        year__year=2014).filter(state=states[state]).aggregate(Sum(
+            'violent_crime'), Sum('property_crime'))
+    national_values = [{'x': 0,
+                        'y': (twenty_fourteen_national_crime['violent_crime__sum'] / 51),
+                        'label': 'Violent Crime'},
+                       {'x': 1,
+                        'y': (twenty_fourteen_national_crime['property_crime__sum'] / 51),
+                        'label': 'Property Crime'}]
+    state_values = [{'x': 0,
+                     'y': twenty_fourteen_state_crime['violent_crime__sum'],
+                     'label': 'Violent Crime'},
+                    {'x': 1,
+                     'y': twenty_fourteen_state_crime['property_crime__sum'],
+                     'label': 'Property Crime'}]
+    average_state_crime = [{'key': 'Average State Crime',
+                            'values': national_values},
+                           {'key': '{} Crime'.format(states[state]),
+                            'values': state_values}]
+    return average_state_crime
