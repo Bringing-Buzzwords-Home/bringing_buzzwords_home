@@ -8,6 +8,7 @@ import datetime
 from operator import itemgetter
 from django.db.models import Sum, Func, Count, F
 import numpy as np
+from nvd3 import multiBarChart
 # import seaborn
 # import pandas as pd
 
@@ -637,3 +638,13 @@ def counties_list(state):
 
 def get_violent_crime(county):
     twenty_fourteen_violent = Crime.objects.filter(year='2014-01-01', county=county).aggregate(Sum('violent_crime'))
+
+
+def create_county_crime(county):
+    chart = multiBarChart(width=500, height=400, x_axis_format=None)
+    xdata = ['Violent Crime', 'Property Crime']
+    ydata1 = [Crime.objects.filter(year='2014-01-01', county=county).aggregate(Sum('violent_crime'))['violent_crime__sum'], Crime.objects.filter(year='2014-01-01', county=county).aggregate(Sum('property_crime'))['property_crime__sum']]
+    ydata2 = [Crime.objects.filter(year='2014-01-01').aggregate(Sum('violent_crime'))['violent_crime__sum'], Crime.objects.filter(year='2014-01-01').aggregate(Sum('property_crime'))['property_crime__sum']]
+    chart.add_serie(name="Serie 1", y=ydata1, x=xdata)
+    chart.add_serie(name="Serie 2", y=ydata2, x=xdata)
+    chart.buildhtml()

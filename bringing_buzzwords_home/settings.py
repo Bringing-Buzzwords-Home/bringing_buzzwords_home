@@ -25,6 +25,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'djangobower',
+    'django_nvd3',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -115,3 +117,15 @@ STATICFILES_DIRS = [
 # Simplified static file serving.
 # https://warehouse.python.org/project/whitenoise/
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
+
+BOWER_COMPONENTS_ROOT = '/PROJECT_ROOT/components/'
+
+BOWER_PATH = '/usr/local/bin/bower'
+
+
+
+BOWER_INSTALLED_APPS = (
+    'd3#3.3.13',
+    'nvd3#1.7.1',
+)

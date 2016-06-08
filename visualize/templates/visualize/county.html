@@ -2,6 +2,8 @@
 {% load static %}
 
 
+
+
 <link id="bootstrap-style" href="css/bootstrap.min.css" rel="stylesheet">
 <link href="css/bootstrap-responsive.min.css" rel="stylesheet">
 <link id="base-style" href="css/style.css" rel="stylesheet">
@@ -13,8 +15,8 @@
 
 
 
-
 <div class="container-fluid-full">
+
 
 <div id="content" class="span10">
   <ul class="breadcrumb">
@@ -31,6 +33,10 @@
   </ul>
 
   <div class="row-fluid">
+
+    <h1>Fruits vs Calories</h1>
+    {% include_container chartcontainer 400 600 %}
+    {% load_chart charttype chartdata "piechart_container" extra %}
 
     <div class="span3 statbox purple" onTablet="span6" onDesktop="span3">
       <div><h1>1033 Total</h1></div>

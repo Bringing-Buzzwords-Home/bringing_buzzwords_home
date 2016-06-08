@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 
 from .models import County, GuardianCounted, Geo, Item, Station, Crime
 from .utilities import states
-from .utilities import get_state_deaths, get_state_deaths_over_time, make_state_categories, get_county_deaths, counties_list
+from .utilities import get_state_deaths, get_state_deaths_over_time, make_state_categories, get_county_deaths, counties_list, create_county_crime
 from django.db.models import Sum, Func, Count, F
 
 
@@ -53,12 +53,41 @@ def county(request, county):
     twenty_fifteen_kills = GuardianCounted.objects.filter(county=county).count()
     county_obj = County.objects.get(id=county)
     crimes_list = list(Crime.objects.filter(county=county))
-    context = {'county': county,
-               'county_obj': county_obj,
-               'crimes_list': crimes_list,
-               'twenty_fourteen_violent': twenty_fourteen_violent,
-               'twenty_fourteen_property': twenty_fourteen_property,
-               'twenty_fifteen_kills': twenty_fifteen_kills,
-               'ten_thirty_three_total': ten_thirty_three_total
+    county_crime_bar = create_county_crime(county)
+
+    xdata = ["Apple", "Apricot", "Avocado", "Banana", "Boysenberries", "Blueberries", "Dates", "Grapefruit", "Kiwi", "Lemon"]
+    ydata = [52, 48, 160, 94, 75, 71, 490, 82, 46, 17]
+    chartdata = {'x': xdata, 'y': ydata}
+    charttype = "pieChart"
+    chartcontainer = 'piechart_container'
+    data = {
+        'charttype': charttype,
+        'chartdata': chartdata,
+        'chartcontainer': chartcontainer,
+        'extra': {
+            'x_is_date': False,
+            'x_axis_format': '',
+            'tag_script_js': True,
+            'jquery_on_ready': False,
+        },
+        'county': county,
+       'county_obj': county_obj,
+       'crimes_list': crimes_list,
+       'twenty_fourteen_violent': twenty_fourteen_violent,
+       'twenty_fourteen_property': twenty_fourteen_property,
+       'twenty_fifteen_kills': twenty_fifteen_kills,
+       'ten_thirty_three_total': ten_thirty_three_total,
+       'county_crime_bar': county_crime_bar,
     }
-    return render(request, "visualize/county.html", context)
+    return render(request, "visualize/county.html", data)
+
+
+from nvd3 import pieChart
+type = 'pieChart'
+chart = pieChart(name=type, color_category='category20c', height=450, width=450)
+xdata = ["Orange", "Banana", "Pear", "Kiwi", "Apple", "Strawberry", "Pineapple"]
+ydata = [3, 4, 0, 1, 5, 7, 3]
+extra_serie = {"tooltip": {"y_start": "", "y_end": " cal"}}
+chart.add_serie(y=ydata, x=xdata, extra=extra_serie)
+chart.buildcontent()
+print(chart.htmlcontent)
