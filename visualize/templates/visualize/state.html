@@ -21,7 +21,7 @@ svg {
 html, body, #chart1, svg {
    margin: 10px;
    padding: 10px;
-   height: 75%;
+   height: 100%;
    width: 75%;
 }
 </style>
@@ -202,6 +202,9 @@ html, body, #chart1, svg {
   <div id="chart4">
       <svg></svg>
   </div>
+  <div id="chart5">
+      <svg></svg>
+  </div>
   <script >
   var data; // a global
   var categories = ["ATV", "Aircraft", "Assault/Tactical Vehicle", "Assualt Rifle", "Boat", "Bomb-Disposal Robot", "Helicopter", "Machete/Bayonnet/Knife", "Mine Resistant Vehicle", "Pistol", "Shotgun"]
@@ -328,6 +331,44 @@ html, body, #chart1, svg {
      nv.utils.windowResize(chart.update);
      return chart;
     });
+    nv.addGraph(function() {
+  chart = nv.models.multiBarChart()
+      .barColor(d3.scale.category20().range())
+      .duration(300)
+      .margin({bottom: 100, left: 70})
+      .rotateLabels(45)
+      .groupSpacing(0.1)
+  ;
+  chart.reduceXTicks(false).staggerLabels(true);
+  chart.xAxis
+      .axisLabel("Categories")
+      .axisLabelDistance(35)
+      .showMaxMin(false)
+      .tickValues(categoryNums)
+      .tickFormat(function (d){
+          console.log(data.categories_per_capita[0].values[d].label)
+          return data.categories_per_capita[0].values[d].label;
+      })
+  ;
+  chart.yAxis
+      .axisLabel("Per Capita Number of Items")
+      .axisLabelDistance(-5)
+      .tickFormat(d3.format(',.01e'))
+  ;
+  chart.dispatch.on('renderEnd', function(){
+      nv.log('Render Complete');
+  });
+  d3.select('#chart5 svg')
+      .datum(data.categories_per_capita)
+      .call(chart);
+  nv.utils.windowResize(chart.update);
+  chart.dispatch.on('stateChange', function(e) {
+      nv.log('New State:', JSON.stringify(e));
+  });
+  chart.state.dispatch.on('change', function(state){
+      nv.log('state', JSON.stringify(state));
+  });
+  });
 
   });
 

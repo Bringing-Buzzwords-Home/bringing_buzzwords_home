@@ -666,5 +666,30 @@ def get_dollars_donated_by_year(state):
                        {'key': '{} Dollars Per Year'.format(states[state]),
                         'values': [dict(x=num, y=float(amount)) for year, amount, num in zip(year_list, state_money_years, list(range(len(year_list))))],
                         'color': '#d64d4d'}]
-
     return dollars_by_year
+
+
+def get_categories_per_capita(state, category_data):
+    categories_per_capita = [0, 1]
+    us_population = County.objects.aggregate(total=Sum('pop_est_2015'))
+    state_population = County.objects.filter(
+        state=states[state]).aggregate(total=Sum('pop_est_2015'))
+    for category_dict in category_data:
+        if category_dict['key'] == 'Items Nationwide':
+            values = []
+            for position_dict in category_dict['values']:
+                values.append({'x': position_dict['x'],
+                               'y': (position_dict['y'] / us_population['total']),
+                               'label': position_dict['label']})
+            categories_per_capita.insert(0, {'key': 'Per Capita Items Nationwide',
+                                             'values': values})
+        else:
+            values = []
+            for position_dict in category_dict['values']:
+                values.append({'x': position_dict['x'],
+                               'y': (position_dict['y'] / state_population['total']),
+                               'label': position_dict['label']})
+            categories_per_capita.insert(1, {'key': '{} Per Capita Items'.format(states[state]),
+                                             'values': values})
+    del categories_per_capita[2:]
+    return categories_per_capita

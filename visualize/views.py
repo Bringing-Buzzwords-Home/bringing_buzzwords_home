@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 
 from .models import County, GuardianCounted, Geo, Item, Station, Crime
-from .utilities import states, get_dollars_donated_by_year
+from .utilities import states, get_dollars_donated_by_year, get_categories_per_capita
 from .utilities import get_state_deaths, get_state_deaths_over_time, make_state_categories, get_county_deaths, counties_list
 
 
@@ -33,6 +33,7 @@ def state_json(request, state):
     data = {'state_deaths': [dict(key='State Deaths', values=[dict(label=key, value=value) for key, value in state_deaths.items()])],
             'deaths_over_time': get_state_deaths_over_time(state),
             'category_data': category_data,
+            'categories_per_capita': get_categories_per_capita(state, category_data),
             'dollars_by_year': get_dollars_donated_by_year(state)}
     return HttpResponse(json.dumps(data), content_type='application/json')
 
