@@ -106,6 +106,13 @@ class Crime(models.Model):
     arson = models.IntegerField()
     county = models.ForeignKey(County, on_delete=models.CASCADE, null=True)
 
+    def __str__(self):
+        return "{} {}, {}: Violent Crime {} Property Crime {}".format(self.year,
+                                                                      self.city,
+                                                                      self.state,
+                                                                      self.violent_crime,
+                                                                      self.property_crime)
+
 
 class State(models.Model):
     state = models.CharField(max_length=2, null=True)
