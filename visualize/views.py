@@ -3,10 +3,17 @@ import json
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 
-from .models import County, GuardianCounted, Geo, Item, Station, Crime
+from .models import County, GuardianCounted, Geo, Item, Station, Crime, State
 from .utilities import states
 from .utilities import get_state_deaths, get_state_deaths_over_time, make_state_categories, get_county_deaths, counties_list
 
+from rest_framework import viewsets
+from .serializers import StateSerializer
+
+
+class StateViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = State.objects.all().order_by('state')
+    serializer_class = StateSerializer
 
 
 def index(request):

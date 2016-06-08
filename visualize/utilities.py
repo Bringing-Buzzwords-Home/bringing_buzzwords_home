@@ -2,16 +2,14 @@
 # matplotlib.use('Agg')
 # import matplotlib.pyplot as plt
 from django.core.exceptions import ObjectDoesNotExist
-from .models import County, GuardianCounted, Item, Crime
+from .models import County, GuardianCounted, Item, Crime, State
 import csv
 import datetime
 from operator import itemgetter
 from django.db.models import Sum, Func, Count, F
-import numpy as np
+# import numpy as np
 # import seaborn
 # import pandas as pd
-
-
 
 
 class Extract(Func):
@@ -269,7 +267,6 @@ def remove_none_from_categories(category_list):
     return category_list
 
 
-
 def compare_category_lists(category_list, state_category_list):
     state_categories = [x['Category'] for x in state_category_list]
     for num, category in enumerate(category_list):
@@ -510,7 +507,7 @@ def item_categories():
                                 'SIMULATED,M4-203 RIFLE W-GRENADE LAUNCHER,5.56MM-40MM',
                                 ]:
 
-            item.Category = "Assualt Rifle"
+            item.Category = "Assault Rifle"
             item.save()
 
         elif item.Item_Name in ['SMALL CRAFT BOAT',
@@ -634,3 +631,21 @@ def get_county_deaths(county):
 def counties_list(state):
     counties = list(County.objects.filter(state = states[state]))
     return counties
+
+
+def populate_state_model(states):
+    for state in states:
+        total_military_dollars = float(Item.objects.filter(state=state).aggregate(Sum('Total_Value'))['Total_Value__sum'])
+        guardian_twenty_fifteen = GuardianCounted.objects.filter(date__year=2015)
+        total_deaths_twentyfifteen = guardian_twenty_fifteen.filter(state=state).count()
+        crime_twenty_fourteen = Crime.objects.filter(year__year=2014)
+        total_violent_crime = int(crime_twenty_fourteen.filter(state=states[state]).aggregate(Sum('violent_crime'))['violent_crime__sum'])
+        total_property_crime = int(crime_twenty_fourteen.filter(state=states[state]).aggregate(Sum('property_crime'))['property_crime__sum'])
+        total_population_twentyfifteen = state_population = County.objects.filter(state=states[state]).aggregate(Sum('pop_est_2015'))['pop_est_2015__sum']
+        state_object = State(state=state,
+                             total_military_dollars=total_military_dollars,
+                             total_deaths_twentyfifteen=total_deaths_twentyfifteen,
+                             total_violent_crime=total_violent_crime,
+                             total_property_crime=total_property_crime,
+                             total_population_twentyfifteen=total_population_twentyfifteen)
+        state_object.save()
