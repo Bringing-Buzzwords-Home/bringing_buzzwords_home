@@ -3,220 +3,255 @@
 
 {% block content %}
 
-<head>
 
 
-<meta charset="utf-8">
-<link href="{% get_static_prefix %}visualize/nv.d3.css" rel="stylesheet" type="text/css">
-<script src="{% get_static_prefix %}visualize/d3.js" charset="utf-8"></script>
-<script src="{% get_static_prefix %}visualize/nv.d3.js"></script>
-<title>{{long_state_name}}</title>
-
-</head>
-
-<body>
 
 
-<!-- Carousel
-================================================== -->
-<div id="myCarousel" class="carousel slide" data-ride="carousel">
-  <!-- Indicators -->
-
-  <div class="carousel-inner" role="listbox">
-    <div class="item active">
-  <img class="first-slide" >
-        <div class="container">
-        <div class="carousel-caption">
-          <h1> {{long_state_name}} </h1>
-          <img class=" position" src="{% get_static_prefix %}visualize/2015{{state}}.png" alt={{state}} width="860" height="500"/>
-    </div
-        </div>
-      </div>
-    </div>
-
-    </a>
-</div><!-- /.carousel -->
 
 
-<!-- Marketing messaging and featurettes
-================================================== -->
-<!-- Wrap the rest of the page in another container to center all the content. -->
+<script >
+var data; // a global
+var categories = ["ATV", "Aircraft", "Assault/Tactical Vehicle", "Assualt Rifle", "Boat", "Bomb-Disposal Robot", "Helicopter", "Machete/Bayonnet/Knife", "Mine Resistant Vehicle", "Pistol", "Shotgun"]
+var categoryNums = Array.apply(null, Array(categories.length)).map(function (_, i) {return i;});
+d3.json("{% url 'state_json' state %}", function(error, json) {
+  if (error) return console.warn(error);
+  data = json;
+
+  nv.addGraph(function() {
+      var chart = nv.models.discreteBarChart()
+          .x(function(d) { return d.label })
+          .y(function(d) { return d.value })
+          .staggerLabels(true)
+          //.staggerLabels(historicalBarChart[0].values.length > 8)
+          .showValues(true)
+          .duration(250)
+          ;
+
+          d3.select('#chart1 svg')
+              .datum(data.state_deaths)
+              .call(chart);
 
 
-  <!-- START THE FEATURETTES -->
-
-  <hr class="featurette-divider">
-
-  <div class="row featurette">
-      <div class="col-md-6 col-md-push-3">
-      <div id="chart1">
-          <svg></svg>
-      </div>
-
-  </p>
-  <table border="1">
-      <caption>2015 Deaths for {{state}}</caption>
-      <tr>
-          <td>
-              {{state}} Deaths
-          </td>
-          <td>
-              {{state_num}}
-          </td>
-      </tr>
-      <tr>
-          <td>
-              Average by state
-          </td>
-          <td>
-              {{average}}
-          </td>
-      </tr>
-  </table>
-
-
-      <script >
-      var data; // a global
-      var categories = ["ATV", "Aircraft", "Assault/Tactical Vehicle", "Assualt Rifle", "Boat", "Bomb-Disposal Robot", "Helicopter", "Machete/Bayonnet/Knife", "Mine Resistant Vehicle", "Pistol", "Shotgun"]
-      var categoryNums = Array.apply(null, Array(categories.length)).map(function (_, i) {return i;});
-      d3.json("{% url 'state_json' state %}", function(error, json) {
-        if (error) return console.warn(error);
-        data = json;
-
-        nv.addGraph(function() {
-            var chart = nv.models.discreteBarChart()
-                .x(function(d) { return d.label })
-                .y(function(d) { return d.value })
-                .staggerLabels(true)
-                //.staggerLabels(historicalBarChart[0].values.length > 8)
-                .showValues(true)
-                .duration(250)
-                ;
-
-                d3.select('#chart1 svg')
-                    .datum(data.state_deaths)
-                    .call(chart);
-
-                nv.utils.windowResize(chart.update);
-                return chart;
-             });
-             nv.addGraph(function() {
-            chart = nv.models.lineChart()
-                .options({
-                    transitionDuration: 300,
-                    useInteractiveGuideline: true
-                })
-            ;
-            // chart sub-models (ie. xAxis, yAxis, etc) when accessed directly, return themselves, not the parent chart, so need to chain separately
-            chart.xAxis
-                .axisLabel("Months")
-                .tickFormat(function (d){
-                      return d3.time.format('%B %Y')(new Date(d))
-                })
-                .staggerLabels(true)
-            ;
-            chart.yAxis
-                .axisLabel('Deaths')
-                .tickFormat(function(d) {
-                    if (d == null) {
-                        return 'N/A';
-                    }
-                    return d3.format(',.2f')(d);
-                })
-            ;
-
-            d3.select('#chart2').append('svg')
-                .datum(data.deaths_over_time)
-                .call(chart);
-            nv.utils.windowResize(chart.update);
-            return chart;
-        });
-        nv.addGraph(function() {
-      chart = nv.models.multiBarChart()
-          .barColor(d3.scale.category20().range())
-          .duration(300)
-          .margin({bottom: 100, left: 70})
-          .rotateLabels(45)
-          .groupSpacing(0.1)
-      ;
-      chart.reduceXTicks(false).staggerLabels(true);
-      chart.xAxis
-          .axisLabel("Categories")
-          .axisLabelDistance(35)
-          .showMaxMin(false)
-          .tickValues(categoryNums)
-          .tickFormat(function (d){
-              console.log(data.category_data[0].values[d].label)
-              return data.category_data[0].values[d].label;
+          nv.utils.windowResize(chart.update);
+          return chart;
+       });
+       nv.addGraph(function() {
+      chart = nv.models.lineChart()
+          .options({
+              transitionDuration: 300,
+              useInteractiveGuideline: true
           })
       ;
-      chart.yAxis
-          .axisLabel("Number of Items")
-          .axisLabelDistance(-5)
-          .tickFormat(d3.format(',.01f'))
+      // chart sub-models (ie. xAxis, yAxis, etc) when accessed directly, return themselves, not the parent chart, so need to chain separately
+      chart.xAxis
+          .axisLabel("Months")
+          .tickFormat(function (d){
+                return d3.time.format('%B %Y')(new Date(d))
+          })
+          .staggerLabels(true)
       ;
-      chart.dispatch.on('renderEnd', function(){
-          nv.log('Render Complete');
-      });
-      d3.select('#chart3 svg')
-          .datum(data.category_data)
+      chart.yAxis
+          .axisLabel('Deaths')
+          .tickFormat(function(d) {
+              if (d == null) {
+                  return 'N/A';
+              }
+              return d3.format(',.2f')(d);
+          })
+      ;
+
+      d3.select('#chart2').append('svg')
+          .datum(data.deaths_over_time)
           .call(chart);
       nv.utils.windowResize(chart.update);
-      chart.dispatch.on('stateChange', function(e) {
-          nv.log('New State:', JSON.stringify(e));
-      });
-      chart.state.dispatch.on('change', function(state){
-          nv.log('state', JSON.stringify(state));
-      });
-      });
+      return chart;
+  });
+  nv.addGraph(function() {
+chart = nv.models.multiBarChart()
+    .barColor(d3.scale.category20().range())
+    .duration(300)
+    .margin({bottom: 100, left: 70})
+    .rotateLabels(45)
+    .groupSpacing(0.1)
+;
+chart.reduceXTicks(false).staggerLabels(true);
+chart.xAxis
+    .axisLabel("Categories")
+    .axisLabelDistance(35)
+    .showMaxMin(false)
+    .tickValues(categoryNums)
+    .tickFormat(function (d){
+        console.log(data.category_data[0].values[d].label)
+        return data.category_data[0].values[d].label;
+    })
+;
+chart.yAxis
+    .axisLabel("Number of Items")
+    .axisLabelDistance(-5)
+    .tickFormat(d3.format(',.01f'))
+;
+chart.dispatch.on('renderEnd', function(){
+    nv.log('Render Complete');
+});
+d3.select('#chart3 svg')
+    .datum(data.category_data)
+    .call(chart);
+nv.utils.windowResize(chart.update);
+chart.dispatch.on('stateChange', function(e) {
+    nv.log('New State:', JSON.stringify(e));
+});
+chart.state.dispatch.on('change', function(state){
+    nv.log('state', JSON.stringify(state));
+});
+});
 
-      });
+});
 
-      </script>
-    </div>
+</script>
 
+
+<div class="container-fluid-full">
+
+<div id="content" class="span10">
+
+
+<ul class="breadcrumb">
+  <li>
+    <i class="icon-home"></i>
+    <a href= {% url 'homepage' %}>Home</a>
+    <i class="icon-angle-right"></i>
+  </li>
+  <li><a href="#">{{state}}</a></li>
+</ul>
+
+<div class="row-fluid">
+
+  <div class="span3 statbox purple" onTablet="span6" onDesktop="span3">
+    <div><h1>1033 Total</h1></div>
+    <div><h1></h1></div>
+  </div>
+  <div class="span3 statbox green" onTablet="span6" onDesktop="span3">
+    <div><h1>2015 Killings</h1></div>
+    <div><h1>{{ state_num }}</h1></div>
+  </div>
+  <div class="span3 statbox blue noMargin" onTablet="span6" onDesktop="span3">
+    <div><h1>State Population</h1></div>
+    <div><h1></h1></div>
+  </div>
+  <div class="span3 statbox yellow" onTablet="span6" onDesktop="span3">
+    <div><h1>Violent Crime</h1></div>
+    <div><h1></h1></div>
+    <div><h1>Property Crime</h1></div>
+    <div><h1></h1></div>
   </div>
 
-  <hr class="featurette-divider">
+</div>
 
-  <div class="row featurette">
-  <div class="col-md-6 col-md-push-3">
+<div class="row-fluid">
+
+  <div id="stats-chart-2"  class="span8 widget green" onTablet="span8" onDesktop="span8">
+    <div id="chart2"  style="height:282px" >  </div>
+  </div>
+  <div id="stats-chart-2"  class="span4 widget purple" onTablet="span8" onDesktop="span8">
+      <div id="chart1"  style="height:282px">
+      <svg></svg>
+    </div>
+    </div>
+</div>
+
+<div class="row-fluid">
+
+  	<div id="stats-chart-2"  class="span8 widget orange" onTablet="span8" onDesktop="span8">
+
+    <h2><span class="glyphicons globe"><i></i></span> Demographics</h2>
+
+    <hr>
+
+    <div class="content">
+
       <p>
-          <div id="chart2">
+          <div id="chart3" style="height:282px">
               <svg></svg>
           </div>
-          {#<img src="{% get_static_prefix %}visualize/{{state}}-line.png" alt="line graph for {{state}}" />#}
-      </p>
-    </div>
 
-  </div>
+      </div>
 
-  <hr class="featurette-divider">
-
-  <div class="row featurette">
-  <div class="col-md-6 col-md-push-3">
-      <p>
-          <div id="chart3">
-              <svg></svg>
-          </div>
-          {#<img src="{% get_static_prefix %}visualize/items-{{state}}.png" alt="horizontal bar graph detail 1033 donations" />#}
-      </p>
     </div>
   </div>
 
 
-  <hr class="featurette-divider">
-  {% for county in counties_list %}
-      <p>
-          <a href='/../county/{{county.id}}' >{{county}}</a>
-      </p>
-  {% endfor %}
+
+  </div>
 
 
 
 
 
 
-</body>
+
+
+</div><!--/row-->
+</div>
+
+<!-- start: JavaScript-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="{% get_static_prefix %}visualize/dashboard/js/jquery-1.9.1.min.js"></script>
+<script src="{% get_static_prefix %}visualize/dashboard/js/jquery-migrate-1.0.0.min.js"></script>
+
+<script src="{% get_static_prefix %}visualize/dashboard/js/jquery-ui-1.10.0.custom.min.js"></script>
+
+<script src="{% get_static_prefix %}visualize/dashboard/js/jquery.ui.touch-punch.js"></script>
+
+<script src="{% get_static_prefix %}visualize/dashboard/js/modernizr.js"></script>
+
+<script src="{% get_static_prefix %}visualize/dashboard/js/bootstrap.min.js"></script>
+
+<script src="{% get_static_prefix %}visualize/dashboard/js/jquery.cookie.js"></script>
+
+<script src='{% get_static_prefix %}visualize/dashboard/js/fullcalendar.min.js'></script>
+
+<script src='{% get_static_prefix %}visualize/dashboard/js/jquery.dataTables.min.js'></script>
+
+<script src="{% get_static_prefix %}visualize/dashboard/js/excanvas.js"></script>
+<script src="{% get_static_prefix %}visualize/dashboard/js/jquery.flot.js"></script>
+<script src="{% get_static_prefix %}visualize/dashboard/js/jquery.flot.pie.js"></script>
+<script src="{% get_static_prefix %}visualize/dashboard/js/jquery.flot.stack.js"></script>
+<script src="{% get_static_prefix %}visualize/dashboard/js/jquery.flot.resize.min.js"></script>
+
+<script src="{% get_static_prefix %}visualize/dashboard/js/jquery.chosen.min.js"></script>
+
+<script src="{% get_static_prefix %}visualize/dashboard/js/jquery.uniform.min.js"></script>
+
+<script src="{% get_static_prefix %}visualize/dashboard/js/jquery.cleditor.min.js"></script>
+
+<script src="{% get_static_prefix %}visualize/dashboard/js/jquery.noty.js"></script>
+
+<script src="{% get_static_prefix %}visualize/dashboard/js/jquery.elfinder.min.js"></script>
+
+<script src="{% get_static_prefix %}visualize/dashboard/js/jquery.raty.min.js"></script>
+
+<script src="{% get_static_prefix %}visualize/dashboard/js/jquery.iphone.toggle.js"></script>
+
+<script src="{% get_static_prefix %}visualize/dashboard/js/jquery.uploadify-3.1.min.js"></script>
+
+<script src="{% get_static_prefix %}visualize/dashboard/js/jquery.gritter.min.js"></script>
+
+<script src="{% get_static_prefix %}visualize/dashboard/js/jquery.imagesloaded.js"></script>
+
+<script src="{% get_static_prefix %}visualize/dashboard/js/jquery.masonry.min.js"></script>
+
+<script src="{% get_static_prefix %}visualize/dashboard/js/jquery.knob.modified.js"></script>
+
+<script src="{% get_static_prefix %}visualize/dashboard/js/jquery.sparkline.min.js"></script>
+
+<script src="{% get_static_prefix %}visualize/dashboard/js/counter.js"></script>
+
+<script src="{% get_static_prefix %}visualize/dashboard/js/retina.js"></script>
+
+<script src="{% get_static_prefix %}visualize/dashboard/js/custom.js"></script>
+<!-- end: JavaScript-->
+
+
+
 
 {% endblock %}
