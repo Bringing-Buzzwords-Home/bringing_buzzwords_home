@@ -639,8 +639,8 @@ def populate_state_model(states):
         guardian_twenty_fifteen = GuardianCounted.objects.filter(date__year=2015)
         total_deaths_twentyfifteen = guardian_twenty_fifteen.filter(state=state).count()
         crime_twenty_fourteen = Crime.objects.filter(year__year=2014)
-        total_violent_crime = int(crime_twenty_fourteen.filter(state=states[state]).aggregate(Sum('violent_crime'))['violent_crime__sum'])
-        total_property_crime = int(crime_twenty_fourteen.filter(state=states[state]).aggregate(Sum('property_crime'))['property_crime__sum'])
+        total_violent_crime = crime_twenty_fourteen.filter(state=states[state]).aggregate(Sum('violent_crime'))['violent_crime__sum']
+        total_property_crime = crime_twenty_fourteen.filter(state=states[state]).aggregate(Sum('property_crime'))['property_crime__sum']
         total_population_twentyfifteen = state_population = County.objects.filter(state=states[state]).aggregate(Sum('pop_est_2015'))['pop_est_2015__sum']
         state_object = State(state=state,
                              total_military_dollars=total_military_dollars,
