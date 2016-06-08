@@ -2,16 +2,13 @@
 # matplotlib.use('Agg')
 # import matplotlib.pyplot as plt
 from django.core.exceptions import ObjectDoesNotExist
-from .models import County, GuardianCounted, Item, Crime
+from .models import County, GuardianCounted, Item, Crime, State
 import csv
 import datetime
 from operator import itemgetter
 from django.db.models import Sum, Func, Count, F
 import numpy as np
 from nvd3 import multiBarChart
-# import seaborn
-# import pandas as pd
-
 
 
 
@@ -270,7 +267,6 @@ def remove_none_from_categories(category_list):
     return category_list
 
 
-
 def compare_category_lists(category_list, state_category_list):
     state_categories = [x['Category'] for x in state_category_list]
     for num, category in enumerate(category_list):
@@ -511,7 +507,7 @@ def item_categories():
                                 'SIMULATED,M4-203 RIFLE W-GRENADE LAUNCHER,5.56MM-40MM',
                                 ]:
 
-            item.Category = "Assualt Rifle"
+            item.Category = "Assault Rifle"
             item.save()
 
         elif item.Item_Name in ['SMALL CRAFT BOAT',
@@ -633,8 +629,9 @@ def get_county_deaths(county):
 
 
 def counties_list(state):
-    counties = list(County.objects.filter(state = states[state]))
+    counties = list(County.objects.filter(state=states[state]))
     return counties
+
 
 def get_violent_crime(county):
     twenty_fourteen_violent = Crime.objects.filter(year='2014-01-01', county=county).aggregate(Sum('violent_crime'))
@@ -648,3 +645,104 @@ def create_county_crime(county):
     chart.add_serie(name="Serie 1", y=ydata1, x=xdata)
     chart.add_serie(name="Serie 2", y=ydata2, x=xdata)
     chart.buildhtml()
+
+def compare_ordered_years(national_ordered, state_ordered):
+    if len(national_ordered) != len(state_ordered):
+        for num, year in enumerate(national_ordered):
+            try:
+                if year['year'] == state_ordered[num]['year']:
+                    continue
+                else:
+                    state_ordered.insert(num, {'year': year['year'],
+                                               'Total_Value__sum': 0.0})
+            except IndexError:
+                state_ordered.insert(num, {'year': year['year'],
+                                           'Total_Value__sum': 0.0})
+    return state_ordered
+
+
+def get_dollars_donated_by_year(state):
+    national_money = Item.objects.annotate(year=Extract(F('Ship_Date'), what_to_extract='year')).values('year').annotate(Sum('Total_Value'))
+    state_money = Item.objects.filter(state=state).annotate(year=Extract(F('Ship_Date'), what_to_extract='year')).values('year').annotate(Sum('Total_Value'))
+    national_ordered = sorted(national_money, key=itemgetter('year'))
+    state_ordered = sorted(state_money, key=itemgetter('year'))
+    state_ordered = compare_ordered_years(national_ordered, state_ordered)
+    year_list = ['{}'.format(int(x['year'])) for x in national_ordered]
+    national_money_years = [x['Total_Value__sum'] for x in national_ordered]
+    state_money_years = [x['Total_Value__sum'] for x in state_ordered]
+    dollars_by_year = [{'key': 'Average Dollar Value Donated Nationally',
+                        'values': [dict(x=num, y=(float(amount) / 51), label=year) for year, amount, num in zip(year_list, national_money_years, list(range(len(year_list))))],
+                        'color': '#3d40a2'},
+                       {'key': '{} Dollars Per Year'.format(states[state]),
+                        'values': [dict(x=num, y=float(amount)) for year, amount, num in zip(year_list, state_money_years, list(range(len(year_list))))],
+                        'color': '#d64d4d'}]
+    return dollars_by_year
+
+
+def get_categories_per_capita(state, category_data):
+    categories_per_capita = [0, 1]
+    us_population = County.objects.aggregate(total=Sum('pop_est_2015'))
+    state_population = County.objects.filter(
+        state=states[state]).aggregate(total=Sum('pop_est_2015'))
+    for category_dict in category_data:
+        if category_dict['key'] == 'Items Nationwide':
+            values = []
+            for position_dict in category_dict['values']:
+                values.append({'x': position_dict['x'],
+                               'y': (position_dict['y'] / us_population['total']),
+                               'label': position_dict['label']})
+            categories_per_capita.insert(0, {'key': 'Per Capita Items Nationwide',
+                                             'values': values})
+        else:
+            values = []
+            for position_dict in category_dict['values']:
+                values.append({'x': position_dict['x'],
+                               'y': (position_dict['y'] / state_population['total']),
+                               'label': position_dict['label']})
+            categories_per_capita.insert(1, {'key': '{} Per Capita Items'.format(states[state]),
+                                             'values': values})
+    del categories_per_capita[2:]
+    return categories_per_capita
+
+
+def get_state_crime(state):
+    twenty_fourteen_national_crime = Crime.objects.filter(
+        year__year=2014).aggregate(Sum('violent_crime'), Sum('property_crime'))
+    twenty_fourteen_state_crime = Crime.objects.filter(
+        year__year=2014).filter(state=states[state]).aggregate(Sum(
+            'violent_crime'), Sum('property_crime'))
+    national_values = [{'x': 0,
+                        'y': (twenty_fourteen_national_crime['violent_crime__sum'] / 51),
+                        'label': 'Violent Crime'},
+                       {'x': 1,
+                        'y': (twenty_fourteen_national_crime['property_crime__sum'] / 51),
+                        'label': 'Property Crime'}]
+    state_values = [{'x': 0,
+                     'y': twenty_fourteen_state_crime['violent_crime__sum'],
+                     'label': 'Violent Crime'},
+                    {'x': 1,
+                     'y': twenty_fourteen_state_crime['property_crime__sum'],
+                     'label': 'Property Crime'}]
+    average_state_crime = [{'key': 'Average State Crime',
+                            'values': national_values},
+                           {'key': '{} Crime'.format(states[state]),
+                            'values': state_values}]
+    return average_state_crime
+
+
+def populate_state_model(states):
+    for state in states:
+        total_military_dollars = float(Item.objects.filter(state=state).aggregate(Sum('Total_Value'))['Total_Value__sum'])
+        guardian_twenty_fifteen = GuardianCounted.objects.filter(date__year=2015)
+        total_deaths_twentyfifteen = guardian_twenty_fifteen.filter(state=state).count()
+        crime_twenty_fourteen = Crime.objects.filter(year__year=2014)
+        total_violent_crime = crime_twenty_fourteen.filter(state=states[state]).aggregate(Sum('violent_crime'))['violent_crime__sum']
+        total_property_crime = crime_twenty_fourteen.filter(state=states[state]).aggregate(Sum('property_crime'))['property_crime__sum']
+        total_population_twentyfifteen = state_population = County.objects.filter(state=states[state]).aggregate(Sum('pop_est_2015'))['pop_est_2015__sum']
+        state_object = State(state=state,
+                             total_military_dollars=total_military_dollars,
+                             total_deaths_twentyfifteen=total_deaths_twentyfifteen,
+                             total_violent_crime=total_violent_crime,
+                             total_property_crime=total_property_crime,
+                             total_population_twentyfifteen=total_population_twentyfifteen)
+        state_object.save()

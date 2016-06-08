@@ -1,24 +1,25 @@
 
 function tooltipHtml(n, d){	/* function to create html content string in tooltip div. */
 	return "<h4>"+n+"</h4><table>"+
-		"<tr><td>Low</td><td>"+(d.low)+"</td></tr>"+
-		"<tr><td>Average</td><td>"+(d.avg)+"</td></tr>"+
-		"<tr><td>High</td><td>"+(d.high)+"</td></tr>"+
+		"<tr><td>Military Equipment $</td><td>"+(d.dollars)+"</td></tr>"+
+		"<tr><td>Fatal Police Encounters</td><td>"+(d.deaths)+"</td></tr>"+
+		"<tr><td>Violent Crimes</td><td>"+(d.violent)+"</td></tr>"+
+		"<tr><td>Property Crimes</td><td>"+(d.property)+"</td></tr>"+
 		"</table>";
 }
 
-var sampleData ={};	/* Sample random data. */
+var sampleData = {};	/* Sample random data. */
 ["HI", "AK", "FL", "SC", "GA", "AL", "NC", "TN", "RI", "CT", "MA",
 "ME", "NH", "VT", "NY", "NJ", "PA", "DE", "MD", "WV", "KY", "OH",
 "MI", "WY", "MT", "ID", "WA", "DC", "TX", "CA", "AZ", "NV", "UT",
 "CO", "NM", "OR", "ND", "SD", "NE", "IA", "MS", "IN", "IL", "MN",
 "WI", "MO", "AR", "OK", "KS", "LA", "VA"]
 	.forEach(function(d){
-		var low=Math.round(100*Math.random()),
-			mid=Math.round(100*Math.random()),
-			high=Math.round(100*Math.random());
-		sampleData[d]={low:d3.min([low,mid,high]), high:d3.max([low,mid,high]),
-				avg:Math.round((low+mid+high)/3), color:d3.interpolate("#ffffcc", "#800026")(low/100)};
+		var dollars=Math.round(100*Math.random()),
+			deaths=Math.round(100*Math.random()),
+			violent=Math.round(100*Math.random()),
+			property=;
+		sampleData[d]={dollars:, deaths:, violent:, property:,  color:d3.interpolate("#ffffcc", "#800026")(dollars/100)};
 	});
 
 /* draw states on id #statesvg */

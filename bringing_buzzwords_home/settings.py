@@ -129,3 +129,8 @@ BOWER_INSTALLED_APPS = (
     'd3#3.3.13',
     'nvd3#1.7.1',
 )
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.AllowAny',),
+    'PAGE_SIZE': 51
+}

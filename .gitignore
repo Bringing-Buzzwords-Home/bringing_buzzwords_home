@@ -8,3 +8,4 @@ __pycache__
 .direnv
 visualize/migrations/*
 visualize/static/visualize/*.png
+/archive_mig/
