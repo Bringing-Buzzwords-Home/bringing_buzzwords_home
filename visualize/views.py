@@ -10,6 +10,7 @@ from .utilities import create_county_crime
 from rest_framework import viewsets
 from .serializers import StateSerializer
 from django.db.models import Sum, Func, Count, F
+from nvd3 import *
 
 
 
@@ -67,12 +68,29 @@ def county(request, county):
     twenty_fifteen_kills = GuardianCounted.objects.filter(county=county).count()
     county_obj = County.objects.get(id=county)
     crimes_list = list(Crime.objects.filter(county=county))
-    county_crime_bar = create_county_crime(county)
-    xdata = ["Apple", "Apricot", "Avocado", "Banana", "Boysenberries", "Blueberries", "Dates", "Grapefruit", "Kiwi", "Lemon"]
-    ydata = [52, 48, 160, 94, 75, 71, 490, 82, 46, 17]
+
+    xdata = ['Property Crime', 'Violent Crime']
+    ydata = [twenty_fourteen_property, twenty_fourteen_violent]
     chartdata = {'x': xdata, 'y': ydata}
     charttype = "pieChart"
     chartcontainer = 'piechart_container'
+    chart = multiBarChart(width=500, height=400, x_axis_format=None)
+    xdata_mbar = ['Violent Crime', 'Property Crime']
+    ydata1_mbar = [Crime.objects.filter(year='2014-01-01', county=county).aggregate(Sum('violent_crime'))['violent_crime__sum'], Crime.objects.filter(year='2014-01-01', county=county).aggregate(Sum('property_crime'))['property_crime__sum']]
+    ydata2_mbar = [Crime.objects.filter(year='2014-01-01').aggregate(Sum('violent_crime'))['violent_crime__sum'], Crime.objects.filter(year='2014-01-01').aggregate(Sum('property_crime'))['property_crime__sum']]
+    chart.add_serie(name="Serie 1", y=ydata1_mbar, x=xdata_mbar)
+    chart.add_serie(name="Serie 2", y=ydata2_mbar, x=xdata_mbar)
+    multibarchart_container = 'piechart_container'
+
+    extra_serie_line = {}
+    xdata_line = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    ydata_line = [3, 5, 7, 8, 3, 5, 3, 5, 7, 6, 3, 1]
+    chartdata_line = {
+        'x': xdata_line,
+        'name1': 'series 1', 'y1': ydata_line, 'extra1': extra_serie_line,
+    }
+    charttype_line = "lineChart"
+    chartcontainer_line = 'linechart_container'  # container name
     data = {
         'charttype': charttype,
         'chartdata': chartdata,
@@ -83,12 +101,20 @@ def county(request, county):
             'tag_script_js': True,
             'jquery_on_ready': False,
         },
-       'county': county,
-       'county_obj': county_obj,
-       'crimes_list': crimes_list,
-       'twenty_fourteen_violent': twenty_fourteen_violent,
-       'twenty_fourteen_property': twenty_fourteen_property,
-       'twenty_fifteen_kills': twenty_fifteen_kills,
-       'ten_thirty_three_total': ten_thirty_three_total,
-       'county_crime_bar': county_crime_bar,}
+        'chart':chart,
+        'xdata_mbar': xdata_mbar,
+        'ydata1_mbar': ydata1_mbar,
+        'ydata2_mbar': ydata2_mbar,
+        'multibarchart_container': multibarchart_container,
+        'county': county,
+        'county_obj': county_obj,
+        'crimes_list': crimes_list,
+        'twenty_fourteen_violent': twenty_fourteen_violent,
+        'twenty_fourteen_property': twenty_fourteen_property,
+        'twenty_fifteen_kills': twenty_fifteen_kills,
+        'ten_thirty_three_total': ten_thirty_three_total,
+        'charttype_line': charttype_line,
+        'chartdata_line': chartdata_line,
+        'chartcontainer_line': chartcontainer_line,
+    }
     return render(request, "visualize/county.html", data)
