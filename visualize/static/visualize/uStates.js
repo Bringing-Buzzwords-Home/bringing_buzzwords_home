@@ -74,7 +74,7 @@
 
 		d3.select(id).selectAll(".state")
 			.data(uStatePaths).enter().append("path").attr("class","state").attr("d",function(d){ return d.d;})
-			.style("fill",function(d){ return data[d.id].color; })
+			.style("fill",function(d){ var state = data[d.id]; return state ? state.color : 'grey'; })
 			.on("mouseover", mouseOver).on("mouseout", mouseOut).on("click", mouseClick)
 
 

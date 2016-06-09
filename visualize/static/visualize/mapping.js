@@ -1,5 +1,5 @@
-
 function tooltipHtml(n, d){	/* function to create html content string in tooltip div. */
+	if (!d) return ''
 	return "<h4>"+n+"</h4><table>"+
 		"<tr><td>Military Equipment $</td><td>"+(d.dollars)+"</td></tr>"+
 		"<tr><td>Fatal Police Encounters</td><td>"+(d.deaths)+"</td></tr>"+
@@ -8,19 +8,22 @@ function tooltipHtml(n, d){	/* function to create html content string in tooltip
 		"</table>";
 }
 
-var sampleData = {};	/* Sample random data. */
-["HI", "AK", "FL", "SC", "GA", "AL", "NC", "TN", "RI", "CT", "MA",
-"ME", "NH", "VT", "NY", "NJ", "PA", "DE", "MD", "WV", "KY", "OH",
-"MI", "WY", "MT", "ID", "WA", "DC", "TX", "CA", "AZ", "NV", "UT",
-"CO", "NM", "OR", "ND", "SD", "NE", "IA", "MS", "IN", "IL", "MN",
-"WI", "MO", "AR", "OK", "KS", "LA", "VA"]
-	.forEach(function(d){
-		var dollars=Math.round(100*Math.random()),
-			deaths=Math.round(100*Math.random()),
-			violent=Math.round(100*Math.random()),
-			property=;
-		sampleData[d]={dollars:, deaths:, violent:, property:,  color:d3.interpolate("#ffffcc", "#800026")(dollars/100)};
+$.getJSON("/api/state/", function(data) {
+	var sampleData = {};
+
+	data.results.forEach(function(state) {
+		var dollars = state.total_military_dollars
+		var population = state.total_population_twentyfifteen
+
+		sampleData[state.state] = {
+			dollars: dollars,
+			deaths: state.total_deaths_twentyfifteen,
+			violent: state.total_violent_crime,
+			property: state.total_property_crime,
+			color: d3.interpolate("#7fbeaf", "#1d4138")(dollars / population / 10)
+		};
 	});
 
-/* draw states on id #statesvg */
-uStates.draw("#statesvg", sampleData, tooltipHtml);
+	/* draw states on id #statesvg */
+	uStates.draw("#statesvg", sampleData, tooltipHtml);
+});
