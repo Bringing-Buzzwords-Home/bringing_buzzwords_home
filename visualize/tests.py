@@ -4,6 +4,9 @@ from .models import County, State, GuardianCounted, Item, Crime
 
 class CountyTestCase(TestCase):
     def setup(self):
+        pass
+
+    def test_counties_have_attributes(self):
         cali = County(county_name='Orange County',
                       state='California',
                       FIPS='06059',
@@ -46,8 +49,6 @@ class CountyTestCase(TestCase):
                           google_county_name='Orange County')
         cali.save()
         carolina.save()
-
-    def test_counties_have_attributes(self):
         the_oc = County.objects.get(state='California', county_name='Orange County')
         chapel_hill = County.objects.get(state='North Carolina', google_county_name='Orange_County')
         self.assertEqual(the_oc.FIPS, '06059')

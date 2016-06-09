@@ -9,3 +9,4 @@ __pycache__
 visualize/migrations/*
 visualize/static/visualize/*.png
 /archive_mig/
+htmlcov
