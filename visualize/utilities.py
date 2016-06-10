@@ -300,6 +300,7 @@ def make_state_categories(state):
                       'color': '#d64d4d'}]
     return category_data, categories
 
+
 def make_per_capita_assault_rifles(state):
     assault_rifles = Item.objects.filter(Category='Assault Rifle').count()
     state_assault_rifles = Item.objects.filter(state=state, Category='Assault Rifle').count()
