@@ -20,7 +20,7 @@ $.getJSON("/api/state/", function(data) {
 			deaths: state.total_deaths_twentyfifteen,
 			violent: state.total_violent_crime,
 			property: state.total_property_crime,
-			color: d3.interpolate("#7fbeaf", "#1d4138")(dollars / population / 10)
+			color: d3.interpolate("#b0b5b9", "#930006")(dollars / population / 10)
 		};
 	});
 
