@@ -213,3 +213,14 @@ function drawPerCapitaAssaultRifles(data){
                 nv.log('state', JSON.stringify(state));
             });
         })}
+// d3.json("{% url 'state_json' state %}", function(error, json) {
+//   if (error) return console.warn(error);
+//   data = json;
+//   drawCategories(data)
+//   drawLineDeaths(data)
+//   drawLineDollars(data)
+//   drawPerCapitaCategories(data)
+//   drawCrimeCategories(data)
+//   drawPerCapitaAssaultRifles(data)
+//
+// });

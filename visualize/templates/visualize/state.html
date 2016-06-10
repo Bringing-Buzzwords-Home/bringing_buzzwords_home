@@ -16,19 +16,19 @@
 
 <div class="row-fluid">
 
-  <div class="span3 statbox purple" onTablet="span6" onDesktop="span3">
+  <div id="1033" class="span3 statbox purple" onTablet="span6" onDesktop="span3">
     <div><h1>1033 Total</h1></div>
     <div><h1>{{ ten_thirty_three_total }}</h1></div>
   </div>
-  <div class="span3 statbox green" onTablet="span6" onDesktop="span3">
+  <div id="fatal_encounters" class="span3 statbox green" onTablet="span6" onDesktop="span3">
     <div><h1>2015 Killings</h1></div>
     <div><h1>{{ state_num }}</h1></div>
   </div>
-  <div class="span3 statbox blue noMargin" onTablet="span6" onDesktop="span3">
+  <div id="population" class="span3 statbox blue noMargin" onTablet="span6" onDesktop="span3">
     <div><h1>State Population</h1></div>
     <div><h1>{{ twenty_fifteen_population }}</h1></div>
   </div>
-  <div class="span3 statbox yellow" onTablet="span6" onDesktop="span3">
+  <div id="crime" class="span3 statbox yellow" onTablet="span6" onDesktop="span3">
     <div><h1>Violent Crime</h1></div>
     <div><h1>{{ twenty_fourteen_violent }}</h1></div>
     <div><h1>Property Crime</h1></div>
@@ -140,13 +140,51 @@
     if (error) return console.warn(error);
     data = json;
     drawCategories(data)
-    drawLineDeaths(data)
     drawLineDollars(data)
     drawPerCapitaCategories(data)
-    drawCrimeCategories(data)
     drawPerCapitaAssaultRifles(data)
-    
+
   });
+
+  $('#1033')
+    .css('cursor', 'pointer')
+    .click(
+        d3.json("{% url 'state_json' state %}", function(error, json) {
+          if (error) return console.warn(error);
+          data = json;
+          drawCategories(data)
+          drawLineDollars(data)
+          drawPerCapitaCategories(data)
+          drawPerCapitaAssaultRifles(data)
+
+        }))
+  $('#fatal_encounters')
+    .css('cursor', 'pointer')
+    .click(
+        d3.json("{% url 'state_json' state %}", function(error, json) {
+          if (error) return console.warn(error);
+          data = json;
+          drawLineDeaths(data)
+
+        })
+  );
+  $('#population')
+    .css('cursor', 'pointer')
+    .click(
+        function(){
+            alert('Population!');
+        }
+  );
+  $('#crime')
+    .css('cursor', 'pointer')
+    .click(
+        d3.json("{% url 'state_json' state %}", function(error, json) {
+          if (error) return console.warn(error);
+          data = json;
+          drawCrimeCategories(data)
+
+        })
+  );
   </script>
 
 
