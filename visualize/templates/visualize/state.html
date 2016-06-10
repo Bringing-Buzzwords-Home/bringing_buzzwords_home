@@ -180,9 +180,12 @@
   <div id="chart6">
       <svg></svg>
   </div>
+  <div id="chart7">
+      <svg></svg>
+  </div>
   <script >
   var data; // a global
-  var categories = ["ATV", "Aircraft", "Assault/Tactical Vehicle", "Assualt Rifle", "Boat", "Bomb-Disposal Robot", "Helicopter", "Machete/Bayonnet/Knife", "Mine Resistant Vehicle", "Pistol", "Shotgun"]
+  var categories = ["ATV", "Aircraft", "Assault/Tactical Vehicle", "Boat", "Bomb-Disposal Robot", "Helicopter", "Machete/Bayonnet/Knife", "Mine Resistant Vehicle", "Pistol", "Shotgun"]
   var categoryNums = Array.apply(null, Array(categories.length)).map(function (_, i) {return i;});
   d3.json("{% url 'state_json' state %}", function(error, json) {
     if (error) return console.warn(error);
@@ -238,7 +241,6 @@
     });
     nv.addGraph(function() {
   chart = nv.models.multiBarChart()
-      .barColor(d3.scale.category20().range())
       .duration(300)
       .margin({bottom: 100, left: 70})
       .rotateLabels(45)
@@ -308,7 +310,6 @@
     });
     nv.addGraph(function() {
   chart = nv.models.multiBarChart()
-      .barColor(d3.scale.category20().range())
       .duration(300)
       .margin({bottom: 100, left: 70})
       .rotateLabels(45)
@@ -344,43 +345,61 @@
       nv.log('state', JSON.stringify(state));
   });
   });
-  nv.addGraph(function() {
-  chart = nv.models.multiBarChart()
-      .barColor(d3.scale.category20().range())
-      .duration(300)
-      .margin({bottom: 100, left: 70})
-      .rotateLabels(45)
-      .groupSpacing(0.1)
-  ;
-  chart.reduceXTicks(false).staggerLabels(true);
-  chart.xAxis
-      .axisLabel("Crime Categories")
-      .axisLabelDistance(35)
-      .showMaxMin(false)
-      .tickFormat(function (d){
-          console.log(data.state_crime[0].values[d].label)
-          return data.state_crime[0].values[d].label;
-      })
-  ;
-  chart.yAxis
-      .axisLabel("# of Crimes")
-      .axisLabelDistance(-5)
-      .tickFormat(d3.format(',f'))
-  ;
-  chart.dispatch.on('renderEnd', function(){
-      nv.log('Render Complete');
-  });
-  d3.select('#chart6 svg')
-      .datum(data.state_crime)
-      .call(chart);
-  nv.utils.windowResize(chart.update);
-  chart.dispatch.on('stateChange', function(e) {
-      nv.log('New State:', JSON.stringify(e));
-  });
-  chart.state.dispatch.on('change', function(state){
-      nv.log('state', JSON.stringify(state));
-  });
-  });
+          nv.addGraph(function() {
+          chart = nv.models.multiBarChart()
+              .barColor(d3.scale.category20().range())
+              .duration(300)
+              .margin({bottom: 100, left: 70})
+              .rotateLabels(45)
+              .groupSpacing(0.1)
+          ;
+          chart.reduceXTicks(false).staggerLabels(true);
+          chart.xAxis
+              .axisLabel("Crime Categories")
+              .axisLabelDistance(35)
+              .showMaxMin(false)
+              .tickFormat(function (d){
+                  console.log(data.state_crime[0].values[d].label)
+                  return data.state_crime[0].values[d].label;
+              })
+          ;
+          chart.yAxis
+              .axisLabel("# of Crimes")
+              .axisLabelDistance(-5)
+              .tickFormat(d3.format(',f'))
+          ;
+          chart.dispatch.on('renderEnd', function(){
+              nv.log('Render Complete');
+          });
+          d3.select('#chart6 svg')
+              .datum(data.state_crime)
+              .call(chart);
+          nv.utils.windowResize(chart.update);
+          chart.dispatch.on('stateChange', function(e) {
+              nv.log('New State:', JSON.stringify(e));
+          });
+          chart.state.dispatch.on('change', function(state){
+              nv.log('state', JSON.stringify(state));
+          });
+          });
+          nv.addGraph(function() {
+              var chart = nv.models.discreteBarChart();
+                  chart.xAxis.axisLabel('Assault Rifles');
+                  chart.yAxis
+                  .axisLabel('Assault Rifles Per Capita')
+                  .tickFormat(d3.format(',.01e'));
+                  chart.staggerLabels(true);
+                  //.staggerLabels(historicalBarChart[0].values.length > 8)
+                  chart.showValues(true);
+                  chart.duration(250);
+
+                  d3.select('#chart7 svg')
+                      .datum(data.per_capita_rifles)
+                      .call(chart);
+
+                  nv.utils.windowResize(chart.update);
+                  return chart;
+               });
   });
 
   </script>
