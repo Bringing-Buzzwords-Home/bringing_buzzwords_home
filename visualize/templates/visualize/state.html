@@ -43,7 +43,7 @@
     <div id="chart2"  style="height:200px" >  </div>
   </div>
   <div id="stats-chart-2"  class="span4 widget purple" onTablet="span8" onDesktop="span8">
-      <div id="chart1"  style="height:200px">
+      <div id="chart7"  style="height:200px">
       <svg></svg>
     </div>
     </div>
@@ -132,257 +132,21 @@
 </div>
 
 
-
-
-  <p>
-      <div id="chart1">
-          <svg></svg>
-      </div>
-      {# <img src="{% get_static_prefix %}visualize/2015{{state}}.png" alt={{state}}/> #}
-  </p>
-  <table border="1">
-      <caption>2015 Deaths for {{state}}</caption>
-      <tr>
-          <td>
-              {{state}} Deaths
-          </td>
-          <td>
-              {{state_num}}
-          </td>
-      </tr>
-      <tr>
-          <td>
-              Average by state
-          </td>
-          <td>
-              {{average}}
-          </td>
-      </tr>
-  </table>
-  <p>
-      <div id="chart2">
-          <svg></svg>
-      </div>
-      {#<img src="{% get_static_prefix %}visualize/{{state}}-line.png" alt="line graph for {{state}}" />#}
-  </p>
-  <p>
-      <div id="chart3">
-          <svg></svg>
-      </div>
-      {#<img src="{% get_static_prefix %}visualize/items-{{state}}.png" alt="horizontal bar graph detail 1033 donations" />#}
-  </p>
-  <div id="chart4">
-      <svg></svg>
-  </div>
-  <div id="chart5">
-      <svg></svg>
-  </div>
-  <div id="chart6">
-      <svg></svg>
-  </div>
   <script >
   var data; // a global
-  var categories = ["ATV", "Aircraft", "Assault/Tactical Vehicle", "Assualt Rifle", "Boat", "Bomb-Disposal Robot", "Helicopter", "Machete/Bayonnet/Knife", "Mine Resistant Vehicle", "Pistol", "Shotgun"]
+  var categories = ["ATV", "Aircraft", "Assault/Tactical Vehicle", "Boat", "Bomb-Disposal Robot", "Helicopter", "Machete/Bayonnet/Knife", "Mine Resistant Vehicle", "Pistol", "Shotgun"]
   var categoryNums = Array.apply(null, Array(categories.length)).map(function (_, i) {return i;});
   d3.json("{% url 'state_json' state %}", function(error, json) {
     if (error) return console.warn(error);
     data = json;
-
-    nv.addGraph(function() {
-        var chart = nv.models.discreteBarChart()
-            .x(function(d) { return d.label })
-            .y(function(d) { return d.value })
-            .staggerLabels(true)
-            //.staggerLabels(historicalBarChart[0].values.length > 8)
-            .showValues(true)
-            .duration(250)
-            ;
-
-            d3.select('#chart1 svg')
-                .datum(data.state_deaths)
-                .call(chart);
-
-            nv.utils.windowResize(chart.update);
-            return chart;
-         });
-         nv.addGraph(function() {
-        chart = nv.models.lineChart()
-            .options({
-                transitionDuration: 300,
-                useInteractiveGuideline: true
-            })
-        ;
-        // chart sub-models (ie. xAxis, yAxis, etc) when accessed directly, return themselves, not the parent chart, so need to chain separately
-        chart.xAxis
-            .axisLabel("Months")
-            .tickFormat(function (d){
-                  return d3.time.format('%B %Y')(new Date(d))
-            })
-            .staggerLabels(true)
-        ;
-        chart.yAxis
-            .axisLabel('Deaths')
-            .tickFormat(function(d) {
-                if (d == null) {
-                    return 'N/A';
-                }
-                return d3.format(',.2f')(d);
-            })
-        ;
-
-        d3.select('#chart2').append('svg')
-            .datum(data.deaths_over_time)
-            .call(chart);
-        nv.utils.windowResize(chart.update);
-        return chart;
-    });
-    nv.addGraph(function() {
-  chart = nv.models.multiBarChart()
-      .barColor(d3.scale.category20().range())
-      .duration(300)
-      .margin({bottom: 100, left: 70})
-      .rotateLabels(45)
-      .groupSpacing(0.1)
-  ;
-  chart.reduceXTicks(false).staggerLabels(true);
-  chart.xAxis
-      .axisLabel("Categories")
-      .axisLabelDistance(35)
-      .showMaxMin(false)
-      .tickValues(categoryNums)
-      .tickFormat(function (d){
-          console.log(data.category_data[0].values[d].label)
-          return data.category_data[0].values[d].label;
-      })
-  ;
-  chart.yAxis
-      .axisLabel("Number of Items")
-      .axisLabelDistance(-5)
-      .tickFormat(d3.format(',.01f'))
-  ;
-  chart.dispatch.on('renderEnd', function(){
-      nv.log('Render Complete');
+    drawCategories(data)
+    drawLineDeaths(data)
+    drawLineDollars(data)
+    drawPerCapitaCategories(data)
+    drawCrimeCategories(data)
+    drawPerCapitaAssaultRifles(data)
+    
   });
-  d3.select('#chart3 svg')
-      .datum(data.category_data)
-      .call(chart);
-  nv.utils.windowResize(chart.update);
-  chart.dispatch.on('stateChange', function(e) {
-      nv.log('New State:', JSON.stringify(e));
-  });
-  chart.state.dispatch.on('change', function(state){
-      nv.log('state', JSON.stringify(state));
-  });
-  });
-      nv.addGraph(function() {
-     chart = nv.models.lineChart()
-         .options({
-             transitionDuration: 300,
-             useInteractiveGuideline: true
-         })
-     ;
-     // chart sub-models (ie. xAxis, yAxis, etc) when accessed directly, return themselves, not the parent chart, so need to chain separately
-     chart.xAxis
-         .axisLabel("Years")
-         .tickFormat(function (d){
-             console.log(data.dollars_by_year[0].values[d].label)
-             return data.dollars_by_year[0].values[d].label;
-         })
-         .staggerLabels(true)
-     ;
-     chart.yAxis
-         .axisLabel('$ Value Donated')
-         .tickFormat(function(d) {
-             if (d == null) {
-                 return 'N/A';
-             }
-             return d3.format(',.2f')(d);
-         })
-     ;
-
-     d3.select('#chart4').append('svg')
-         .datum(data.dollars_by_year)
-         .call(chart);
-     nv.utils.windowResize(chart.update);
-     return chart;
-    });
-    nv.addGraph(function() {
-  chart = nv.models.multiBarChart()
-      .barColor(d3.scale.category20().range())
-      .duration(300)
-      .margin({bottom: 100, left: 70})
-      .rotateLabels(45)
-      .groupSpacing(0.1)
-  ;
-  chart.reduceXTicks(false).staggerLabels(true);
-  chart.xAxis
-      .axisLabel("Categories")
-      .axisLabelDistance(35)
-      .showMaxMin(false)
-      .tickValues(categoryNums)
-      .tickFormat(function (d){
-          console.log(data.categories_per_capita[0].values[d].label)
-          return data.categories_per_capita[0].values[d].label;
-      })
-  ;
-  chart.yAxis
-      .axisLabel("Per Capita Number of Items")
-      .axisLabelDistance(-5)
-      .tickFormat(d3.format(',.01e'))
-  ;
-  chart.dispatch.on('renderEnd', function(){
-      nv.log('Render Complete');
-  });
-  d3.select('#chart5 svg')
-      .datum(data.categories_per_capita)
-      .call(chart);
-  nv.utils.windowResize(chart.update);
-  chart.dispatch.on('stateChange', function(e) {
-      nv.log('New State:', JSON.stringify(e));
-  });
-  chart.state.dispatch.on('change', function(state){
-      nv.log('state', JSON.stringify(state));
-  });
-  });
-  nv.addGraph(function() {
-  chart = nv.models.multiBarChart()
-      .barColor(d3.scale.category20().range())
-      .duration(300)
-      .margin({bottom: 100, left: 70})
-      .rotateLabels(45)
-      .groupSpacing(0.1)
-  ;
-  chart.reduceXTicks(false).staggerLabels(true);
-  chart.xAxis
-      .axisLabel("Crime Categories")
-      .axisLabelDistance(35)
-      .showMaxMin(false)
-      .tickFormat(function (d){
-          console.log(data.state_crime[0].values[d].label)
-          return data.state_crime[0].values[d].label;
-      })
-  ;
-  chart.yAxis
-      .axisLabel("# of Crimes")
-      .axisLabelDistance(-5)
-      .tickFormat(d3.format(',f'))
-  ;
-  chart.dispatch.on('renderEnd', function(){
-      nv.log('Render Complete');
-  });
-  d3.select('#chart6 svg')
-      .datum(data.state_crime)
-      .call(chart);
-  nv.utils.windowResize(chart.update);
-  chart.dispatch.on('stateChange', function(e) {
-      nv.log('New State:', JSON.stringify(e));
-  });
-  chart.state.dispatch.on('change', function(state){
-      nv.log('state', JSON.stringify(state));
-  });
-  });
-  });
-
   </script>
 
 

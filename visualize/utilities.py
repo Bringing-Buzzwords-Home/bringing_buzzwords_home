@@ -277,11 +277,11 @@ def compare_category_lists(category_list, state_category_list):
 
 
 def make_state_categories(state):
-    item_categories = Item.objects.values('Category').annotate(Count('pk'))
+    item_categories = Item.objects.exclude(Category='Assault Rifle').values('Category').annotate(Count('pk'))
     category_list = list(item_categories)
     category_list = sorted(remove_none_from_categories(category_list), key=itemgetter('Category'))
 
-    state_item_categories = Item.objects.filter(state=state).values('Category').annotate(Count('pk'))
+    state_item_categories = Item.objects.filter(state=state).exclude(Category='Assault Rifle').values('Category').annotate(Count('pk'))
     state_category_list = list(state_item_categories)
     state_category_list = sorted(remove_none_from_categories(state_category_list), key=itemgetter('Category'))
     state_category_list = compare_category_lists(category_list, state_category_list)
@@ -301,6 +301,15 @@ def make_state_categories(state):
     return category_data, categories
 
 
+def make_per_capita_assault_rifles(state):
+    assault_rifles = Item.objects.filter(Category='Assault Rifle').count()
+    state_assault_rifles = Item.objects.filter(state=state, Category='Assault Rifle').count()
+    us_population = County.objects.aggregate(total=Sum('pop_est_2015'))
+    state_population = County.objects.filter(
+        state=states[state]).aggregate(total=Sum('pop_est_2015'))
+    per_capita_rifles = [dict(x='National Assault Rifles Per Capita', y=(assault_rifles / us_population['total'])),
+                         dict(x='{} Assault Rifles Per Capita'.format(states[state]), y=(state_assault_rifles / state_population['total']))]
+    return [{'key': 'Per Capita Assault Rifles', 'values': per_capita_rifles}]
 # def draw_state_categories(state):
 #     category_data = make_state_categories(state)
 #
