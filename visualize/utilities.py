@@ -289,16 +289,17 @@ def make_state_categories(state):
     counts = [x['pk__count'] for x in category_list]
     state_counts = [x['pk__count'] for x in state_category_list]
     categories = [x['Category'] for x in category_list]
+    category_nums = list(range(len(categories)))
 
     x_label = 'Items'
     title = 'Number of Items Donated in the 1033 Program'
     category_data = [{'key': 'Items Nationwide',
-                      'values': [dict(label=category, y=count, x=num) for category, count, num in zip(categories, counts, list(range(len(categories))))],
+                      'values': [dict(label=category, y=count, x=num) for category, count, num in zip(categories, counts, category_nums)],
                       'color': '#3d40a2'},
                      {'key': '{} Items'.format(states[state]),
-                      'values': [dict(label=category, y=count, x=num) for category, count, num in zip(categories, state_counts, list(range(len(categories))))],
+                      'values': [dict(label=category, y=count, x=num) for category, count, num in zip(categories, state_counts, category_nums)],
                       'color': '#d64d4d'}]
-    return category_data, categories
+    return category_data, category_nums
 
 
 def make_per_capita_assault_rifles(state):

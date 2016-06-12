@@ -52,14 +52,15 @@ def state(request, state):
 
 def state_json(request, state):
     state_deaths = get_state_deaths(state)
-    category_data, categories = make_state_categories(state)
+    category_data, category_nums = make_state_categories(state)
     data = {'state_deaths': [dict(key='State Deaths', values=[dict(label=key, value=value) for key, value in state_deaths.items()])],
             'deaths_over_time': get_state_deaths_over_time(state),
             'category_data': category_data,
             'categories_per_capita': get_categories_per_capita(state, category_data),
             'dollars_by_year': get_dollars_donated_by_year(state),
             'state_crime': get_state_crime(state),
-            'per_capita_rifles': make_per_capita_assault_rifles(state)}
+            'per_capita_rifles': make_per_capita_assault_rifles(state),
+            'category_nums': category_nums}
     return HttpResponse(json.dumps(data), content_type='application/json')
 
 

@@ -133,9 +133,6 @@
 
 
   <script >
-  var data; // a global
-  var categories = ["ATV", "Aircraft", "Assault/Tactical Vehicle", "Boat", "Bomb-Disposal Robot", "Helicopter", "Machete/Bayonnet/Knife", "Mine Resistant Vehicle", "Pistol", "Shotgun"]
-  var categoryNums = Array.apply(null, Array(categories.length)).map(function (_, i) {return i;});
   d3.json("{% url 'state_json' state %}", function(error, json) {
     if (error) return console.warn(error);
     data = json;
@@ -148,26 +145,19 @@
 
   $('#1033')
     .css('cursor', 'pointer')
-    .click(
-        d3.json("{% url 'state_json' state %}", function(error, json) {
-          if (error) return console.warn(error);
-          data = json;
-          drawCategories(data)
-          drawLineDollars(data)
-          drawPerCapitaCategories(data)
-          drawPerCapitaAssaultRifles(data)
-
-        }))
+    .click(function() {
+        drawMilitary()
+    })
   $('#fatal_encounters')
     .css('cursor', 'pointer')
-    .click(
+    .click(function() {
         d3.json("{% url 'state_json' state %}", function(error, json) {
           if (error) return console.warn(error);
           data = json;
           drawLineDeaths(data)
 
         })
-  );
+  });
   $('#population')
     .css('cursor', 'pointer')
     .click(
@@ -177,14 +167,25 @@
   );
   $('#crime')
     .css('cursor', 'pointer')
-    .click(
+    .click(function() {
         d3.json("{% url 'state_json' state %}", function(error, json) {
           if (error) return console.warn(error);
           data = json;
           drawCrimeCategories(data)
 
         })
-  );
+  });
+  function drawMilitary(){
+      d3.json("{% url 'state_json' state %}", function(error, json) {
+        if (error) return console.warn(error);
+        data = json;
+        drawCategories(data)
+        drawLineDollars(data)
+        drawPerCapitaCategories(data)
+        drawPerCapitaAssaultRifles(data)
+
+      })
+  }
   </script>
 
 

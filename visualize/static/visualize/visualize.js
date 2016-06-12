@@ -47,7 +47,7 @@ function drawPerCapitaAssaultRifles(data){
                      .axisLabel("Categories")
                      .axisLabelDistance(35)
                      .showMaxMin(false)
-                     .tickValues(categoryNums)
+                     .tickValues(data.category_nums)
                      .tickFormat(function (d){
                          console.log(data.category_data[0].values[d].label)
                          return data.category_data[0].values[d].label;
@@ -150,7 +150,7 @@ function drawPerCapitaAssaultRifles(data){
           .axisLabel("Categories")
           .axisLabelDistance(35)
           .showMaxMin(false)
-          .tickValues(categoryNums)
+          .tickValues(data.category_nums)
           .tickFormat(function (d){
               console.log(data.categories_per_capita[0].values[d].label)
               return data.categories_per_capita[0].values[d].label;
