@@ -730,6 +730,7 @@ def create_county_crime(county):
     chart.add_serie(name="Serie 2", y=ydata2, x=xdata)
     chart.buildhtml()
 
+
 def compare_ordered_years(national_ordered, state_ordered):
     if len(national_ordered) != len(state_ordered):
         for num, year in enumerate(national_ordered):
