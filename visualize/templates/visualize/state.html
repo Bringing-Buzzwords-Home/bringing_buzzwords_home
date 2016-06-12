@@ -21,7 +21,7 @@
     <div><h1>{{ ten_thirty_three_total }}</h1></div>
   </div>
   <div id="fatal_encounters" class="span3 statbox green" onTablet="span6" onDesktop="span3">
-    <div><h1>2015 Killings</h1></div>
+    <div><h1>2015 Fatal Encounters With Police</h1></div>
     <div><h1>{{ state_num }}</h1></div>
   </div>
   <div id="population" class="span3 statbox blue noMargin" onTablet="span6" onDesktop="span3">
@@ -39,10 +39,10 @@
 <div id="stage">
 <div class="row-fluid">
 
-  <div id="stats-chart-2"  class="span8 widget purple" onTablet="span8" onDesktop="span8">
+  <div id="stats-chart-2"  class="span6 widget purple" onTablet="span8" onDesktop="span8">
     <div id="top-left"  style="height:200px" >  </div>
   </div>
-  <div id="stats-chart-2"  class="span4 widget purple" onTablet="span8" onDesktop="span8">
+  <div id="stats-chart-2"  class="span6 widget purple" onTablet="span8" onDesktop="span8">
       <div id="top-right"  style="height:200px">
       <svg></svg>
     </div>
@@ -50,29 +50,18 @@
 </div>
 
   <div class="row-fluid">
-    <div id="stats-chart-2"  class="span5 widget purple" onTablet="span8" onDesktop="span8">
+    <div id="stats-chart-2"  class="span6 widget purple" onTablet="span8" onDesktop="span8">
       <div id="middle-left"  style="height:200px" >
         <svg></svg>
       </div>
     </div>
-  	<div id="stats-chart-2"  class="span7 widget purple" onTablet="span8" onDesktop="span8">
+  	<div id="stats-chart-2"  class="span6 widget purple" onTablet="span8" onDesktop="span8">
       <div class="content">
         <div id="middle-right" style="height:200px">
           <svg></svg>
         </div>
       </div>
     </div>
-  </div>
-  <div class="row-fluid">
-
-    <div id="stats-chart-2"  class="span8 widget purple" onTablet="span8" onDesktop="span8">
-      <div id="bottom-left"  style="height:200px" ><svg></svg></div>
-    </div>
-    <div id="stats-chart-2"  class="span4 widget purple" onTablet="span8" onDesktop="span8">
-        <div id="bottom-right"  style="height:200px">
-        <svg></svg>
-      </div>
-      </div>
   </div>
   </div>
   <script>
@@ -140,7 +129,7 @@
   $('#1033')
     .css('cursor', 'pointer')
     .click(function() {
-        $('#stage').html('<div id="stage"><div class="row-fluid"><div id="stats-chart-2"  class="span8 widget purple" onTablet="span8" onDesktop="span8"><div id="top-left"  style="height:200px" ></div></div><div id="stats-chart-2"  class="span4 widget purple" onTablet="span8" onDesktop="span8"><div id="top-right"  style="height:200px"><svg></svg></div></div></div><div class="row-fluid"><div id="stats-chart-2"  class="span5 widget purple" onTablet="span8" onDesktop="span8"><div id="middle-left"  style="height:200px" ><svg></svg></div></div><div id="stats-chart-2"  class="span7 widget purple" onTablet="span8" onDesktop="span8"><div class="content"><div id="middle-right" style="height:200px"><svg></svg></div></div></div></div><div class="row-fluid"><div id="stats-chart-2"  class="span8 widget purple" onTablet="span8" onDesktop="span8"><div id="bottom-left"  style="height:200px" ><svg></svg></div></div><div id="stats-chart-2"  class="span4 widget purple" onTablet="span8" onDesktop="span8"><div id="bottom-right"  style="height:200px"><svg></svg></div></div></div></div>')
+        $('#stage').html('<div id="stage"><div class="row-fluid"><div id="stats-chart-2"  class="span6 widget purple" onTablet="span8" onDesktop="span8"><div id="top-left"  style="height:200px" ></div></div><div id="stats-chart-2"  class="span6 widget purple" onTablet="span8" onDesktop="span8"><div id="top-right"  style="height:200px"><svg></svg></div></div></div><div class="row-fluid"><div id="stats-chart-2"  class="span6 widget purple" onTablet="span8" onDesktop="span8"><div id="middle-left"  style="height:200px" ><svg></svg></div></div><div id="stats-chart-2"  class="span6 widget purple" onTablet="span8" onDesktop="span8"><div class="content"><div id="middle-right" style="height:200px"><svg></svg></div></div></div></div></div>')
         drawCategories(data)
         drawLineDollars(data)
         drawPerCapitaCategories(data)
