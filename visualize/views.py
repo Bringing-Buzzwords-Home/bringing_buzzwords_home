@@ -6,11 +6,12 @@ from .models import County, GuardianCounted, Geo, Item, Station, Crime, State
 from .utilities import states, get_dollars_donated_by_year, get_categories_per_capita
 from .utilities import get_state_deaths, get_state_deaths_over_time, make_state_categories
 from .utilities import get_state_crime, get_county_deaths, counties_list
-from .utilities import create_county_crime, make_per_capita_assault_rifles
+from .utilities import create_county_crime, make_per_capita_assault_rifles, state_abbrev
 from rest_framework import viewsets
 from .serializers import StateSerializer
 from django.db.models import Sum, Func, Count, F
 from nvd3 import *
+from django.utils.safestring import mark_safe
 
 
 
@@ -65,50 +66,85 @@ def state_json(request, state):
 
 
 def county(request, county):
-    twenty_fourteen_violent = Crime.objects.filter(year='2014-01-01', county=county).aggregate(Sum('violent_crime'))['violent_crime__sum']
-    twenty_fourteen_property = Crime.objects.filter(year='2014-01-01', county=county).aggregate(Sum('property_crime'))['property_crime__sum']
-    ten_thirty_three_total = Item.objects.filter(county=county).aggregate(Sum('Total_Value'))['Total_Value__sum']
-    twenty_fifteen_kills = GuardianCounted.objects.filter(county=county).count()
     county_obj = County.objects.get(id=county)
+    total_num_counties_in_country = 3112
+    state = state_abbrev[county_obj.state]
+    state_obj = State.objects.get(state=state)
+    num_counties_in_state = len(County.objects.filter(state=county_obj.state))
+
+    twenty_fourteen_violent = int(Crime.objects.filter(year='2014-01-01', county=county).aggregate(Sum('violent_crime'))['violent_crime__sum'])
+    twenty_fourteen_property = int(Crime.objects.filter(year='2014-01-01', county=county).aggregate(Sum('property_crime'))['property_crime__sum'])
+    ten_thirty_three_total = int(Item.objects.filter(county=county).aggregate(Sum('Total_Value'))['Total_Value__sum'])
+    twenty_fifteen_kills = float(GuardianCounted.objects.filter(county=county, date__year=2015).count())
+    county_crime = [twenty_fourteen_violent, twenty_fourteen_property]
     crimes_list = list(Crime.objects.filter(county=county))
 
-    xdata = ['Property Crime', 'Violent Crime']
-    ydata = [twenty_fourteen_property, twenty_fourteen_violent]
-    chartdata = {'x': xdata, 'y': ydata}
-    charttype = "pieChart"
-    chartcontainer = 'piechart_container'
-    chart = multiBarChart(width=500, height=400, x_axis_format=None)
-    xdata_mbar = ['Violent Crime', 'Property Crime']
-    ydata1_mbar = [Crime.objects.filter(year='2014-01-01', county=county).aggregate(Sum('violent_crime'))['violent_crime__sum'], Crime.objects.filter(year='2014-01-01', county=county).aggregate(Sum('property_crime'))['property_crime__sum']]
-    ydata2_mbar = [Crime.objects.filter(year='2014-01-01').aggregate(Sum('violent_crime'))['violent_crime__sum'], Crime.objects.filter(year='2014-01-01').aggregate(Sum('property_crime'))['property_crime__sum']]
-    chart.add_serie(name="Serie 1", y=ydata1_mbar, x=xdata_mbar)
-    chart.add_serie(name="Serie 2", y=ydata2_mbar, x=xdata_mbar)
-    multibarchart_container = 'piechart_container'
 
-    extra_serie_line = {}
-    xdata_line = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-    ydata_line = [3, 5, 7, 8, 3, 5, 3, 5, 7, 6, 3, 1]
-    chartdata_line = {
-        'x': xdata_line,
-        'name1': 'series 1', 'y1': ydata_line, 'extra1': extra_serie_line,
-    }
-    charttype_line = "lineChart"
-    chartcontainer_line = 'linechart_container'  # container name
-    data = {
-        'charttype': charttype,
-        'chartdata': chartdata,
-        'chartcontainer': chartcontainer,
-        'extra': {
-            'x_is_date': False,
-            'x_axis_format': '',
-            'tag_script_js': True,
-            'jquery_on_ready': False,
-        },
-        'chart':chart,
-        'xdata_mbar': xdata_mbar,
-        'ydata1_mbar': ydata1_mbar,
-        'ydata2_mbar': ydata2_mbar,
-        'multibarchart_container': multibarchart_container,
+    county_twenty_fourteen_violent_state_avg = int((state_obj.total_violent_crime)/num_counties_in_state)
+    county_twenty_fourteen_property_state_avg = int((state_obj.total_property_crime)/num_counties_in_state)
+    state_ten_thirty_three_county_avg = ((state_obj.total_military_dollars)/num_counties_in_state)
+    state_county_deaths_avg = float((state_obj.total_deaths_twentyfifteen)/num_counties_in_state)
+
+
+    county_twenty_fourteen_violent_country_avg = int(State.objects.all().aggregate(Sum('total_violent_crime'))['total_violent_crime__sum']/total_num_counties_in_country)
+    county_twenty_fourteen_property_country_avg = int(State.objects.all().aggregate(Sum('total_property_crime'))['total_property_crime__sum']/total_num_counties_in_country)
+    county_ten_thirty_three_country_avg = float(State.objects.all().aggregate(Sum('total_military_dollars'))['total_military_dollars__sum']/total_num_counties_in_country)
+    county_twenty_fifteen_fatalities_country_avg = float(State.objects.all().aggregate(Sum('total_deaths_twentyfifteen'))['total_deaths_twentyfifteen__sum']/total_num_counties_in_country)
+
+
+
+    national_values = [{'x': 0,
+                        'y': county_twenty_fourteen_violent_country_avg,
+                        'label': 'Violent Crime'},
+                       {'x': 1,
+                        'y': county_twenty_fourteen_property_country_avg,
+                        'label': 'Property Crime'}]
+    state_values = [{'x': 0,
+                     'y': county_twenty_fourteen_violent_state_avg,
+                     'label': 'Violent Crime'},
+                    {'x': 1,
+                     'y': county_twenty_fourteen_property_state_avg,
+                     'label': 'Property Crime'}]
+    county_values = [{'x': 0,
+                     'y': twenty_fourteen_violent,
+                     'label': 'Violent Crime'},
+                    {'x': 1,
+                     'y': twenty_fourteen_property,
+                     'label': 'Property Crime'}]
+
+
+    average_state_crime = [{'key': 'Average State Crime', 'values': national_values},{'key': '{} Crime'.format(states[state]),'values': state_values}, {'key': '{} Crime'.format(county_obj.county_name), 'values': county_values}]
+
+    national_values_deaths = [{'x': 0,
+                        'y': county_twenty_fifteen_fatalities_country_avg,
+                        'label': 'Deadly Encounters'}]
+    state_values_deaths = [{'x': 0,
+                     'y': state_county_deaths_avg,
+                     'label': 'Deadly Encounters'}]
+    county_values_deaths = [{'x': 0,
+                     'y': twenty_fifteen_kills,
+                     'label': 'Deadly Encounters'}]
+
+
+    average_deaths = [{'key': 'Average County Fatal Encounters in US', 'values': national_values_deaths}, {'key': '{} Average County Fatal Encounters'.format(states[state]),'values': state_values_deaths}, {'key': '{} Fatal Encounters'.format(county_obj.county_name), 'values': county_values_deaths}]
+
+    national_value_military_avg= [{'x': 0,
+                        'y': county_ten_thirty_three_country_avg,
+                        'label': 'Military Equpment Value'}]
+    state_value_military_avg = [{'x': 0,
+                     'y': state_ten_thirty_three_county_avg,
+                     'label': 'Military Equpment Value'}]
+    county_value_military_avg= [{'x': 0,
+                     'y': ten_thirty_three_total,
+                     'label': 'Military Equpment Value'}]
+
+
+    average_military_value = [{'key': 'Average County Military Values in US', 'values': national_value_military_avg}, {'key': '{} Average County Military Equipment Value'.format(states[state]),'values': state_value_military_avg}, {'key': '{} Military Equipment Value'.format(county_obj.county_name), 'values': county_value_military_avg}]
+
+    context = {
+        'military_value': mark_safe(json.dumps(average_military_value)),
+        'state_crime': mark_safe(json.dumps(average_state_crime)),
+        'average_deaths': mark_safe(json.dumps(average_deaths)),
         'county': county,
         'county_obj': county_obj,
         'crimes_list': crimes_list,
@@ -116,8 +152,5 @@ def county(request, county):
         'twenty_fourteen_property': twenty_fourteen_property,
         'twenty_fifteen_kills': twenty_fifteen_kills,
         'ten_thirty_three_total': ten_thirty_three_total,
-        'charttype_line': charttype_line,
-        'chartdata_line': chartdata_line,
-        'chartcontainer_line': chartcontainer_line,
-    }
-    return render(request, "visualize/county.html", data)
+        }
+    return render(request, "visualize/county.html", context)
