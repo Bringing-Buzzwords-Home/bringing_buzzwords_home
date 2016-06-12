@@ -3,10 +3,11 @@ import json
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from .models import County, GuardianCounted, Geo, Item, Station, Crime, State
-from .utilities import states, get_dollars_donated_by_year, get_categories_per_capita
+from .utilities import states, get_dollars_donated_by_year, format_money
 from .utilities import get_state_deaths, get_state_deaths_over_time, make_state_categories
 from .utilities import get_state_crime, get_county_deaths, counties_list
 from .utilities import create_county_crime, make_per_capita_guns, state_abbrev
+from .utilities import get_categories_per_capita, format_integer
 from rest_framework import viewsets
 from .serializers import StateSerializer
 from django.db.models import Sum, Func, Count, F
@@ -14,11 +15,9 @@ from nvd3 import *
 from django.utils.safestring import mark_safe
 
 
-
 class StateViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = State.objects.all().order_by('state')
     serializer_class = StateSerializer
-
 
 
 def index(request):
@@ -29,10 +28,9 @@ def index(request):
 
 def state(request, state):
     state = state.upper()
+    state_obj = get_object_or_404(State, state=state)
     state_deaths = get_state_deaths(state)
     category_data, categories = make_state_categories(state)
-    twenty_fourteen_violent = Crime.objects.filter(year='2014-01-01', state=states[state]).aggregate(Sum('violent_crime'))['violent_crime__sum']
-    twenty_fourteen_property = Crime.objects.filter(year='2014-01-01', state=states[state]).aggregate(Sum('property_crime'))['property_crime__sum']
     ten_thirty_three_total = Item.objects.filter(state=state).aggregate(Sum('Total_Value'))['Total_Value__sum']
     twenty_fifteen_kills = GuardianCounted.objects.filter(state=county).count()
     twenty_fifteen_population = County.objects.filter(state=states[state]).aggregate(Sum('pop_est_2015'))['pop_est_2015__sum']
@@ -42,11 +40,11 @@ def state(request, state):
                'long_state_name': states[state],
                'counties_list': counties_list(state),
                'categories': categories,
-               'twenty_fourteen_violent': twenty_fourteen_violent,
-               'twenty_fourteen_property': twenty_fourteen_property,
+               'twenty_fourteen_violent': format_integer(state_obj.total_violent_crime),
+               'twenty_fourteen_property': format_integer(state_obj.total_property_crime),
                'twenty_fifteen_kills': twenty_fifteen_kills,
-               'ten_thirty_three_total': ten_thirty_three_total,
-               'twenty_fifteen_population': twenty_fifteen_population,
+               'ten_thirty_three_total': format_money(ten_thirty_three_total),
+               'twenty_fifteen_population': format_integer(twenty_fifteen_population),
                }
     return render(request, "visualize/state.html", context)
 

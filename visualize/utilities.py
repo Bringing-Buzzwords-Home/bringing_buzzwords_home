@@ -831,3 +831,26 @@ def populate_state_model(states):
                              total_property_crime=total_property_crime,
                              total_population_twentyfifteen=total_population_twentyfifteen)
         state_object.save()
+
+
+def populate_state_from_csv():
+    State.objects.all().delete()
+    with open('data/visualize_state.csv') as f:
+        state_reader = csv.DictReader(f)
+        for row in state_reader:
+            state_object = State(state=row['state'],
+                                 id=int(row['id']),
+                                 total_military_dollars=float(row['total_military_dollars']),
+                                 total_deaths_twentyfifteen=int(row['total_deaths_twentyfifteen']),
+                                 total_violent_crime=int(row['total_violent_crime']),
+                                 total_property_crime=int(row['total_property_crime']),
+                                 total_population_twentyfifteen=int(row['total_population_twentyfifteen']))
+            state_object.save()
+
+
+def format_money(number):
+    return '${:20,.2f}'.format(number)
+
+
+def format_integer(number):
+    return '{:20,d}'.format(number)
