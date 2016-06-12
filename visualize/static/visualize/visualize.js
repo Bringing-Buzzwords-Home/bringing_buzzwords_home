@@ -1,20 +1,21 @@
-// nv.addGraph(function() {
-//     var chart = nv.models.discreteBarChart()
-//         .x(function(d) { return d.label })
-//         .y(function(d) { return d.value })
-//         .staggerLabels(true)
-//         //.staggerLabels(historicalBarChart[0].values.length > 8)
-//         .showValues(true)
-//         .duration(250)
-//         ;
-//
-//         d3.select('#chart1 svg')
-//             .datum(data.state_deaths)
-//             .call(chart);
-//
-//         nv.utils.windowResize(chart.update);
-//         return chart;
-//      });
+function drawStateDeaths(data){
+    nv.addGraph(function() {
+        var chart = nv.models.discreteBarChart()
+            .x(function(d) { return d.label })
+            .y(function(d) { return d.value })
+            .staggerLabels(true)
+            //.staggerLabels(historicalBarChart[0].values.length > 8)
+            .showValues(true)
+            .duration(250)
+            ;
+
+            d3.select('#top-right svg')
+                .datum(data.state_deaths)
+                .call(chart);
+
+            nv.utils.windowResize(chart.update);
+            return chart;
+        })}
 function drawPerCapitaAssaultRifles(data){
       nv.addGraph(function() {
           var chart = nv.models.discreteBarChart();
@@ -27,7 +28,7 @@ function drawPerCapitaAssaultRifles(data){
 
               chart.duration(250);
 
-              d3.select('#chart7 svg')
+              d3.select('#top-right svg')
                   .datum(data.per_capita_rifles)
                   .call(chart);
 
@@ -61,7 +62,7 @@ function drawPerCapitaAssaultRifles(data){
                    chart.dispatch.on('renderEnd', function(){
                      nv.log('Render Complete');
                    });
-                   d3.select('#chart3 svg')
+                   d3.select('#middle-right svg')
                      .datum(data.category_data)
                      .call(chart);
                    nv.utils.windowResize(chart.update);
@@ -98,7 +99,7 @@ function drawPerCapitaAssaultRifles(data){
                    })
                ;
 
-               d3.select('#chart2').append('svg')
+               d3.select('#top-left').append('svg')
                    .datum(data.deaths_over_time)
                    .call(chart);
                nv.utils.windowResize(chart.update);
@@ -131,7 +132,7 @@ function drawPerCapitaAssaultRifles(data){
                 })
             ;
 
-            d3.select('#chart4').append('svg')
+            d3.select('#top-left').append('svg')
                 .datum(data.dollars_by_year)
                 .call(chart);
             nv.utils.windowResize(chart.update);
@@ -164,7 +165,7 @@ function drawPerCapitaAssaultRifles(data){
       chart.dispatch.on('renderEnd', function(){
           nv.log('Render Complete');
       });
-      d3.select('#chart5 svg')
+      d3.select('#bottom-left svg')
           .datum(data.categories_per_capita)
           .call(chart);
       nv.utils.windowResize(chart.update);
@@ -202,7 +203,7 @@ function drawPerCapitaAssaultRifles(data){
             chart.dispatch.on('renderEnd', function(){
                 nv.log('Render Complete');
             });
-            d3.select('#chart6 svg')
+            d3.select('#top-left svg')
                 .datum(data.state_crime)
                 .call(chart);
             nv.utils.windowResize(chart.update);
