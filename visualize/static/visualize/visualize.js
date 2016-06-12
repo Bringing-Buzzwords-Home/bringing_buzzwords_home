@@ -19,23 +19,42 @@ function drawStateDeaths(data){
 
 function drawPerCapitaAssaultRifles(data){
       nv.addGraph(function() {
-          var chart = nv.models.discreteBarChart();
-              chart.xAxis.axisLabel('Assault Rifles');
-              chart.yAxis
-              .axisLabel('Assault Rifles Per Capita')
-              .tickFormat(d3.format(',.01e'));
-              chart.staggerLabels(true);
-              //.staggerLabels(historicalBarChart[0].values.length > 8)
-
-              chart.duration(250);
-
-              d3.select('#top-right svg')
-                  .datum(data.per_capita_rifles)
-                  .call(chart);
-
-              nv.utils.windowResize(chart.update);
-              return chart;
-          })}
+          chart = nv.models.multiBarChart()
+            .duration(300)
+            .margin({bottom: 100, left: 70})
+            .rotateLabels(45)
+            .groupSpacing(0.1)
+          ;
+          chart.reduceXTicks(false).staggerLabels(true);
+          chart.xAxis
+            .axisLabel("Categories")
+            .axisLabelDistance(35)
+            .showMaxMin(false)
+            .tickValues(data.per_capita_nums)
+            .tickFormat(function (d){
+                console.log(data.per_capita_rifles[0].values[d].label)
+                return data.per_capita_rifles[0].values[d].label;
+            })
+          ;
+          chart.yAxis
+            .axisLabel("Per Capita Guns and Knives")
+            .axisLabelDistance(-5)
+            .tickFormat(d3.format(',.01e'))
+          ;
+          chart.dispatch.on('renderEnd', function(){
+            nv.log('Render Complete');
+          });
+          d3.select('#top-right svg')
+            .datum(data.per_capita_rifles)
+            .call(chart);
+          nv.utils.windowResize(chart.update);
+          chart.dispatch.on('stateChange', function(e) {
+            nv.log('New State:', JSON.stringify(e));
+          });
+          chart.state.dispatch.on('change', function(state){
+            nv.log('state', JSON.stringify(state));
+          });
+   })}
 
 function drawCategories(data){
    nv.addGraph(function (){
@@ -170,7 +189,7 @@ function drawPerCapitaCategories(data){
   chart.dispatch.on('renderEnd', function(){
       nv.log('Render Complete');
   });
-  d3.select('#bottom-left svg')
+  d3.select('#middle-left svg')
       .datum(data.categories_per_capita)
       .call(chart);
   nv.utils.windowResize(chart.update);

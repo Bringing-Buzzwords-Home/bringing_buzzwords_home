@@ -6,8 +6,7 @@ from .models import County, GuardianCounted, Item, Crime, State
 import csv
 import datetime
 from operator import itemgetter
-from django.db.models import Sum, Func, Count, F
-import numpy as np
+from django.db.models import Sum, Func, Count, F, Q
 from nvd3 import multiBarChart
 
 
@@ -327,22 +326,22 @@ def compare_category_lists(category_list, state_category_list):
     for num, category in enumerate(category_list):
         if category['Category'] not in state_categories:
             state_category_list.insert(num, {'Category': category['Category'],
-                                             'pk__count': 0})
+                                             'Quantity__sum': 0})
     return state_category_list
 
 
 def make_state_categories(state):
-    item_categories = Item.objects.exclude(Category='Assault Rifle').values('Category').annotate(Count('pk'))
+    item_categories = Item.objects.exclude(Category='Machete/Bayonnet/Knife').exclude(Category='Assault Rifle').exclude(Category='Pistol').exclude(Category='Shotgun').values('Category').annotate(Sum('Quantity'))
     category_list = list(item_categories)
     category_list = sorted(remove_none_from_categories(category_list), key=itemgetter('Category'))
 
-    state_item_categories = Item.objects.filter(state=state).exclude(Category='Assault Rifle').values('Category').annotate(Count('pk'))
+    state_item_categories = Item.objects.filter(state=state).exclude(Category='Assault Rifle').exclude(Category='Pistol').exclude(Category='Shotgun').values('Category').annotate(Sum('Quantity'))
     state_category_list = list(state_item_categories)
     state_category_list = sorted(remove_none_from_categories(state_category_list), key=itemgetter('Category'))
     state_category_list = compare_category_lists(category_list, state_category_list)
 
-    counts = [x['pk__count'] for x in category_list]
-    state_counts = [x['pk__count'] for x in state_category_list]
+    counts = [x['Quantity__sum'] for x in category_list]
+    state_counts = [x['Quantity__sum'] for x in state_category_list]
     categories = [x['Category'] for x in category_list]
     category_nums = list(range(len(categories)))
 
@@ -350,22 +349,41 @@ def make_state_categories(state):
     title = 'Number of Items Donated in the 1033 Program'
     category_data = [{'key': 'Items Nationwide',
                       'values': [dict(label=category, y=count, x=num) for category, count, num in zip(categories, counts, category_nums)],
-                      'color': '#3d40a2'},
+                      },
                      {'key': '{} Items'.format(states[state]),
                       'values': [dict(label=category, y=count, x=num) for category, count, num in zip(categories, state_counts, category_nums)],
-                      'color': '#d64d4d'}]
+                      }]
     return category_data, category_nums
 
 
-def make_per_capita_assault_rifles(state):
-    assault_rifles = Item.objects.filter(Category='Assault Rifle').count()
-    state_assault_rifles = Item.objects.filter(state=state, Category='Assault Rifle').count()
+def make_per_capita_guns(state):
+    national_guns_knives = Item.objects.filter(Q(Category='Assault Rifle') | Q(Category='Pistol') | Q(Category='Shotgun') | Q(Category='Machete/Bayonnet/Knife')).values('Category').annotate(Sum('Quantity'))
+    category_list = list(national_guns_knives)
+    category_list = sorted(remove_none_from_categories(category_list), key=itemgetter('Category'))
+
+    state_guns_knives = Item.objects.filter(state=state).filter(Q(Category='Assault Rifle') | Q(Category='Pistol') | Q(Category='Shotgun') | Q(Category='Machete/Bayonnet/Knife')).values('Category').annotate(Sum('Quantity'))
+    state_category_list = list(state_guns_knives)
+    state_category_list = sorted(remove_none_from_categories(state_category_list), key=itemgetter('Category'))
+    state_category_list = compare_category_lists(category_list, state_category_list)
+
     us_population = County.objects.aggregate(total=Sum('pop_est_2015'))
     state_population = County.objects.filter(
         state=states[state]).aggregate(total=Sum('pop_est_2015'))
-    per_capita_rifles = [dict(x='National Assault Rifles Per Capita', y=(assault_rifles / us_population['total'])),
-                         dict(x='{} Assault Rifles Per Capita'.format(states[state]), y=(state_assault_rifles / state_population['total']))]
-    return [{'key': 'Per Capita Assault Rifles', 'values': per_capita_rifles}]
+
+    counts = [x['Quantity__sum'] for x in category_list]
+    state_counts = [x['Quantity__sum'] for x in state_category_list]
+    categories = [x['Category'] for x in category_list]
+    category_nums = list(range(len(categories)))
+
+    per_capita_guns = [{'key': 'Per Capita Guns and Knives Nationwide',
+                        'values': [dict(label=category, y=(count / us_population['total']), x=num) for category, count, num in zip(categories, counts, category_nums)],
+                        },
+                       {'key': 'Per Capita {} Guns and Knives'.format(states[state]),
+                        'values': [dict(label=category, y=(count / state_population['total']), x=num) for category, count, num in zip(categories, state_counts, category_nums)],
+                        }]
+    return per_capita_guns, category_nums
+
+
 # def draw_state_categories(state):
 #     category_data = make_state_categories(state)
 #
@@ -420,9 +438,10 @@ def compare_ordered_months(ordered_months, state_ordered_months):
                                                   'pk__count': 0})
     return state_ordered_months
 
+
 def make_jstimestamp_from_string(string):
     month_year = datetime.datetime.strptime(string, '%B %Y')
-    return month_year.timestamp() * 1000.0
+    return month_year.timestamp() * 1000 + (8.64e+7 * 2)
 
 
 def get_state_deaths_over_time(state):
