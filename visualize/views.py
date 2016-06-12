@@ -37,8 +37,8 @@ def state(request, state):
     twenty_fifteen_kills = GuardianCounted.objects.filter(state=county).count()
     twenty_fifteen_population = County.objects.filter(state=states[state]).aggregate(Sum('pop_est_2015'))['pop_est_2015__sum']
     context = {'state': state,
-               'state_num': state_deaths['twenty_fifteen_state_deaths'],
-               'average': state_deaths['twenty_fifteen_avg_deaths'],
+               'state_num': state_deaths['2015 {} Fatal Encounters'.format(states[state])],
+               'average': state_deaths['2015 Average Fatal Encounters'],
                'long_state_name': states[state],
                'counties_list': counties_list(state),
                'categories': categories,
