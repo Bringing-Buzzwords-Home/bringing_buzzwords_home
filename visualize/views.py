@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from .models import County, GuardianCounted, Geo, Item, Station, Crime, State
 from .utilities import states, get_dollars_donated_by_year, format_money
 from .utilities import get_state_deaths, get_state_deaths_over_time, make_state_categories
-from .utilities import get_state_violent_crime, get_county_deaths, counties_list
+from .utilities import get_state_violent_crime, get_county_deaths, create_counties_list
 from .utilities import create_county_crime, make_per_capita_guns, state_abbrev
 from .utilities import get_categories_per_capita, format_integer, get_state_property_crime
 from rest_framework import viewsets
