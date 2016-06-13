@@ -5286,7 +5286,7 @@ input[type="submit"].btn.btn-mini {
   margin-left: 0;
 }
 
-.tooltip {
+/*.tooltip {
   position: absolute;
   z-index: 1030;
   display: block;
@@ -5372,7 +5372,7 @@ input[type="submit"].btn.btn-mini {
   margin-left: -5px;
   border-bottom-color: #000000;
   border-width: 0 5px 5px;
-}
+}*/
 
 .popover {
   position: absolute;
