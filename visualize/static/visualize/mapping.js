@@ -22,7 +22,7 @@ $.getJSON("/api/state/", function(data) {
 			deaths: deaths,
 			violent: violent.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
 			property: state.total_property_crime.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","),
-			color: d3.interpolate("#b0b5b9", "#930006")((dollars / population) / 10)
+			color: d3.interpolate("#A8D8F0", "#4878A8")((dollars / population) / 10)
 		};
 	});
 
