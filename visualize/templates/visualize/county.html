@@ -7,179 +7,57 @@
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css"/>
 
-<script type="text/javascript">
-    state_crime = {{ state_crime }};
-
-
-nv.addGraph(function() {
-chart = nv.models.multiBarChart()
-    .barColor(d3.scale.category20().range())
-    .duration(300)
-    .margin({bottom: 50, left: 70})
-    .groupSpacing(0.1)
-;
-chart.reduceXTicks(false);
-chart.xAxis
-    .axisLabel("Crime Categories")
-    .axisLabelDistance(35)
-    .showMaxMin(false)
-    .tickFormat(function (d){
-        console.log(state_crime[0].values[d].label)
-        return state_crime[0].values[d].label;
-    })
-;
-chart.yAxis
-    .axisLabel("# of Crimes")
-    .axisLabelDistance(-5)
-    .tickFormat(d3.format(',f'))
-;
-chart.dispatch.on('renderEnd', function(){
-    nv.log('Render Complete');
-});
-d3.select('#chart6 svg')
-    .datum(state_crime)
-    .call(chart);
-nv.utils.windowResize(chart.update);
-chart.dispatch.on('stateChange', function(e) {
-    nv.log('New State:', JSON.stringify(e));
-});
-chart.state.dispatch.on('change', function(state){
-    nv.log('state', JSON.stringify(state));
-});
-});
-</script>
-
-
-<script type="text/javascript">
-    average_deaths = {{ average_deaths }};
-
-
-nv.addGraph(function() {
-chart = nv.models.multiBarChart()
-    .barColor(d3.scale.category20().range())
-    .duration(300)
-    .margin({bottom: 50, left: 70})
-    .groupSpacing(0.1)
-;
-chart.reduceXTicks(false).staggerLabels(true);
-chart.xAxis
-    .axisLabel("Crime Categories")
-    .axisLabelDistance(35)
-    .showMaxMin(false)
-    .tickFormat(function (d){
-        console.log(average_deaths[0].values[d].label)
-        return average_deaths[0].values[d].label;
-    })
-;
-chart.yAxis
-    .axisLabel("# of Crimes")
-    .axisLabelDistance(-5)
-    .tickFormat(d3.format(',e'))
-;
-chart.dispatch.on('renderEnd', function(){
-    nv.log('Render Complete');
-});
-d3.select('#chart1 svg')
-    .datum(average_deaths)
-    .call(chart);
-nv.utils.windowResize(chart.update);
-chart.dispatch.on('stateChange', function(e) {
-    nv.log('New State:', JSON.stringify(e));
-});
-chart.state.dispatch.on('change', function(state){
-    nv.log('state', JSON.stringify(state));
-});
-});
-</script>
-
-<script type="text/javascript">
-    military_value = {{ military_value }};
-
-
-nv.addGraph(function() {
-chart = nv.models.multiBarChart()
-    .barColor(d3.scale.category20().range())
-    .duration(300)
-    .margin({bottom: 50, left: 70})
-    .groupSpacing(0.1)
-;
-chart.reduceXTicks(false).staggerLabels(true);
-chart.xAxis
-    .axisLabel("Crime Categories")
-
-    .showMaxMin(false)
-    .tickFormat(function (d){
-        console.log(military_value[0].values[d].label)
-        return military_value[0].values[d].label;
-    })
-;
-chart.yAxis
-    .axisLabel("# of Crimes")
-    .axisLabelDistance(-5)
-    .tickFormat(d3.format(',e'))
-;
-chart.dispatch.on('renderEnd', function(){
-    nv.log('Render Complete');
-});
-d3.select('#chart2 svg')
-    .datum(military_value)
-    .call(chart);
-nv.utils.windowResize(chart.update);
-chart.dispatch.on('stateChange', function(e) {
-    nv.log('New State:', JSON.stringify(e));
-});
-chart.state.dispatch.on('change', function(state){
-    nv.log('state', JSON.stringify(state));
-});
-});
-</script>
 
 
 <div class="container-fluid-full">
 
 <div  class="span12">
 
-  <div class="row-fluid">
-    <div class="span3 statbox title purple" onTablet="span6" onDesktop="span3">
-      <div class= "title">1033 Total</div>
-      <div class='number'>{{ ten_thirty_three_total }} </div>
-    </div>
-    <div class="span3 statbox green" onTablet="span6" onDesktop="span3">
-      <div class= "title">2015 Fatal Encounters With Police</div>
-      <div class='number'>{{ twenty_fifteen_kills }} </div>
-    </div>
-    <div class="span3 statbox blue noMargin" onTablet="span6" onDesktop="span3">
-      <div class= "title">State Population</div>
-      <div class='number'>{{ county_pop_twenty_fifteen}} </div>
-    </div>
-    <div class="span3 statbox yellow" onTablet="span6" onDesktop="span3">
-      <div class= "title">Violent Crime : Property Crime</div>
-      <div class='number'>{{ twenty_fourteen_violent }} : {{ twenty_fourteen_property }}</div>
-    </div>
 
+  <div class="row-fluid">
+      <div class="span6 statbox transparent" onTablet="span6" onDesktop="span3">
+      <h1>{{county_obj.county_name}}</h1>
+      </div>
+      <div class="span6 statbox transparent" onTablet="span6" onDesktop="span3">
+          <h1>Population: {{county_pop_twenty_fifteen}}</h1>
+      </div>
+  </div>
+  <div class="row-fluid">
+
+    <div id="1033" class="span4 statbox purple" onTablet="span6" onDesktop="span3">
+      <div><h1>{{ ten_thirty_three_total }}</h1></div>
+      <div><h2>Value of Military Equipment Donated to {{long_state_name}}</h2></div>
+    </div>
+    <div id="fatal_encounters" class="span2 statbox green" onTablet="span6" onDesktop="span3">
+      <div><h1>{{ twenty_fifteen_kills }}</h1></div>
+      <div><h2>2015 Police Fatal Encounters</h2></div>
+    </div>
+    <div id="violent_crime" class="span3 statbox blue" onTablet="span6" onDesktop="span3">
+      <div><h1> {{ twenty_fourteen_violent }}</h1></div>
+      <div><h2>2014 Violent Crime</h2></div>
+    </div>
+    <div id="property_crime" class="span3 statbox yellow" onTablet="span6" onDesktop="span3">
+    <div><h1>{{ twenty_fourteen_property }}</h1></div>
+    <div><h2>2014 Property Crime</h2></div>
   </div>
 
 
+
+  <div id="stage">
   <div class="row-fluid">
-    <div id="stats-chart-2"  class="span6 widget green" onTablet="span8" onDesktop="span8">
-      <div id="chart1"  style="height:300px" > <svg></svg> </div>
+
+    <div id="stats-chart-2"  class="span6 widget purple" onTablet="span8" onDesktop="span8">
+      <div id="top-left"  style="height:300px" >
+         <svg></svg>
+      </div>
     </div>
     <div id="stats-chart-2"  class="span6 widget purple" onTablet="span8" onDesktop="span8">
-      <div id="chart2"  style="height:300px" >
+        <div id="top-right"  style="height:300px">
         <svg></svg>
       </div>
-    </div>
-  </div>
-
-
-  <div class="row-fluid">
-    <div class="span2"></div>
-
-      <div id="stats-chart-2"  class="span8 widget yellow" onTablet="span8" onDesktop="span8">
-        <div id="chart6"  style="height:300px" > <svg></svg> </div>
-
       </div>
   </div>
+</div>
 
 
 
@@ -195,6 +73,7 @@ chart.state.dispatch.on('change', function(state){
       $("div.toolbar").html('<b>County Search</b>');
   } );
 </script>
+
 <div class='box'>
 <table id="example" class="display" cellspacing="0" width="100%">
         <thead>
@@ -221,9 +100,56 @@ chart.state.dispatch.on('change', function(state){
 
         </tbody>
     </table>
-<div class='box'>
+
+  <script>
+  state_crime = {{ state_crime }};
+  average_deaths = {{ average_deaths }};
+  military_value = {{ military_value }};
+  average_deaths_per_cap = {{ average_deaths_per_cap }};
+  military_value_per_cap = {{ military_value_per_cap }};
+
+  drawMilitaryValue(military_value)
+  drawMilitaryValuePerCap(military_value_per_cap)
 
 
+
+  $('#1033')
+    .css('cursor', 'pointer')
+    .click(function() {
+        $('#stage').html('<div id="stage"><div class="row-fluid"><div id="stats-chart-2"  class="span6 widget purple" onTablet="span8" onDesktop="span8"><div id="top-left"  style="height:300px" ><svg></svg></div></div><div id="stats-chart-2"  class="span6 widget purple" onTablet="span8" onDesktop="span8"><div id="top-right"  style="height:300px"><svg></svg></div></div></div><div class="row-fluid">')
+        drawMilitaryValue(military_value)
+        drawMilitaryValuePerCap(military_value_per_cap)
+    })
+  $('#fatal_encounters')
+    .css('cursor', 'pointer')
+    .click(function() {
+        $('#stage').html('<div id="stage"><div class="row-fluid"><div id="stats-chart-2"  class="span6 widget green" onTablet="span8" onDesktop="span8"><div id="top-left"  style="height:300px" ><svg></svg></div></div><div id="stats-chart-2"  class="span6 widget green" onTablet="span8" onDesktop="span8"><div id="top-right"  style="height:300px"><svg></svg></div></div></div></div>')
+        drawFatalEncounters(average_deaths)
+        drawFatalEncountersPerCapita(average_deaths_per_cap)
+
+  });
+  $('#population')
+    .css('cursor', 'pointer')
+    .click(
+        function(){
+            alert('Population!');
+        }
+  );
+  $('#violent_crime')
+    .css('cursor', 'pointer')
+    .click(function() {
+        $('#stage').html('<div id="stage"><div class="row-fluid"><div id="stats-chart-2"  class="span8 widget blue" onTablet="span8" onDesktop="span8"><div id="top-left"  style="height:300px" ><svg></svg></div></div><div id="stats-chart-2"  class="span4 widget blue" onTablet="span8" onDesktop="span8"><div id="top-right"  style="height:300px"><svg></svg></div></div></div></div>')
+        drawAvgCrime(state_crime)
+
+  });
+  $('#property_crime')
+    .css('cursor', 'pointer')
+    .click(function() {
+        $('#stage').html('<div id="stage"><div class="row-fluid"><div id="stats-chart-2"  class="span8 widget yellow" onTablet="span8" onDesktop="span8"><div id="top-left"  style="height:300px" ><svg></svg></div></div><div id="stats-chart-2"  class="span4 widget yellow" onTablet="span8" onDesktop="span8"><div id="top-right"  style="height:300px"><svg></svg></div></div></div></div>')
+        drawAvgCrime(state_crime)
+    })
+
+  </script>
 
 
 </div><!--/row-->

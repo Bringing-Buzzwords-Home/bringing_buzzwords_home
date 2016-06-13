@@ -71,6 +71,10 @@ def county(request, county):
     state = state_abbrev[county_obj.state]
     state_obj = State.objects.get(state=state)
     num_counties_in_state = len(County.objects.filter(state=county_obj.state))
+    county_pop = county_obj.pop_est_2015
+    state_pop = (State.objects.get(state=state)).total_population_twentyfifteen
+    us_population = State.objects.all().aggregate(Sum('total_population_twentyfifteen'))['total_population_twentyfifteen__sum']
+
 
     twenty_fourteen_violent = int(Crime.objects.filter(year='2014-01-01', county=county).aggregate(Sum('violent_crime'))['violent_crime__sum'])
     twenty_fourteen_property = int(Crime.objects.filter(year='2014-01-01', county=county).aggregate(Sum('property_crime'))['property_crime__sum'])
@@ -141,10 +145,44 @@ def county(request, county):
 
     average_military_value = [{'key': 'Average US County', 'values': national_value_military_avg}, {'key': 'Average County in {}'.format(states[state]),'values': state_value_military_avg}, {'key': '{}'.format(county_obj.county_name), 'values': county_value_military_avg}]
 
+
+
+    national_value_military_avg_per_cap = [{'x': 0,
+                        'y': county_ten_thirty_three_country_avg/us_population,
+                        'label': 'Military Equpment Value'}]
+    state_value_military_avg_per_cap  = [{'x': 0,
+                     'y': state_ten_thirty_three_county_avg/state_pop,
+                     'label': 'Military Equpment Value'}]
+    county_value_military_avg_per_cap = [{'x': 0,
+                     'y': ten_thirty_three_total/county_pop,
+                     'label': 'Military Equpment Value'}]
+
+
+    average_military_value_per_cap  = [{'key': 'Average US County', 'values': national_value_military_avg_per_cap}, {'key': 'Average County in {}'.format(states[state]),'values': state_value_military_avg_per_cap}, {'key': '{}'.format(county_obj.county_name), 'values': county_value_military_avg_per_cap}]
+
+
+
+    national_values_deaths_per_cap = [{'x': 0,
+                        'y': county_twenty_fifteen_fatalities_country_avg/us_population,
+                        'label': 'Deadly Encounters'}]
+    state_values_deaths_per_cap = [{'x': 0,
+                     'y': state_county_deaths_avg/state_pop,
+                     'label': 'Deadly Encounters'}]
+    county_values_deaths_per_cap = [{'x': 0,
+                     'y': twenty_fifteen_kills/county_pop,
+                     'label': 'Deadly Encounters'}]
+
+
+    average_deaths_per_cap = [{'key': 'Average County Fatal Encounters in US', 'values': national_values_deaths_per_cap}, {'key': '{} Average County Fatal Encounters'.format(states[state]),'values': state_values_deaths_per_cap}, {'key': '{} Fatal Encounters'.format(county_obj.county_name), 'values': county_values_deaths_per_cap}]
+
+
+
     context = {
         'military_value': mark_safe(json.dumps(average_military_value)),
+        'military_value_per_cap': mark_safe(json.dumps(average_military_value_per_cap)),
         'state_crime': mark_safe(json.dumps(average_state_crime)),
         'average_deaths': mark_safe(json.dumps(average_deaths)),
+        'average_deaths_per_cap': mark_safe(json.dumps(average_deaths_per_cap)),
         'county': county,
         'county_obj': county_obj,
         'crimes_list': crimes_list,

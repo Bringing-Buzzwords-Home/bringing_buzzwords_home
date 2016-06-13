@@ -1,0 +1,194 @@
+function drawAvgCrime(state_crime){
+      nv.addGraph(function() {
+          var chart = nv.models.multiBarChart()
+              .barColor(d3.scale.category20().range())
+              .duration(300)
+              .margin({bottom: 50, left: 70})
+              .groupSpacing(0.1)
+              ;
+          chart.reduceXTicks(false);
+          chart.xAxis
+              .axisLabel("Crime Categories")
+              .axisLabelDistance(35)
+              .showMaxMin(false)
+              .tickFormat(function (d){
+                  console.log(state_crime[0].values[d].label)
+                  return state_crime[0].values[d].label;
+              })
+          ;
+          chart.yAxis
+              .axisLabel("# of Crimes")
+              .axisLabelDistance(-5)
+              .tickFormat(d3.format(',f'))
+          ;
+          chart.dispatch.on('renderEnd', function(){
+              nv.log('Render Complete');
+          });
+          d3.select('#top-left svg')
+              .datum(state_crime)
+              .call(chart);
+          nv.utils.windowResize(chart.update);
+          chart.dispatch.on('stateChange', function(e) {
+              nv.log('New State:', JSON.stringify(e));
+          });
+          chart.state.dispatch.on('change', function(state){
+              nv.log('state', JSON.stringify(state));
+  });
+})};
+
+
+function drawFatalEncounters(average_deaths){
+      nv.addGraph(function() {
+        chart = nv.models.multiBarChart()
+            .barColor(d3.scale.category20().range())
+            .duration(300)
+            .margin({bottom: 50, left: 70})
+            .groupSpacing(0.1)
+        ;
+        chart.reduceXTicks(false).staggerLabels(true);
+        chart.xAxis
+            .axisLabel("Crime Categories")
+            .axisLabelDistance(35)
+            .showMaxMin(false)
+            .tickFormat(function (d){
+                console.log(average_deaths[0].values[d].label)
+                return average_deaths[0].values[d].label;
+            })
+        ;
+        chart.yAxis
+            .axisLabel("# of Crimes")
+            .axisLabelDistance(-5)
+            .tickFormat(d3.format(',e'))
+        ;
+        chart.dispatch.on('renderEnd', function(){
+            nv.log('Render Complete');
+        });
+        d3.select('#top-left svg')
+            .datum(average_deaths)
+            .call(chart);
+        nv.utils.windowResize(chart.update);
+        chart.dispatch.on('stateChange', function(e) {
+            nv.log('New State:', JSON.stringify(e));
+        });
+        chart.state.dispatch.on('change', function(state){
+            nv.log('state', JSON.stringify(state));
+    });
+  })};
+
+
+
+function drawFatalEncountersPerCapita(average_deaths_per_cap){
+      nv.addGraph(function() {
+        chart = nv.models.multiBarChart()
+            .barColor(d3.scale.category20().range())
+            .duration(300)
+            .margin({bottom: 50, left: 70})
+            .groupSpacing(0.1)
+        ;
+        chart.reduceXTicks(false).staggerLabels(true);
+        chart.xAxis
+            .axisLabel("Crime Categories")
+            .axisLabelDistance(35)
+            .showMaxMin(false)
+            .tickFormat(function (d){
+                console.log(average_deaths_per_cap[0].values[d].label)
+                return average_deaths_per_cap[0].values[d].label;
+            })
+        ;
+        chart.yAxis
+            .axisLabel("# of Crimes")
+            .axisLabelDistance(-5)
+            .tickFormat(d3.format(',e'))
+        ;
+        chart.dispatch.on('renderEnd', function(){
+            nv.log('Render Complete');
+        });
+        d3.select('#top-right svg')
+            .datum(average_deaths_per_cap)
+            .call(chart);
+        nv.utils.windowResize(chart.update);
+        chart.dispatch.on('stateChange', function(e) {
+            nv.log('New State:', JSON.stringify(e));
+        });
+        chart.state.dispatch.on('change', function(state){
+            nv.log('state', JSON.stringify(state));
+          });
+  })};
+
+function drawMilitaryValue(military_value){
+      nv.addGraph(function() {
+        chart = nv.models.multiBarChart()
+            .barColor(d3.scale.category20().range())
+            .duration(300)
+            .margin({bottom: 50, left: 70})
+            .groupSpacing(0.1)
+        ;
+        chart.reduceXTicks(false).staggerLabels(true);
+        chart.xAxis
+            .axisLabel("Crime Categories")
+
+            .showMaxMin(false)
+            .tickFormat(function (d){
+                console.log(military_value[0].values[d].label)
+                return military_value[0].values[d].label;
+            })
+        ;
+        chart.yAxis
+            .axisLabel("# of Crimes")
+            .axisLabelDistance(-5)
+            .tickFormat(d3.format(',e'))
+        ;
+        chart.dispatch.on('renderEnd', function(){
+            nv.log('Render Complete');
+        });
+        d3.select('#top-left svg')
+            .datum(military_value)
+            .call(chart);
+        nv.utils.windowResize(chart.update);
+        chart.dispatch.on('stateChange', function(e) {
+            nv.log('New State:', JSON.stringify(e));
+    });
+    chart.state.dispatch.on('change', function(state){
+        nv.log('state', JSON.stringify(state));
+    });
+  })};
+
+
+
+function drawMilitaryValuePerCap(military_value_per_cap){
+      nv.addGraph(function() {
+        chart = nv.models.multiBarChart()
+            .barColor(d3.scale.category20().range())
+            .duration(300)
+            .margin({bottom: 50, left: 70})
+            .groupSpacing(0.1)
+        ;
+        chart.reduceXTicks(false).staggerLabels(true);
+        chart.xAxis
+            .axisLabel("Crime Categories")
+
+            .showMaxMin(false)
+            .tickFormat(function (d){
+                console.log(military_value_per_cap[0].values[d].label)
+                return military_value_per_cap[0].values[d].label;
+            })
+        ;
+        chart.yAxis
+            .axisLabel("# of Crimes")
+            .axisLabelDistance(-5)
+            .tickFormat(d3.format(',e'))
+        ;
+        chart.dispatch.on('renderEnd', function(){
+            nv.log('Render Complete');
+        });
+        d3.select('#top-right svg')
+            .datum(military_value_per_cap)
+            .call(chart);
+        nv.utils.windowResize(chart.update);
+        chart.dispatch.on('stateChange', function(e) {
+            nv.log('New State:', JSON.stringify(e));
+        });
+        chart.state.dispatch.on('change', function(state){
+            nv.log('state', JSON.stringify(state));
+        });
+      })};
