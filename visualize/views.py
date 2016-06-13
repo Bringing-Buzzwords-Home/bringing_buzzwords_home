@@ -156,3 +156,7 @@ def county(request, county):
         'county_pop_twenty_fifteen': format_integer(county_obj.pop_est_2015)
         }
     return render(request, "visualize/county.html", context)
+
+
+def about(request):
+    return render(request, "visualize/about.html")

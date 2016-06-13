@@ -1,0 +1,91 @@
+{% extends 'visualize/base.html' %}
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script src="https://use.fontawesome.com/4bb05997b9.js"></script>
+  </head>
+  <body>
+    {% block content %}
+
+    <h2>Why This Site Exits</h2>
+      <p>
+        Militarization of the police. Police brutality. Civil engagement.
+        Crime statistics. Excessive force. For most, these are just empty buzzwords.
+        Just another passing headline. Somehow, these words have become less
+        important and less relevant than headlines about the latest hot celebrity.
+        Even if people are able to move past the headline, the data is messy and confusing,
+        much less motivating.
+      </p>
+
+      <p>
+        We need this to change.
+      </p>
+
+      <p>
+        Bringing Buzzwords Home has synthesized nearly half a million critical
+        data entries into one cohesive and accessible site. With data from the
+        United States’s Department of Defense surplus disposal program, it will
+        be possible to see what types and quantities of free military equipment
+        local police departments have received from the government. Data from The
+        Guardian will allow you to track the number of fatal encounters with the
+        police in your own community. Accessing data from the Federal Bureau of
+        Investigation, we can make violent and property crime statistics
+        approachable and arresting.
+      </p>
+
+    <p>
+      At Bringing Buzzwords Home, some of today’s most important and contentious
+      issues are presented in a meaningful manner. Data presented in a compelling
+      form has the power to reshape how you see and understand your community.
+      We believe that technology, data science, and data visualization has the
+      ability to prompt an audience into action. We believe in bringing this data
+      into the familiarity of your home and out into the foreground of change.
+    </p>
+
+  <h3>Data Used In This Project</h3>
+
+  <ul>
+    <li>
+      <a href="http://www.dla.mil/DispositionServices/FOIA/EFOIALibrary.aspx">Department of Defense's Defense Logistics Agency LESO 1033 Program</a>
+    </li>
+
+    <li>
+      <a href="https://www.fbi.gov/about-us/cjis/ucr/crime-in-the-u.s/2014/crime-in-the-u.s.-2014/resource-pages/about-cius">Federal Bureau of Investigation's Crime in the United States Reports</a>
+    </li>
+
+    <li>
+      <a href="http://www.census.gov/popest/data/counties/totals/2015/index.html">US Census Bureau's Population Estimates</a>
+    </li>
+
+  </ul>
+
+  <h3>Our Team</h3>
+
+    <ul>
+      <li>
+        <a href="https://github.com/conleydg">
+          <i class="fa fa-github"></i>
+          David Conley
+        </a>
+      </li>
+
+      <li>
+      <a href="https://github.com/gcrowder">
+        <i class="fa fa-github"></i>
+        Gregory Crowder
+      </a>
+      </li>
+
+      <li>
+      <a href="https://github.com/JonathanKross">
+        <i class="fa fa-github"></i>
+        Jonathan Kross
+      </li>
+    </ul>
+
+    {% endblock %}
+  </body>
+</html>
