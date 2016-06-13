@@ -42,12 +42,14 @@
   table-layout:fixed;
 }
 #tooltip tr td{
-  padding:5px;
-  margin:5px;
+  padding:2px;
+  margin:0;
 }
 #tooltip tr td:nth-child(1){
-  width:75px;
-  text-align:left;
+  clear: both;
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
 }
 #tooltip tr td:nth-child(2){
   text-align:left;
