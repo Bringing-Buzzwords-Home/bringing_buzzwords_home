@@ -22,7 +22,7 @@ function drawPerCapitaAssaultRifles(data){
           chart = nv.models.multiBarChart()
             .duration(300)
             .margin({bottom: 100, left: 70})
-            .rotateLabels(45)
+            // .rotateLabels(45)
             .groupSpacing(0.1)
           ;
           chart.reduceXTicks(false).staggerLabels(true);
@@ -61,7 +61,7 @@ function drawCategories(data){
        chart = nv.models.multiBarChart()
          .duration(300)
          .margin({bottom: 100, left: 70})
-         .rotateLabels(45)
+        //  .rotateLabels(45)
          .groupSpacing(0.1)
        ;
        chart.reduceXTicks(false).staggerLabels(true);
@@ -167,7 +167,7 @@ function drawPerCapitaCategories(data){
   chart = nv.models.multiBarChart()
       .duration(300)
       .margin({bottom: 100, left: 70})
-      .rotateLabels(45)
+    //   .rotateLabels(45)
       .groupSpacing(0.1)
   ;
   chart.reduceXTicks(false).staggerLabels(true);

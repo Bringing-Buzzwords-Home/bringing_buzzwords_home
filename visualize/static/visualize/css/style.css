@@ -42,14 +42,15 @@
   table-layout:fixed;
 }
 #tooltip tr td{
-  padding:0;
-  margin:0;
+  padding:5px;
+  margin:5px;
 }
 #tooltip tr td:nth-child(1){
-  width:50px;
+  width:75px;
+  text-align:left;
 }
 #tooltip tr td:nth-child(2){
-  text-align:center;
+  text-align:left;
 }
 
 /*END - HOMEPAGE - USA MAP*/
