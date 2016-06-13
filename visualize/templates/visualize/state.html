@@ -15,37 +15,33 @@
 
 <div  class="span12">
 
-<br>
-  <ul class="breadcrumb">
-    <li>
-      <i class="icon-home"></i>
-      <a href= {% url 'homepage' %}>Home</a>
-      <i class="icon-angle-right"></i>
-      <a href= {% url 'homepage' %}>{{ state }}</a>
-      <i class="icon-angle-right"></i>
-    </li>
-  </ul>
-
-
+<div class="row-fluid">
+    <div class="span6 statbox transparent" onTablet="span6" onDesktop="span3">
+    <h1>{{long_state_name}}</h1>
+    </div>
+    <div class="span6 statbox transparent" onTablet="span6" onDesktop="span3">
+        <h1>Population: {{twenty_fifteen_population}}</h1>
+    </div>
+</div>
 <div class="row-fluid">
 
-  <div id="1033" class="span3 statbox purple" onTablet="span6" onDesktop="span3">
-    <div class= "title">1033 Total</div>
-    <div class='number'>{{ ten_thirty_three_total }} </div>
+  <div id="1033" class="span4 statbox purple" onTablet="span6" onDesktop="span3">
+    <div><h1>{{ ten_thirty_three_total }}</h1></div>
+    <div><h2>Value of Military Equipment Donated to {{long_state_name}}</h2></div>
   </div>
-  <div id="fatal_encounters" class="span3 statbox green" onTablet="span6" onDesktop="span3">
-    <div class= "title">2015 Fatal Encounters With Police</div>
-    <div class='number'>{{ state_num }} </div>
+  <div id="fatal_encounters" class="span2 statbox green" onTablet="span6" onDesktop="span3">
+    <div><h1>{{ state_num }}</h1></div>
+    <div><h2>2015 Police Fatal Encounters</h2></div>
   </div>
-  <div id="population" class="span3 statbox blue noMargin" onTablet="span6" onDesktop="span3">
-    <div class= "title">State Population</div>
-    <div class='number'>{{ twenty_fifteen_population }} </div>
+  <div id="violent_crime" class="span3 statbox blue" onTablet="span6" onDesktop="span3">
+    <div><h1> {{ twenty_fourteen_violent }}</h1></div>
+    <div><h2>2014 Violent Crime</h2></div>
   </div>
-  <div id="crime" class="span3 statbox yellow" onTablet="span6" onDesktop="span3">
-    <div class= "title">Violent Crime : Property Crime</div>
-    <div class='number'>{{ twenty_fourteen_violent }}:{{ twenty_fourteen_property }}</div>
-  </div>
+  <div id="property_crime" class="span3 statbox yellow" onTablet="span6" onDesktop="span3">
+  <div><h1>{{ twenty_fourteen_property }}</h1></div>
+  <div><h2>2014 Property Crime</h2></div>
 
+  </div>
 </div>
 <div id="stage">
 <div class="row-fluid">
@@ -86,7 +82,9 @@
           "dom": '<"toolbar">frtip'
       } );
 
+
       $("div.toolbar").html('<b>County Search</b>');
+
   } );
 </script>
 <div class='box'>
@@ -154,13 +152,19 @@
             alert('Population!');
         }
   );
-  $('#crime')
+  $('#violent_crime')
+    .css('cursor', 'pointer')
+    .click(function() {
+        $('#stage').html('<div id="stage"><div class="row-fluid"><div id="stats-chart-2"  class="span8 widget blue" onTablet="span8" onDesktop="span8"><div id="top-left"  style="height:200px" ><svg></svg></div></div><div id="stats-chart-2"  class="span4 widget blue" onTablet="span8" onDesktop="span8"><div id="top-right"  style="height:200px"><svg></svg></div></div></div></div>')
+        drawCrimeCategories(data)
+
+  });
+  $('#property_crime')
     .css('cursor', 'pointer')
     .click(function() {
         $('#stage').html('<div id="stage"><div class="row-fluid"><div id="stats-chart-2"  class="span8 widget yellow" onTablet="span8" onDesktop="span8"><div id="top-left"  style="height:200px" ><svg></svg></div></div><div id="stats-chart-2"  class="span4 widget yellow" onTablet="span8" onDesktop="span8"><div id="top-right"  style="height:200px"><svg></svg></div></div></div></div>')
         drawCrimeCategories(data)
-
-  });
+    })
   function drawMilitary(){
       drawCategories(data)
       drawLineDollars(data)
