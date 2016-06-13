@@ -5,9 +5,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from .models import County, GuardianCounted, Geo, Item, Station, Crime, State
 from .utilities import states, get_dollars_donated_by_year, format_money
 from .utilities import get_state_deaths, get_state_deaths_over_time, make_state_categories
-from .utilities import get_state_crime, get_county_deaths, create_counties_list
+from .utilities import get_state_violent_crime, get_county_deaths, counties_list
 from .utilities import create_county_crime, make_per_capita_guns, state_abbrev
-from .utilities import get_categories_per_capita, format_integer
+from .utilities import get_categories_per_capita, format_integer, get_state_property_crime
 from rest_framework import viewsets
 from .serializers import StateSerializer
 from django.db.models import Sum, Func, Count, F
@@ -50,18 +50,24 @@ def state(request, state):
 
 
 def state_json(request, state):
+    state_obj = get_object_or_404(State, state=state)
     state_deaths = get_state_deaths(state)
     category_data, category_nums = make_state_categories(state)
     per_capita_guns, per_capita_nums = make_per_capita_guns(state)
+    avg_violent_crime, per_capita_violent_crime = get_state_violent_crime(state_obj)
+    avg_property_crime, per_capita_property_crime = get_state_property_crime(state_obj)
     data = {'state_deaths': [dict(key='State Deaths', values=[dict(label=key, value=value) for key, value in state_deaths.items()])],
             'deaths_over_time': get_state_deaths_over_time(state),
             'category_data': category_data,
             'categories_per_capita': get_categories_per_capita(state, category_data),
             'dollars_by_year': get_dollars_donated_by_year(state),
-            'state_crime': get_state_crime(state),
+            'avg_violent_crime': avg_violent_crime,
+            'per_capita_violent_crime': per_capita_violent_crime,
             'per_capita_rifles': per_capita_guns,
             'per_capita_nums': per_capita_nums,
-            'category_nums': category_nums}
+            'category_nums': category_nums,
+            'avg_property_crime': avg_property_crime,
+            'per_capita_property_crime': per_capita_property_crime}
     return HttpResponse(json.dumps(data), content_type='application/json')
 
 

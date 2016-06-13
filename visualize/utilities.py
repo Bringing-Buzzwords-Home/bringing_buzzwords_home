@@ -493,6 +493,7 @@ def get_state_deaths_over_time(state):
 #     plt.close()
 #     return state_deaths
 
+
 def remove_periods_commas(pd_object):
     if type(pd_object) == str:
         new_string = pd_object.strip()
@@ -804,29 +805,70 @@ def get_categories_per_capita(state, category_data):
     return categories_per_capita
 
 
-def get_state_crime(state):
-    twenty_fourteen_national_crime = Crime.objects.filter(
-        year__year=2014).aggregate(Sum('violent_crime'), Sum('property_crime'))
-    twenty_fourteen_state_crime = Crime.objects.filter(
-        year__year=2014).filter(state=states[state]).aggregate(Sum(
-            'violent_crime'), Sum('property_crime'))
-    national_values = [{'x': 0,
-                        'y': (twenty_fourteen_national_crime['violent_crime__sum'] / 51),
-                        'label': 'Violent Crime'},
-                       {'x': 1,
-                        'y': (twenty_fourteen_national_crime['property_crime__sum'] / 51),
-                        'label': 'Property Crime'}]
-    state_values = [{'x': 0,
-                     'y': twenty_fourteen_state_crime['violent_crime__sum'],
-                     'label': 'Violent Crime'},
-                    {'x': 1,
-                     'y': twenty_fourteen_state_crime['property_crime__sum'],
-                     'label': 'Property Crime'}]
-    average_state_crime = [{'key': 'Average State Crime',
-                            'values': national_values},
-                           {'key': '{} Crime'.format(states[state]),
-                            'values': state_values}]
-    return average_state_crime
+def get_state_violent_crime(state_obj):
+    national_violent_crime = State.objects.aggregate(Sum('total_violent_crime'))
+    state_violent_crime = state_obj.total_violent_crime
+
+    us_population = State.objects.aggregate(total=Sum('total_population_twentyfifteen'))
+    state_population = state_obj.total_population_twentyfifteen
+
+    avg_violent_crime = [{'key': '2014 Violent Crime',
+                          'values': [{'label': 'Average National Violent Crime',
+                                      'value': (national_violent_crime['total_violent_crime__sum'] / 51)},
+                                     {'label': '{} Violent Crime'.format(states[state_obj.state]),
+                                      'value': state_violent_crime}]}]
+
+    per_capita_violent_crime = [{'key': '2014 Per Capita Violent Crime',
+                                'values': [{'label': 'National Violent Crime Per Capita',
+                                            'value': (national_violent_crime['total_violent_crime__sum'] / us_population['total'])},
+                                           {'label': '{} Violent Crime Per Capita'.format(states[state_obj.state]),
+                                            'value': state_violent_crime / state_population}]}]
+    return avg_violent_crime, per_capita_violent_crime
+
+
+def get_state_property_crime(state_obj):
+    national_property_crime = State.objects.aggregate(Sum('total_property_crime'))
+    state_property_crime = state_obj.total_property_crime
+
+    us_population = State.objects.aggregate(total=Sum('total_population_twentyfifteen'))
+    state_population = state_obj.total_population_twentyfifteen
+
+    avg_property_crime = [{'key': '2014 Property Crime',
+                          'values': [{'label': 'Average National Property Crime',
+                                      'value': (national_property_crime['total_property_crime__sum'] / 51)},
+                                     {'label': '{} Property Crime'.format(states[state_obj.state]),
+                                      'value': state_property_crime}]}]
+
+    per_capita_property_crime = [{'key': '2014 Per Capita Property Crime',
+                                  'values': [{'label': 'National Property Crime Per Capita',
+                                              'value': (national_property_crime['total_property_crime__sum'] / us_population['total'])},
+                                             {'label': '{} Property Crime Per Capita'.format(states[state_obj.state]),
+                                              'value': state_property_crime / state_population}]}]
+    return avg_property_crime, per_capita_property_crime
+
+# def get_state_crime(state):
+#     twenty_fourteen_national_crime = Crime.objects.filter(
+#         year__year=2014).aggregate(Sum('violent_crime'), Sum('property_crime'))
+#     twenty_fourteen_state_crime = Crime.objects.filter(
+#         year__year=2014).filter(state=states[state]).aggregate(Sum(
+#             'violent_crime'), Sum('property_crime'))
+#     national_values = [{'x': 0,
+#                         'y': (twenty_fourteen_national_crime['violent_crime__sum'] / 51),
+#                         'label': 'Violent Crime'},
+#                        {'x': 1,
+#                         'y': (twenty_fourteen_national_crime['property_crime__sum'] / 51),
+#                         'label': 'Property Crime'}]
+#     state_values = [{'x': 0,
+#                      'y': twenty_fourteen_state_crime['violent_crime__sum'],
+#                      'label': 'Violent Crime'},
+#                     {'x': 1,
+#                      'y': twenty_fourteen_state_crime['property_crime__sum'],
+#                      'label': 'Property Crime'}]
+#     average_state_crime = [{'key': 'Average State Crime',
+#                             'values': national_values},
+#                            {'key': '{} Crime'.format(states[state]),
+#                             'values': state_values}]
+#     return average_state_crime
 
 
 def populate_state_model(states):

@@ -201,44 +201,87 @@ function drawPerCapitaCategories(data){
   });
   })}
 
-function drawCrimeCategories(data){
+function drawAvgViolentCrime(data){
     nv.addGraph(function() {
-    chart = nv.models.multiBarChart()
-        .barColor(d3.scale.category20().range())
-        .duration(300)
-        .margin({bottom: 100, left: 70})
-        .rotateLabels(45)
-        .groupSpacing(0.1)
-    ;
-    chart.reduceXTicks(false).staggerLabels(true);
-    chart.xAxis
-        .axisLabel("Crime Categories")
-        .axisLabelDistance(35)
-        .showMaxMin(false)
-        .tickFormat(function (d){
-            console.log(data.state_crime[0].values[d].label)
-            return data.state_crime[0].values[d].label;
-        })
-    ;
-    chart.yAxis
-        .axisLabel("# of Crimes")
-        .axisLabelDistance(-5)
-        .tickFormat(d3.format(',f'))
-    ;
-    chart.dispatch.on('renderEnd', function(){
-        nv.log('Render Complete');
-    });
-    d3.select('#top-left svg')
-        .datum(data.state_crime)
-        .call(chart);
-    nv.utils.windowResize(chart.update);
-    chart.dispatch.on('stateChange', function(e) {
-        nv.log('New State:', JSON.stringify(e));
-    });
-    chart.state.dispatch.on('change', function(state){
-        nv.log('state', JSON.stringify(state));
-    });
-})}
+        var chart = nv.models.discreteBarChart()
+            .x(function(d) { return d.label })
+            .y(function(d) { return d.value })
+            .staggerLabels(true)
+            //.staggerLabels(historicalBarChart[0].values.length > 8)
+            .showValues(true)
+            .duration(250)
+            ;
+            chart.yAxis
+                .axisLabel('Violent Crime')
+            d3.select('#top-right svg')
+                .datum(data.avg_violent_crime)
+                .call(chart);
+
+            nv.utils.windowResize(chart.update);
+            return chart;
+        })}
+
+function drawPerCapitaViolentCrime(data){
+    nv.addGraph(function() {
+        var chart = nv.models.discreteBarChart()
+            .x(function(d) { return d.label })
+            .y(function(d) { return d.value })
+            .staggerLabels(true)
+            //.staggerLabels(historicalBarChart[0].values.length > 8)
+            .showValues(true)
+            .duration(250)
+            ;
+            chart.yAxis
+                .axisLabel('Violent Crime')
+                .tickFormat(d3.format(',.01e'))
+            d3.select('#top-left svg')
+                .datum(data.per_capita_violent_crime)
+                .call(chart);
+
+            nv.utils.windowResize(chart.update);
+            return chart;
+        })}
+
+function drawAvgPropertyCrime(data){
+    nv.addGraph(function() {
+        var chart = nv.models.discreteBarChart()
+            .x(function(d) { return d.label })
+            .y(function(d) { return d.value })
+            .staggerLabels(true)
+            //.staggerLabels(historicalBarChart[0].values.length > 8)
+            .showValues(true)
+            .duration(250)
+            ;
+            chart.yAxis
+                .axisLabel('Property Crime')
+            d3.select('#top-right svg')
+                .datum(data.avg_property_crime)
+                .call(chart);
+
+            nv.utils.windowResize(chart.update);
+            return chart;
+        })}
+
+function drawPerCapitaPropertyCrime(data){
+    nv.addGraph(function() {
+        var chart = nv.models.discreteBarChart()
+            .x(function(d) { return d.label })
+            .y(function(d) { return d.value })
+            .staggerLabels(true)
+            //.staggerLabels(historicalBarChart[0].values.length > 8)
+            .showValues(true)
+            .duration(250)
+            ;
+            chart.yAxis
+                .axisLabel('Property Crime')
+                .tickFormat(d3.format(',.01e'))
+            d3.select('#top-left svg')
+                .datum(data.per_capita_property_crime)
+                .call(chart);
+
+            nv.utils.windowResize(chart.update);
+            return chart;
+        })}
 // d3.json("{% url 'state_json' state %}", function(error, json) {
 //   if (error) return console.warn(error);
 //   data = json;
