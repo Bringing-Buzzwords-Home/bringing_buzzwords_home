@@ -103,27 +103,59 @@ def county(request, county):
 
 
 
-    national_values = [{'x': 0,
-                        'y': county_twenty_fourteen_violent_country_avg,
-                        'label': 'Violent Crime'},
-                       {'x': 1,
+    national_values_prop = [{'x': 0,
                         'y': county_twenty_fourteen_property_country_avg,
                         'label': 'Property Crime'}]
-    state_values = [{'x': 0,
-                     'y': county_twenty_fourteen_violent_state_avg,
-                     'label': 'Violent Crime'},
-                    {'x': 1,
+    state_values_prop = [{'x': 0,
                      'y': county_twenty_fourteen_property_state_avg,
                      'label': 'Property Crime'}]
-    county_values = [{'x': 0,
-                     'y': twenty_fourteen_violent,
-                     'label': 'Violent Crime'},
-                    {'x': 1,
+    county_values_prop = [{'x': 0,
                      'y': twenty_fourteen_property,
                      'label': 'Property Crime'}]
 
 
-    average_state_crime = [{'key': 'Average State Crime', 'values': national_values},{'key': '{} Crime'.format(states[state]),'values': state_values}, {'key': '{} Crime'.format(county_obj.county_name), 'values': county_values}]
+
+    average_state_crime_prop = [{'key': 'Average State Crime', 'values': national_values_prop},{'key': '{} Crime'.format(states[state]),'values': state_values_prop}, {'key': '{} Crime'.format(county_obj.county_name), 'values': county_values_prop}]
+
+    national_values_viol = [{'x': 0,
+                        'y': county_twenty_fourteen_violent_country_avg,
+                        'label': 'Violent Crime'}]
+    state_values_viol = [{'x': 0,
+                     'y': county_twenty_fourteen_violent_state_avg,
+                     'label': 'Violent Crime'}]
+    county_values_viol = [{'x': 0,
+                     'y': twenty_fourteen_violent,
+                     'label': 'Violent Crime'}]
+
+    average_state_crime_viol = [{'key': 'Average State Crime', 'values': national_values_viol},{'key': '{} Crime'.format(states[state]),'values': state_values_viol}, {'key': '{} Crime'.format(county_obj.county_name), 'values': county_values_viol}]
+
+    national_values_prop_per_cap = [{'x': 0,
+                        'y': county_twenty_fourteen_property_country_avg/us_population,
+                        'label': 'Property Crime'}]
+    state_values_prop_per_cap = [{'x': 0,
+                     'y': county_twenty_fourteen_property_state_avg/state_pop,
+                     'label': 'Property Crime'}]
+    county_values_prop_per_cap = [{'x': 0,
+                     'y': twenty_fourteen_property/county_pop,
+                     'label': 'Property Crime'}]
+
+
+
+    average_state_crime_prop_per_cap = [{'key': 'Average State Crime', 'values': national_values_prop_per_cap},{'key': '{} Crime'.format(states[state]),'values': state_values_prop_per_cap}, {'key': '{} Crime'.format(county_obj.county_name), 'values': county_values_prop_per_cap}]
+
+    national_values_viol_per_cap = [{'x': 0,
+                        'y': county_twenty_fourteen_violent_country_avg/us_population,
+                        'label': 'Violent Crime'}]
+    state_values_viol_per_cap = [{'x': 0,
+                     'y': county_twenty_fourteen_violent_state_avg/state_pop,
+                     'label': 'Violent Crime'}]
+    county_values_viol_per_cap = [{'x': 0,
+                     'y': twenty_fourteen_violent/county_pop,
+                     'label': 'Violent Crime'}]
+
+    average_state_crime_viol_per_cap = [{'key': 'Average State Crime', 'values': national_values_viol},{'key': '{} Crime'.format(states[state]),'values': state_values_viol_per_cap}, {'key': '{} Crime'.format(county_obj.county_name), 'values': county_values_viol_per_cap}]
+
+
 
     national_values_deaths = [{'x': 0,
                         'y': county_twenty_fifteen_fatalities_country_avg,
@@ -186,7 +218,10 @@ def county(request, county):
     context = {
         'military_value': mark_safe(json.dumps(average_military_value)),
         'military_value_per_cap': mark_safe(json.dumps(average_military_value_per_cap)),
-        'state_crime': mark_safe(json.dumps(average_state_crime)),
+        'prop_crime': mark_safe(json.dumps(average_state_crime_prop)),
+        "prop_crime_per_cap": mark_safe(json.dumps(average_state_crime_prop_per_cap)),
+        'viol_crime': mark_safe(json.dumps(average_state_crime_viol)),
+        "viol_crime_per_cap": mark_safe(json.dumps(average_state_crime_prop_per_cap)),
         'average_deaths': mark_safe(json.dumps(average_deaths)),
         'average_deaths_per_cap': mark_safe(json.dumps(average_deaths_per_cap)),
         'county': county,
