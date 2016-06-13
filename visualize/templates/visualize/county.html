@@ -1,16 +1,11 @@
 {% extends 'visualize/base.html' %}
 {% load static %}
 
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/u/bs-3.3.6/jqc-1.12.3,dt-1.10.12/datatables.min.css"/>
-
-<script type="text/javascript" src="https://cdn.datatables.net/u/bs-3.3.6/jqc-1.12.3,dt-1.10.12/datatables.min.js"></script>
-
-
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/u/bs-3.3.6/jqc-1.12.3,dt-1.10.12/datatables.min.css"/>
 
 
 {% block content %}
-
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css"/>
 
 <script type="text/javascript">
     state_crime = {{ state_crime }};
@@ -20,11 +15,10 @@ nv.addGraph(function() {
 chart = nv.models.multiBarChart()
     .barColor(d3.scale.category20().range())
     .duration(300)
-    .margin({bottom: 100, left: 70})
-    .rotateLabels(45)
+    .margin({bottom: 50, left: 70})
     .groupSpacing(0.1)
 ;
-chart.reduceXTicks(false).staggerLabels(true);
+chart.reduceXTicks(false);
 chart.xAxis
     .axisLabel("Crime Categories")
     .axisLabelDistance(35)
@@ -64,8 +58,7 @@ nv.addGraph(function() {
 chart = nv.models.multiBarChart()
     .barColor(d3.scale.category20().range())
     .duration(300)
-    .margin({bottom: 100, left: 70})
-    .rotateLabels(45)
+    .margin({bottom: 50, left: 70})
     .groupSpacing(0.1)
 ;
 chart.reduceXTicks(false).staggerLabels(true);
@@ -107,14 +100,13 @@ nv.addGraph(function() {
 chart = nv.models.multiBarChart()
     .barColor(d3.scale.category20().range())
     .duration(300)
-    .margin({bottom: 100, left: 70})
-    .rotateLabels(45)
+    .margin({bottom: 50, left: 70})
     .groupSpacing(0.1)
 ;
 chart.reduceXTicks(false).staggerLabels(true);
 chart.xAxis
     .axisLabel("Crime Categories")
-    .axisLabelDistance(35)
+
     .showMaxMin(false)
     .tickFormat(function (d){
         console.log(military_value[0].values[d].label)
@@ -145,67 +137,44 @@ chart.state.dispatch.on('change', function(state){
 
 <div class="container-fluid-full">
 
-<br>
-  <ul class="breadcrumb">
-    <li>
-      <i class="icon-home"></i>
-      <a href= {% url 'homepage' %}>Home</a>
-      <i class="icon-angle-right"></i>
-      <a href= {% url 'homepage' %}>{{county_obj.state}}</a>
-      <i class="icon-angle-right"></i>
-      <a href= {% url 'homepage' %}>{{county_obj.county_name}}</a>
-      <i class="icon-angle-right"></i>
-    </li>
-    <li><a href="#">{{state}}</a></li>
-  </ul>
-
-
-<div class="container-fluid-full">
-
-  <div  class="span12">
-  <div class="row-fluid">
-    <div class="span3 statbox purple" onTablet="span6" onDesktop="span3">
-      <div><h1>1033 Total</h1></div>
-      <div><h1>{{ ten_thirty_three_total }}<h1></div>
-    </div>
-    <div class="span3 statbox green" onTablet="span6" onDesktop="span3">
-      <div><h1>2015 Killings</h1></div>
-      <div><h1>{{ twenty_fifteen_kills }}</h1></div>
-    </div>
-    <div class="span3 statbox blue noMargin" onTablet="span6" onDesktop="span3">
-      <div><h1>State Population</h1></div>
-      <div><h1>{{ county_obj.pop_est_2015 }}</h1></div>
-    </div>
-    <div class="span3 statbox yellow" onTablet="span6" onDesktop="span3">
-      <div><h1>Violent Crime</h1></div>
-      <div><h1></h1>{{ twenty_fourteen_violent }}</div>
-      <div><h1>Property Crime</h1></div>
-      <div><h1>{{ twenty_fourteen_property }}</h1></div>
-    </div>
-
-  </div>
-
-
 <div  class="span12">
 
-
-
-<div class="row-fluid">
-  <div id="stats-chart-2"  class="span6 widget green" onTablet="span8" onDesktop="span8">
-    <div id="chart1"  style="height:350px" > <svg></svg> </div>
+  <div class="row-fluid">
+    <div class="span3 statbox title purple" onTablet="span6" onDesktop="span3">
+      <div class= "title">1033 Total</div>
+      <div class='number'>{{ ten_thirty_three_total }} </div>
+    </div>
+    <div class="span3 statbox green" onTablet="span6" onDesktop="span3">
+      <div class= "title">2015 Fatal Encounters With Police</div>
+      <div class='number'>{{ twenty_fifteen_kills }} </div>
+    </div>
+    <div class="span3 statbox blue noMargin" onTablet="span6" onDesktop="span3">
+      <div class= "title">State Population</div>
+      <div class='number'>{{ county_pop_twenty_fifteen}} </div>
+    </div>
+    <div class="span3 statbox yellow" onTablet="span6" onDesktop="span3">
+      <div class= "title">Violent Crime : Property Crime</div>
+      <div class='number'>{{ twenty_fourteen_violent }} : {{ twenty_fourteen_property }}</div>
+    </div>
 
   </div>
 
 
-
+  <div class="row-fluid">
+    <div id="stats-chart-2"  class="span6 widget green" onTablet="span8" onDesktop="span8">
+      <div id="chart1"  style="height:300px" > <svg></svg> </div>
+    </div>
     <div id="stats-chart-2"  class="span6 widget purple" onTablet="span8" onDesktop="span8">
-      <div id="chart2"  style="height:350px" > <svg></svg> </div>
-
+      <div id="chart2"  style="height:300px" >
+        <svg></svg>
+      </div>
     </div>
   </div>
 
 
   <div class="row-fluid">
+    <div class="span2"></div>
+
       <div id="stats-chart-2"  class="span8 widget yellow" onTablet="span8" onDesktop="span8">
         <div id="chart6"  style="height:300px" > <svg></svg> </div>
 
@@ -215,8 +184,44 @@ chart.state.dispatch.on('change', function(state){
 
 
 
+  <script>
 
 
+  $(document).ready(function() {
+      $('#example').DataTable( {
+          "dom": '<"toolbar">frtip'
+      } );
+
+      $("div.toolbar").html('<b>County Search</b>');
+  } );
+</script>
+<div class='box'>
+<table id="example" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>County</th>
+                <th>Population</th>
+                <th>Military Items Value</th>
+                <th>Fatal Encounters</th>
+                <th>2014 Violent Crime</th>
+                <th>2014 Property Crime</th>
+            </tr>
+        </thead>
+        <tbody>
+              {% for county in counties_list %}
+            <tr>
+                <td ><a href='/../county/{{county.6}}' >{{county.0}}</a></td>
+                <td>{{ county.1 }}</td>
+                <td>{{ county.2 }}</td>
+                <td>{{ county.3 }}</td>
+                <td>{{ county.4 }}</td>
+                <td>{{ county.5 }}</td>
+            </tr>
+              {% endfor %}
+
+        </tbody>
+    </table>
+<div class='box'>
 
 
 

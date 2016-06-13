@@ -2,7 +2,6 @@
 {% extends 'visualize/base.html' %}
 {% load static %}
 
-<script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 
 
 {% block content %}
@@ -10,29 +9,41 @@
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css"/>
 
+
+
 <div class="container-fluid-full">
 
 <div  class="span12">
 
+<br>
+  <ul class="breadcrumb">
+    <li>
+      <i class="icon-home"></i>
+      <a href= {% url 'homepage' %}>Home</a>
+      <i class="icon-angle-right"></i>
+      <a href= {% url 'homepage' %}>{{ state }}</a>
+      <i class="icon-angle-right"></i>
+    </li>
+  </ul>
+
+
 <div class="row-fluid">
 
   <div id="1033" class="span3 statbox purple" onTablet="span6" onDesktop="span3">
-    <div><h1>1033 Total</h1></div>
-    <div><h1>{{ ten_thirty_three_total }}</h1></div>
+    <div class= "title">1033 Total</div>
+    <div class='number'>{{ ten_thirty_three_total }} </div>
   </div>
   <div id="fatal_encounters" class="span3 statbox green" onTablet="span6" onDesktop="span3">
-    <div><h1>2015 Fatal Encounters With Police</h1></div>
-    <div><h1>{{ state_num }}</h1></div>
+    <div class= "title">2015 Fatal Encounters With Police</div>
+    <div class='number'>{{ state_num }} </div>
   </div>
   <div id="population" class="span3 statbox blue noMargin" onTablet="span6" onDesktop="span3">
-    <div><h1>State Population</h1></div>
-    <div><h1>{{ twenty_fifteen_population }}</h1></div>
+    <div class= "title">State Population</div>
+    <div class='number'>{{ twenty_fifteen_population }} </div>
   </div>
   <div id="crime" class="span3 statbox yellow" onTablet="span6" onDesktop="span3">
-    <div><h1>Violent Crime</h1></div>
-    <div><h1>{{ twenty_fourteen_violent }}</h1></div>
-    <div><h1>Property Crime</h1></div>
-    <div><h1>{{ twenty_fourteen_property }}</h1></div>
+    <div class= "title">Violent Crime : Property Crime</div>
+    <div class='number'>{{ twenty_fourteen_violent }}:{{ twenty_fourteen_property }}</div>
   </div>
 
 </div>
@@ -64,7 +75,10 @@
     </div>
   </div>
   </div>
+
+  <hr>
   <script>
+
 
 
   $(document).ready(function() {
@@ -72,9 +86,10 @@
           "dom": '<"toolbar">frtip'
       } );
 
-      $("div.toolbar").html('<b>Custom tool bar! Text/images etc.</b>');
+      $("div.toolbar").html('<b>County Search</b>');
   } );
 </script>
+<div class='box'>
 <table id="example" class="display" cellspacing="0" width="100%">
         <thead>
             <tr>
@@ -86,32 +101,22 @@
                 <th>2014 Property Crime</th>
             </tr>
         </thead>
-        <tfoot>
-            <tr>
-              <th>County</th>
-              <th>Population</th>
-              <th>Military Items Value</th>
-              <th>Fatal Encounters</th>
-              <th>2014 Violent Crime</th>
-              <th>2014 Property Crime</th>
-            </tr>
-        </tfoot>
         <tbody>
               {% for county in counties_list %}
             <tr>
-                <td ><a href='/../county/{{county.id}}' >{{county}}</a></td>
-                <td>Tiger Nixon</td>
-                <td>System Architect</td>
-                <td>Edinburgh</td>
-                <td>61</td>
-                <td>2011/04/25</td>
+                <td ><a href='/../county/{{county.6}}' >{{county.0}}</a></td>
+                <td>{{ county.1 }}</td>
+                <td>{{ county.2 }}</td>
+                <td>{{ county.3 }}</td>
+                <td>{{ county.4 }}</td>
+                <td>{{ county.5 }}</td>
 
             </tr>
               {% endfor %}
 
         </tbody>
     </table>
-
+  </div>
 </div>
 
 
