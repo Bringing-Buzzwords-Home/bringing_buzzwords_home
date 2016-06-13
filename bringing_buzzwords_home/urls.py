@@ -16,6 +16,8 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^county/(?P<county>\d+)$', views.county, name='county'),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(r'^api/', include(router.urls))]
+    url(r'^api/', include(router.urls)),
+    url(r'^about/$', views.about, name='about')]
+
 
 urlpatterns += staticfiles_urlpatterns()

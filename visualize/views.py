@@ -154,3 +154,7 @@ def county(request, county):
         'ten_thirty_three_total': ten_thirty_three_total,
         }
     return render(request, "visualize/county.html", context)
+
+
+def about(request):
+    return render(request, "visualize/about.html")
