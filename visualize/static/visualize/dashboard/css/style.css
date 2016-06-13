@@ -765,10 +765,10 @@ ul.messages li .message {
 }
 
 .statbox {
-	height: 120px;
+	height: 100px;
 	padding: 10px;
 	position: relative;
-	margin-bottom: 28px;
+	margin-bottom: 10px;
 }
 
 	.statbox .number {

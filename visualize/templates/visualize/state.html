@@ -13,7 +13,14 @@
 <div class="container-fluid-full">
 
 <div  class="span12">
-
+<div class="row-fluid">
+    <div class="span6 statbox transparent" onTablet="span6" onDesktop="span3">
+    <h1>{{long_state_name}}</h1>
+    </div>
+    <div class="span6 statbox transparent" onTablet="span6" onDesktop="span3">
+        <h1>Population: {{twenty_fifteen_population}}</h1>
+    </div>
+</div>
 <div class="row-fluid">
 
   <div id="1033" class="span4 statbox purple" onTablet="span6" onDesktop="span3">
@@ -24,15 +31,11 @@
     <div><h1>{{ state_num }}</h1></div>
     <div><h2>2015 Police Fatal Encounters</h2></div>
   </div>
-  <div id="population" class="span2 statbox blue noMargin" onTablet="span6" onDesktop="span3">
-    <div><h1>{{ twenty_fifteen_population }}</h1></div>
-    <div><h2>Population</h2></div>
-  </div>
-  <div id="crime" class="span2 statbox yellow" onTablet="span6" onDesktop="span3">
+  <div id="violent_crime" class="span3 statbox blue" onTablet="span6" onDesktop="span3">
     <div><h1> {{ twenty_fourteen_violent }}</h1></div>
     <div><h2>Violent Crime</h2></div>
   </div>
-  <div id="crime" class="span2 statbox yellow" onTablet="span6" onDesktop="span3">
+  <div id="property_crime" class="span3 statbox yellow" onTablet="span6" onDesktop="span3">
   <div><h1>{{ twenty_fourteen_property }}</h1></div>
   <div><h2>Property Crime</h2></div>
   </div>
@@ -73,7 +76,7 @@
           "dom": '<"toolbar">frtip'
       } );
 
-      
+
   } );
 </script>
 <table id="example" class="display" cellspacing="0" width="100%">
@@ -150,13 +153,19 @@
             alert('Population!');
         }
   );
-  $('#crime')
+  $('#violent_crime')
+    .css('cursor', 'pointer')
+    .click(function() {
+        $('#stage').html('<div id="stage"><div class="row-fluid"><div id="stats-chart-2"  class="span8 widget blue" onTablet="span8" onDesktop="span8"><div id="top-left"  style="height:200px" ><svg></svg></div></div><div id="stats-chart-2"  class="span4 widget blue" onTablet="span8" onDesktop="span8"><div id="top-right"  style="height:200px"><svg></svg></div></div></div></div>')
+        drawCrimeCategories(data)
+
+  });
+  $('#property_crime')
     .css('cursor', 'pointer')
     .click(function() {
         $('#stage').html('<div id="stage"><div class="row-fluid"><div id="stats-chart-2"  class="span8 widget yellow" onTablet="span8" onDesktop="span8"><div id="top-left"  style="height:200px" ><svg></svg></div></div><div id="stats-chart-2"  class="span4 widget yellow" onTablet="span8" onDesktop="span8"><div id="top-right"  style="height:200px"><svg></svg></div></div></div></div>')
         drawCrimeCategories(data)
-
-  });
+    })
   function drawMilitary(){
       drawCategories(data)
       drawLineDollars(data)
