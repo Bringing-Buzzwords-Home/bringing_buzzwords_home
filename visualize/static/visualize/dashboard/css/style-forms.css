@@ -17,7 +17,7 @@ input[type="tel"],
 input[type="color"],
 input[type="file"],
 .uneditable-input {
-  border-color: #eee !important;	
+  border-color: #eee !important;
   display: inline-block;
   height: 20px;
   padding: 4px 6px;
@@ -265,13 +265,13 @@ textarea,
 }
 
 .controls-row [class*="span"] + [class*="span"] {
-  margin-left: 20px;
+  margin-left: 10px;
 }
 
-input.span12,
-textarea.span12,
-.uneditable-input.span12 {
-  width: 926px;
+input.span14,
+textarea.span14,
+.uneditable-input.span14 {
+  width: 1086px;
 }
 
 input.span11,
@@ -331,7 +331,7 @@ textarea.span3,
 input.span2,
 textarea.span2,
 .uneditable-input.span2 {
-  width: 126px;
+  width: 110px;
 }
 
 input.span1,
