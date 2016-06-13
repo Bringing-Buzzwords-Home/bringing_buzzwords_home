@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from .models import County, GuardianCounted, Geo, Item, Station, Crime, State
 from .utilities import states, get_dollars_donated_by_year, format_money
 from .utilities import get_state_deaths, get_state_deaths_over_time, make_state_categories
-from .utilities import get_state_crime, get_county_deaths, counties_list
+from .utilities import get_state_crime, get_county_deaths, create_counties_list
 from .utilities import create_county_crime, make_per_capita_guns, state_abbrev
 from .utilities import get_categories_per_capita, format_integer
 from rest_framework import viewsets
@@ -38,7 +38,7 @@ def state(request, state):
                'state_num': state_deaths['2015 {} Fatal Encounters'.format(states[state])],
                'average': state_deaths['2015 Average Fatal Encounters'],
                'long_state_name': states[state],
-               'counties_list': counties_list(state),
+               'counties_list': create_counties_list(state),
                'categories': categories,
                'twenty_fourteen_violent': format_integer(state_obj.total_violent_crime),
                'twenty_fourteen_property': format_integer(state_obj.total_property_crime),
@@ -75,7 +75,7 @@ def county(request, county):
     twenty_fourteen_violent = int(Crime.objects.filter(year='2014-01-01', county=county).aggregate(Sum('violent_crime'))['violent_crime__sum'])
     twenty_fourteen_property = int(Crime.objects.filter(year='2014-01-01', county=county).aggregate(Sum('property_crime'))['property_crime__sum'])
     ten_thirty_three_total = int(Item.objects.filter(county=county).aggregate(Sum('Total_Value'))['Total_Value__sum'])
-    twenty_fifteen_kills = float(GuardianCounted.objects.filter(county=county, date__year=2015).count())
+    twenty_fifteen_kills = int(GuardianCounted.objects.filter(county=county, date__year=2015).count())
     county_crime = [twenty_fourteen_violent, twenty_fourteen_property]
     crimes_list = list(Crime.objects.filter(county=county))
 
@@ -139,7 +139,7 @@ def county(request, county):
                      'label': 'Military Equpment Value'}]
 
 
-    average_military_value = [{'key': 'Average County Military Values in US', 'values': national_value_military_avg}, {'key': '{} Average County Military Equipment Value'.format(states[state]),'values': state_value_military_avg}, {'key': '{} Military Equipment Value'.format(county_obj.county_name), 'values': county_value_military_avg}]
+    average_military_value = [{'key': 'Average US County', 'values': national_value_military_avg}, {'key': 'Average County in {}'.format(states[state]),'values': state_value_military_avg}, {'key': '{}'.format(county_obj.county_name), 'values': county_value_military_avg}]
 
     context = {
         'military_value': mark_safe(json.dumps(average_military_value)),
@@ -148,9 +148,11 @@ def county(request, county):
         'county': county,
         'county_obj': county_obj,
         'crimes_list': crimes_list,
-        'twenty_fourteen_violent': twenty_fourteen_violent,
-        'twenty_fourteen_property': twenty_fourteen_property,
-        'twenty_fifteen_kills': twenty_fifteen_kills,
-        'ten_thirty_three_total': ten_thirty_three_total,
+        'twenty_fourteen_violent': format_integer(twenty_fourteen_violent),
+        'twenty_fourteen_property': format_integer(twenty_fourteen_property),
+        'twenty_fifteen_kills': format_integer(twenty_fifteen_kills),
+        'ten_thirty_three_total': format_money(ten_thirty_three_total),
+        'counties_list': create_counties_list(state),
+        'county_pop_twenty_fifteen': format_integer(county_obj.pop_est_2015)
         }
     return render(request, "visualize/county.html", context)

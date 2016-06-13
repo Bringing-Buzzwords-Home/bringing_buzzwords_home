@@ -712,8 +712,22 @@ def get_county_deaths(county):
     return county_deaths
 
 
-def counties_list(state):
-    counties = list(County.objects.filter(state=states[state]))
+def create_counties_list(state):
+    counties_list = (County.objects.filter(state=states[state]))
+    counties = []
+    for county in counties_list:
+        items_value = (Item.objects.filter(county=county).aggregate(Sum('Total_Value'))['Total_Value__sum'])
+        fatal_encounters = (GuardianCounted.objects.filter(county=county, date__year=2015).count())
+        twenty_fourteen_violent = Crime.objects.filter(year='2014-01-01', county=county).aggregate(Sum('violent_crime'))['violent_crime__sum']
+        twenty_fourteen_property = Crime.objects.filter(year='2014-01-01', county=county).aggregate(Sum('property_crime'))['property_crime__sum']
+        counties.append([county.county_name,
+                        county.pop_est_2015,
+                        items_value,
+                        fatal_encounters,
+                        twenty_fourteen_violent,
+                        twenty_fourteen_property,
+                        county.id,
+                        ])
     return counties
 
 
