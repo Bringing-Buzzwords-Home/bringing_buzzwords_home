@@ -108,18 +108,21 @@ function drawLineDeaths(data){
            duration: 300,
            useInteractiveGuideline: true
        })
+       .margin({top: 5, right: 25, bottom: 50, left: 30})
    ;
    // chart sub-models (ie. xAxis, yAxis, etc) when accessed directly, return themselves, not the parent chart, so need to chain separately
    chart.xAxis
        .axisLabel("Months")
        .tickFormat(function (d){
-             return d3.time.format('%b %y')(new Date(d))
+             var date = d3.time.format('%b %y')(new Date(d))
+             var first = date.slice(0,3)
+             var last = date.slice(4,6)
+             return first + " '" + last
        })
        .showMaxMin(true)
 
    ;
    chart.yAxis
-       .axisLabel('Deaths')
        .tickFormat(function(d) {
            if (d == null) {
                return 'N/A';
