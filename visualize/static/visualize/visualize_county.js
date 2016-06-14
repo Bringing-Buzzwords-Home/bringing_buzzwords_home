@@ -1,7 +1,7 @@
 function drawAvgPropCrime(prop_crime){
       nv.addGraph(function() {
           var chart = nv.models.multiBarChart()
-              .color(["#1f77b4", "#ff7f0e", "#2ca02c"])
+              .color(["#028090", "#E4FDE1", "#456990"])
               .duration(300)
               .margin({bottom: 50, left: 70})
               .groupSpacing(0.1)
@@ -40,7 +40,7 @@ function drawAvgPropCrime(prop_crime){
 function drawAvgPropCrimePerCap(prop_crime_per_cap){
       nv.addGraph(function() {
           var chart = nv.models.multiBarChart()
-              .barColor(d3.scale.category20().range())
+              .color(["#028090", "#E4FDE1", "#456990"])
               .duration(300)
               .margin({bottom: 50, left: 70})
               .groupSpacing(0.1)
@@ -80,7 +80,7 @@ function drawAvgPropCrimePerCap(prop_crime_per_cap){
 function drawAvgViolCrime(viol_crime){
       nv.addGraph(function() {
           var chart = nv.models.multiBarChart()
-              .barColor(d3.scale.category20().range())
+              .color(["#028090", "#E4FDE1", "#456990"])
               .duration(300)
               .margin({bottom: 50, left: 70})
               .groupSpacing(0.1)
@@ -119,7 +119,7 @@ function drawAvgViolCrime(viol_crime){
 function drawAvgViolCrimePerCap(viol_crime_per_cap){
       nv.addGraph(function() {
           var chart = nv.models.multiBarChart()
-              .barColor(d3.scale.category20().range())
+              .color(["#028090", "#E4FDE1", "#456990"])
               .duration(300)
               .margin({bottom: 50, left: 70})
               .groupSpacing(0.1)
@@ -158,7 +158,7 @@ function drawAvgViolCrimePerCap(viol_crime_per_cap){
 function drawFatalEncounters(average_fatal_encounters){
       nv.addGraph(function() {
         chart = nv.models.multiBarChart()
-            .barColor(d3.scale.category20().range())
+            .color(["#028090", "#E4FDE1", "#456990"])
             .duration(300)
             .margin({bottom: 50, left: 70})
             .groupSpacing(0.1)
@@ -176,7 +176,7 @@ function drawFatalEncounters(average_fatal_encounters){
         chart.yAxis
             .axisLabel("# of Fatal Encounters")
             .axisLabelDistance(-5)
-            .tickFormat(d3.format(',.01e'))
+            .tickFormat(d3.format(',.01f'))
         ;
         chart.dispatch.on('renderEnd', function(){
             nv.log('Render Complete');
@@ -198,7 +198,7 @@ function drawFatalEncounters(average_fatal_encounters){
 function drawFatalEncountersPerCapita(average_fatal_encounters_per_cap){
       nv.addGraph(function() {
         chart = nv.models.multiBarChart()
-            .barColor(d3.scale.category20().range())
+            .color(["#028090", "#E4FDE1", "#456990"])
             .duration(300)
             .margin({bottom: 50, left: 70})
             .groupSpacing(0.1)
@@ -235,7 +235,7 @@ function drawFatalEncountersPerCapita(average_fatal_encounters_per_cap){
 function drawMilitaryValue(military_value){
       nv.addGraph(function() {
         chart = nv.models.multiBarChart()
-            .barColor(d3.scale.category20().range())
+            .color(["#028090", "#E4FDE1", "#456990"])
             .duration(300)
             .margin({bottom: 50, left: 70})
             .groupSpacing(0.1)
@@ -273,7 +273,7 @@ function drawMilitaryValue(military_value){
 function drawMilitaryValuePerCap(military_value_per_cap){
       nv.addGraph(function() {
         chart = nv.models.multiBarChart()
-            .barColor(d3.scale.category20().range())
+            .color(["#028090", "#E4FDE1", "#456990"])
             .duration(300)
             .margin({bottom: 50, left: 70})
             .groupSpacing(0.1)
