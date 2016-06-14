@@ -6,8 +6,12 @@
 {% block content %}
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css"/>
-
-
+<style>
+.dataTables_wrapper .dataTables_filter {
+  float: left;
+  text-align: left;
+}
+</style>
 
 <div class="container-fluid-full">
 
@@ -15,14 +19,13 @@
 
 
   <div class="row-fluid">
-      <div class="span6 statbox transparent" onTablet="span6" onDesktop="span3">
+
       <h1>{{county_obj.county_name}} </h1>
+      <h2>Population: {{county_pop_twenty_fifteen}}</h2>
       <h2> <a href = "{% url 'state' state_abbrev %}" > Return to {{ county_obj.state }}'s Page</a> </h2>
+
       </div>
-      <div class="span6 statbox transparent" onTablet="span6" onDesktop="span3">
-          <h1>Population: {{county_pop_twenty_fifteen}}</h1>
-      </div>
-  </div>
+
   <div class="row-fluid">
 
     <div id="1033" class="span4 statbox blueLight" onTablet="span6" onDesktop="span3">
@@ -68,14 +71,17 @@
 
   $(document).ready(function() {
       $('#example').DataTable( {
-          "dom": '<"toolbar">frtip'
+          "dom": 'frtip'
       } );
 
-      $("div.toolbar").html('<b>County Search</b>');
+
   } );
 </script>
 
 <div class='box'>
+  <h1>Click on County Name to see County Page</h1>
+  <h6>*County was ommitted if data was missing</h6>
+
 <table id="example" class="display" cellspacing="0" width="100%">
         <thead>
             <tr>
@@ -90,7 +96,7 @@
         <tbody>
               {% for county in counties_list %}
             <tr>
-                <td ><a href='/../county/{{county.6}}' >{{county.0}}</a></td>
+                <td ><a href='/../county/{{county.6}}' >{{ county.0 }}</a></td>
                 <td>{{ county.1 }}</td>
                 <td>{{ county.2 }}</td>
                 <td>{{ county.3 }}</td>
@@ -102,6 +108,7 @@
         </tbody>
     </table>
 
+</div>
   <script>
 
   average_fatal_encounters = {{ average_fatal_encounters }};
