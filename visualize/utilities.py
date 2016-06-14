@@ -721,14 +721,17 @@ def create_counties_list(state):
         fatal_encounters = (GuardianCounted.objects.filter(county=county, date__year=2015).count())
         twenty_fourteen_violent = Crime.objects.filter(year='2014-01-01', county=county).aggregate(Sum('violent_crime'))['violent_crime__sum']
         twenty_fourteen_property = Crime.objects.filter(year='2014-01-01', county=county).aggregate(Sum('property_crime'))['property_crime__sum']
-        counties.append([county.county_name,
-                        county.pop_est_2015,
-                        items_value,
-                        fatal_encounters,
-                        twenty_fourteen_violent,
-                        twenty_fourteen_property,
+        try:
+            counties.append([county.county_name,
+                        format_integer(int(county.pop_est_2015)),
+                        format_money(float(items_value)),
+                        format_integer(int(fatal_encounters)),
+                        format_integer(int(twenty_fourteen_violent)),
+                        format_integer(int(twenty_fourteen_property)),
                         county.id,
                         ])
+        except:
+            pass
     return counties
 
 
