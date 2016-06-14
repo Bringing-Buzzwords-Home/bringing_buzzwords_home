@@ -944,19 +944,19 @@ def get_prop_crime_data_per_cap(
                         county_property, state, county_obj, us_population,
                         state_pop, county_pop, state_obj):
     national_values_prop_per_cap = [{'x': 0,
-                        'y': float(State.objects.all().aggregate(Sum('total_property_crime'))['total_property_crime__sum']/us_population),
-                        'label': 'Property Crime Per Capita'}]
+                        'y': float(State.objects.all().aggregate(Sum('total_property_crime'))['total_property_crime__sum']/us_population)*1000,
+                        'label': 'Property Crime Per 1,000 Residents'}]
     state_values_prop_per_cap = [{'x': 0,
-                     'y': float((state_obj.total_property_crime)/state_pop),
-                     'label': 'Property Crime Per Capita'}]
+                     'y': float((state_obj.total_property_crime)/state_pop)*1000,
+                     'label': 'Property Crime Per 1,000 Residents'}]
     county_values_prop_per_cap = [{'x': 0,
-                     'y': float(county_property/county_pop),
-                     'label': 'Property Crime Per Capita'}]
-    average_state_crime_prop_per_cap = [{'key': 'Avg US Citizen',
+                     'y': float(county_property/county_pop)*1000,
+                     'label': 'Property Crime Per 1,000 Residents'}]
+    average_state_crime_prop_per_cap = [{'key': 'Avg in US',
                                         'values': national_values_prop_per_cap},
-                                        {'key': 'Avg {} Resident'.format(states[state]),
+                                        {'key': 'Avg in {}'.format(states[state]),
                                         'values': state_values_prop_per_cap},
-                                        {'key': 'Avg {} Resident'.format(county_obj.county_name),
+                                        {'key': '{}'.format(county_obj.county_name),
                                         'values': county_values_prop_per_cap}]
     return average_state_crime_prop_per_cap
 
@@ -989,19 +989,19 @@ def get_viol_crime_data_per_cap(
                         county_violent, state, county_obj, us_population,
                         state_pop, county_pop, state_obj):
     national_values_prop_per_cap = [{'x': 0,
-                        'y':  float(State.objects.all().aggregate(Sum('total_violent_crime'))['total_violent_crime__sum']/us_population),
-                        'label': 'Violent Crime Per Capita'}]
+                        'y':  float(State.objects.all().aggregate(Sum('total_violent_crime'))['total_violent_crime__sum']/us_population)*1000,
+                        'label': 'Violent Crime Per 1,000 Residents'}]
     state_values_prop_per_cap = [{'x': 0,
-                     'y': float((state_obj.total_violent_crime)/state_pop),
-                     'label': 'Violent Crime Per Capita'}]
+                     'y': float((state_obj.total_violent_crime)/state_pop)*1000,
+                     'label': 'Violent Crime Per 1,000 Residents'}]
     county_values_prop_per_cap = [{'x': 0,
-                     'y': float(county_violent/county_pop),
-                     'label': 'Violent Crime Per Capita'}]
-    average_state_crime_viol_per_cap = [{'key': 'Avg US Citizen',
+                     'y': float(county_violent/county_pop)*1000,
+                     'label': 'Violent Crime Per 1,000 Residents'}]
+    average_state_crime_viol_per_cap = [{'key': 'Avg in US',
                                         'values': national_values_prop_per_cap},
-                                        {'key': 'Avg {} Resident'.format(states[state]),
+                                        {'key': 'Avg in {}'.format(states[state]),
                                         'values': state_values_prop_per_cap},
-                                        {'key': 'Avg {} Resident'.format(county_obj.county_name),
+                                        {'key': '{}'.format(county_obj.county_name),
                                         'values': county_values_prop_per_cap}]
     return average_state_crime_viol_per_cap
 

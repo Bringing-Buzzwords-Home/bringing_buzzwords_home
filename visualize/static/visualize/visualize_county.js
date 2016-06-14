@@ -56,9 +56,8 @@ function drawAvgPropCrimePerCap(prop_crime_per_cap){
               })
           ;
           chart.yAxis
-              .axisLabel("# of Crimes Per Capita")
               .axisLabelDistance(-5)
-              .tickFormat(d3.format(',.01e'))
+              .tickFormat(d3.format(',.01f'))
           ;
           chart.dispatch.on('renderEnd', function(){
               nv.log('Render Complete');
@@ -136,9 +135,8 @@ function drawAvgViolCrimePerCap(viol_crime_per_cap){
               })
           ;
           chart.yAxis
-              .axisLabel("# of Crimes Per Capita")
               .axisLabelDistance(-5)
-              .tickFormat(d3.format(',.01e'))
+              .tickFormat(d3.format(',.01f'))
           ;
           chart.dispatch.on('renderEnd', function(){
               nv.log('Render Complete');
