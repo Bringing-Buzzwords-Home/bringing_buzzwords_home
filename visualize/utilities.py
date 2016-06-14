@@ -924,13 +924,13 @@ def get_prop_crime_data(state, county_obj, total_num_counties_in_country,
     county_property = int(Crime.objects.filter(year='2014-01-01', county=county).aggregate(Sum('property_crime'))['property_crime__sum'])
     national_values_prop = [{'x': 0,
                         'y': country_property_county_avg,
-                        'label': 'Property Crime '}]
+                        'label': '2014 Property Crime '}]
     state_values_prop = [{'x': 0,
                      'y': state_property_county_avg,
-                     'label': 'Property Crime'}]
+                     'label': '2014 Property Crime'}]
     county_values_prop = [{'x': 0,
                      'y': county_property,
-                     'label': 'Property Crime'}]
+                     'label': '2014 Property Crime'}]
     average_state_crime_prop = [{'key': 'Avg County in US',
                                 'values': national_values_prop},
                                 {'key': 'Avg County in {}'.format(states[state]),
@@ -945,13 +945,13 @@ def get_prop_crime_data_per_cap(
                         state_pop, county_pop, state_obj):
     national_values_prop_per_cap = [{'x': 0,
                         'y': float(State.objects.all().aggregate(Sum('total_property_crime'))['total_property_crime__sum']/us_population)*1000,
-                        'label': 'Property Crime Per 1,000 Residents'}]
+                        'label': '2014 Property Crime Per 1,000 Residents'}]
     state_values_prop_per_cap = [{'x': 0,
                      'y': float((state_obj.total_property_crime)/state_pop)*1000,
-                     'label': 'Property Crime Per 1,000 Residents'}]
+                     'label': '2014 Property Crime Per 1,000 Residents'}]
     county_values_prop_per_cap = [{'x': 0,
                      'y': float(county_property/county_pop)*1000,
-                     'label': 'Property Crime Per 1,000 Residents'}]
+                     'label': '2014 Property Crime Per 1,000 Residents'}]
     average_state_crime_prop_per_cap = [{'key': 'Avg in US',
                                         'values': national_values_prop_per_cap},
                                         {'key': 'Avg in {}'.format(states[state]),
@@ -969,13 +969,13 @@ def get_viol_crime_data(state, county_obj, total_num_counties_in_country,
 
     national_values_viol = [{'x': 0,
                         'y': country_property_violent_avg,
-                        'label': 'Violent Crime'}]
+                        'label': '2014 Violent Crime'}]
     state_values_viol = [{'x': 0,
                      'y': state_property_violent_avg,
-                     'label': 'Violent Crime'}]
+                     'label': '2014 Violent Crime'}]
     county_values_viol = [{'x': 0,
                      'y': county_violent,
-                     'label': 'Violent Crime'}]
+                     'label': '2014 Violent Crime'}]
 
     average_state_crime_viol = [{'key': 'Avg County in US',
                                 'values': national_values_viol},
@@ -990,13 +990,13 @@ def get_viol_crime_data_per_cap(
                         state_pop, county_pop, state_obj):
     national_values_prop_per_cap = [{'x': 0,
                         'y':  float(State.objects.all().aggregate(Sum('total_violent_crime'))['total_violent_crime__sum']/us_population)*1000,
-                        'label': 'Violent Crime Per 1,000 Residents'}]
+                        'label': '2014 Violent Crime Per 1,000 Residents'}]
     state_values_prop_per_cap = [{'x': 0,
                      'y': float((state_obj.total_violent_crime)/state_pop)*1000,
-                     'label': 'Violent Crime Per 1,000 Residents'}]
+                     'label': '2014 Violent Crime Per 1,000 Residents'}]
     county_values_prop_per_cap = [{'x': 0,
                      'y': float(county_violent/county_pop)*1000,
-                     'label': 'Violent Crime Per 1,000 Residents'}]
+                     'label': '2014 Violent Crime Per 1,000 Residents'}]
     average_state_crime_viol_per_cap = [{'key': 'Avg in US',
                                         'values': national_values_prop_per_cap},
                                         {'key': 'Avg in {}'.format(states[state]),
