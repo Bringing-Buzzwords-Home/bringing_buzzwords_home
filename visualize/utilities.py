@@ -629,7 +629,7 @@ def item_categories():
             item.save()
 
         elif item.Item_Name == 'MINE RESISTANT VEHICLE':
-            item.Category = 'Mine Resistant Vehicle'
+            item.Category = 'MRAP'
             item.save()
 
         elif item.Item_Name in ['ONLY COMPLETE COMBAT/ASSAULT/TACTICAL WHEELED VEHICLES',
