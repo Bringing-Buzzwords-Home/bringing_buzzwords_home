@@ -241,14 +241,16 @@ function drawPerCapitaViolentCrime(data){
             ;
             chart.yAxis
                 .axisLabel('Violent Crime')
-                .tickFormat(d3.format(',.01e'))
+                .tickFormat(d3.format(',.01f'))
             d3.select('#top-left svg')
                 .datum(data.per_capita_violent_crime)
                 .call(chart);
 
             nv.utils.windowResize(chart.update);
             return chart;
-        })}
+        })
+    
+}
 
 function drawAvgPropertyCrime(data){
     nv.addGraph(function() {
@@ -283,14 +285,17 @@ function drawPerCapitaPropertyCrime(data){
             ;
             chart.yAxis
                 .axisLabel('Property Crime')
-                .tickFormat(d3.format(',.01e'))
+                .tickFormat(d3.format(',.01f'))
             d3.select('#top-left svg')
                 .datum(data.per_capita_property_crime)
                 .call(chart);
 
             nv.utils.windowResize(chart.update);
             return chart;
-        })}
+
+        })
+
+    }
 // d3.json("{% url 'state_json' state %}", function(error, json) {
 //   if (error) return console.warn(error);
 //   data = json;

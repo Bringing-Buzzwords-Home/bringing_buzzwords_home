@@ -819,10 +819,10 @@ def get_state_violent_crime(state_obj):
                                       'value': state_violent_crime}]}]
 
     per_capita_violent_crime = [{'key': '2014 Per Capita Violent Crime',
-                                'values': [{'label': 'National Violent Crime Per Capita',
-                                            'value': (national_violent_crime['total_violent_crime__sum'] / us_population['total'])},
-                                           {'label': '{} Violent Crime Per Capita'.format(states[state_obj.state]),
-                                            'value': state_violent_crime / state_population}]}]
+                                'values': [{'label': 'National Violent Crime Per Thousand',
+                                            'value': (national_violent_crime['total_violent_crime__sum'] / us_population['total'] * 1000)},
+                                           {'label': '{} Violent Crime Per Thousand'.format(states[state_obj.state]),
+                                            'value': (state_violent_crime / state_population * 1000)}]}]
     return avg_violent_crime, per_capita_violent_crime
 
 
@@ -840,10 +840,10 @@ def get_state_property_crime(state_obj):
                                       'value': state_property_crime}]}]
 
     per_capita_property_crime = [{'key': '2014 Per Capita Property Crime',
-                                  'values': [{'label': 'National Property Crime Per Capita',
-                                              'value': (national_property_crime['total_property_crime__sum'] / us_population['total'])},
-                                             {'label': '{} Property Crime Per Capita'.format(states[state_obj.state]),
-                                              'value': state_property_crime / state_population}]}]
+                                  'values': [{'label': 'National Property Crime Per Thousand',
+                                              'value': (national_property_crime['total_property_crime__sum'] / us_population['total'] * 1000)},
+                                             {'label': '{} Property Crime Per Thousand'.format(states[state_obj.state]),
+                                              'value': (state_property_crime / state_population * 1000)}]}]
     return avg_property_crime, per_capita_property_crime
 
 # def get_state_crime(state):
