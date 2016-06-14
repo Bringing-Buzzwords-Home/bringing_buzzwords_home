@@ -1009,13 +1009,13 @@ def get_fatal_encounters(state, county_obj, total_num_counties_in_country,
         country_fatal_encounters_avg = float(State.objects.all().aggregate(Sum('total_deaths_twentyfifteen'))['total_deaths_twentyfifteen__sum']/total_num_counties_in_country)
         national_values_deaths = [{'x': 0,
                             'y': country_fatal_encounters_avg,
-                            'label': 'Fatal Encounters'}]
+                            'label': '2015 Fatal Encounters'}]
         state_values_deaths = [{'x': 0,
                          'y': state_fatal_encounters_avg,
-                         'label': 'Fatal Encounters'}]
+                         'label': '2015 Fatal Encounters'}]
         county_values_deaths = [{'x': 0,
                          'y': county_fatal_encounters,
-                         'label': 'Fatal Encounters'}]
+                         'label': '2015 Fatal Encounters'}]
 
 
         average_fatal_encounters = [{'key': 'Avg County in US',
@@ -1031,13 +1031,13 @@ def get_fatal_encounters_per_cap(county_fatal_encounters, us_population,
                         state_pop, state, county_obj, state_obj, county_pop):
         national_values_deaths_per_cap = [{'x': 0,
                             'y': float(State.objects.all().aggregate(Sum('total_deaths_twentyfifteen'))['total_deaths_twentyfifteen__sum']/us_population),
-                            'label': 'Fatal Encounters Per Capita'}]
+                            'label': '2015 Fatal Encounters Per Capita'}]
         state_values_deaths_per_cap  = [{'x': 0,
                          'y': float((state_obj.total_deaths_twentyfifteen)/state_pop),
-                         'label': 'Fatal Encounters Per Capita'}]
+                         'label': '2015 Fatal Encounters Per Capita'}]
         county_values_deaths_per_cap  = [{'x': 0,
                          'y': float(county_fatal_encounters/county_pop),
-                         'label': 'Fatal Encounters Per Capita'}]
+                         'label': '2015 Fatal Encounters Per Capita'}]
         average_fatal_encounters_per_cap = [{'key': 'Avg US Citizen',
                                     'values': national_values_deaths_per_cap },
                                     {'key': 'Avg {} Resident'.format(states[state]),
