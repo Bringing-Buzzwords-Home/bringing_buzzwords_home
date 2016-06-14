@@ -113,7 +113,7 @@ function drawLineDeaths(data){
    chart.xAxis
        .axisLabel("Months")
        .tickFormat(function (d){
-             return d3.time.format('%B %Y')(new Date(d))
+             return d3.time.format('%b %y')(new Date(d))
        })
        .showMaxMin(true)
 
@@ -127,7 +127,6 @@ function drawLineDeaths(data){
            return d3.format(',.01f')(d);
        })
    ;
-
    d3.select('#top-left').append('svg')
        .datum(data.deaths_over_time)
        .call(chart);
@@ -249,7 +248,7 @@ function drawPerCapitaViolentCrime(data){
             nv.utils.windowResize(chart.update);
             return chart;
         })
-    
+
 }
 
 function drawAvgPropertyCrime(data){

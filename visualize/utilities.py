@@ -1,6 +1,3 @@
-# import matplotlib
-# matplotlib.use('Agg')
-# import matplotlib.pyplot as plt
 from django.core.exceptions import ObjectDoesNotExist
 from .models import County, GuardianCounted, Item, Crime, State
 import csv
