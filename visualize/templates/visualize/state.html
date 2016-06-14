@@ -141,7 +141,7 @@
   $('#fatal_encounters')
     .css('cursor', 'pointer')
     .click(function() {
-        $('#stage').html('<div id="stage"><div class="row-fluid"><div id="stats-chart-2"  class="span8 widget green" onTablet="span8" onDesktop="span8"><div id="top-left"  style="height:200px" ></div></div><div id="stats-chart-2"  class="span4 widget green" onTablet="span8" onDesktop="span8"><div id="top-right"  style="height:200px"><svg></svg></div></div></div></div>')
+        $('#stage').html('<div id="stage"><div class="row-fluid"><div id="stats-chart-2"  class="span6 widget green" onTablet="span8" onDesktop="span8"><div id="top-left"  style="height:200px" ></div></div><div id="stats-chart-2"  class="span6 widget green" onTablet="span8" onDesktop="span8"><div id="top-right"  style="height:200px"><svg></svg></div></div></div></div>')
         drawLineDeaths(data)
         drawStateDeaths(data)
   });
@@ -158,6 +158,8 @@
         $('#stage').html('<div id="stage"><div class="row-fluid"><div id="stats-chart-2"  class="span6 widget blue" onTablet="span8" onDesktop="span8"><div id="top-left"  style="height:200px" ><svg></svg></div></div><div id="stats-chart-2"  class="span6 widget blue" onTablet="span8" onDesktop="span8"><div id="top-right"  style="height:200px"><svg></svg></div></div></div></div>')
         drawAvgViolentCrime(data)
         drawPerCapitaViolentCrime(data)
+        var $svg = $('##top-left svg');
+        $svg.parent().append('<div class="chart-title">Violent Crime Per Thousand People</div>');
 
   });
   $('#property_crime')
@@ -166,6 +168,8 @@
         $('#stage').html('<div id="stage"><div class="row-fluid"><div id="stats-chart-2"  class="span6 widget yellow" onTablet="span8" onDesktop="span8"><div id="top-left"  style="height:200px" ><svg></svg></div></div><div id="stats-chart-2"  class="span6 widget yellow" onTablet="span8" onDesktop="span8"><div id="top-right"  style="height:200px"><svg></svg></div></div></div></div>')
         drawAvgPropertyCrime(data)
         drawPerCapitaPropertyCrime(data)
+        var $svg = $('##top-left svg');
+        $svg.parent().append('<div class="chart-title">Property Crime Per Thousand People</div>');
     })
   function drawMilitary(){
       drawCategories(data)
