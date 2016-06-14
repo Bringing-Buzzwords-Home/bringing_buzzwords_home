@@ -1,8 +1,8 @@
 function tooltipHtml(n, d){	/* function to create html content string in tooltip div. */
 	if (!d) return ''
 	return "<h4>"+n+"</h4><table>"+
-		"<tr><td>Military Equipment</td><td>"+(d.dollars)+"</td></tr>"+
-		"<tr><td>Fatal Police Encounters</td><td>"+(d.deaths)+"</td></tr>"+
+		"<tr><td>Military Equip.</td><td>"+(d.dollars)+"</td></tr>"+
+		"<tr><td>Killed by Police</td><td>"+(d.deaths)+"</td></tr>"+
 		"<tr><td>Violent Crimes</td><td>"+(d.violent)+"</td></tr>"+
 		"<tr><td>Property Crimes</td><td>"+(d.property)+"</td></tr>"+
 		"</table>";
@@ -12,7 +12,7 @@ $.getJSON("/api/state/", function(data) {
 	var sampleData = {};
 
 	data.results.forEach(function(state) {
-		var dollars = state.total_military_dollars
+		var dollars = Math.round(state.total_military_dollars)
 		var population = state.total_population_twentyfifteen
 		var violent = state.total_violent_crime
 		var deaths = state.total_deaths_twentyfifteen
