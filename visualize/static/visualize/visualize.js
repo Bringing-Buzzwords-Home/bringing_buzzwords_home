@@ -8,7 +8,13 @@ function drawStateDeaths(data){
             .showValues(true)
             .duration(250)
             ;
-
+            chart.yAxis
+                .tickFormat(function(d) {
+                    if (d == null) {
+                        return 'N/A';
+                    }
+                    return d3.format(',.0f')(d);
+                })
             d3.select('#top-right svg')
                 .datum(data.state_deaths)
                 .call(chart);
@@ -21,13 +27,13 @@ function drawPerCapitaAssaultRifles(data){
       nv.addGraph(function() {
           chart = nv.models.multiBarChart()
             .duration(300)
-            .margin({bottom: 100, left: 70})
+            .margin({bottom: 100, left: 100})
             // .rotateLabels(45)
             .groupSpacing(0.1)
           ;
           chart.reduceXTicks(false).staggerLabels(true);
           chart.xAxis
-            .axisLabel("Categories")
+            .axisLabel("Items Per Ten Thousand People")
             .axisLabelDistance(35)
             .showMaxMin(false)
             .tickValues(data.per_capita_nums)
@@ -39,7 +45,7 @@ function drawPerCapitaAssaultRifles(data){
           chart.yAxis
             .axisLabel("Per Capita Guns and Knives")
             .axisLabelDistance(-5)
-            .tickFormat(d3.format(',.01e'))
+            .tickFormat(d3.format(',.01g'))
           ;
           chart.dispatch.on('renderEnd', function(){
             nv.log('Render Complete');
@@ -60,7 +66,7 @@ function drawCategories(data){
    nv.addGraph(function (){
        chart = nv.models.multiBarChart()
          .duration(300)
-         .margin({bottom: 100, left: 70})
+         .margin({bottom: 100, left: 100})
         //  .rotateLabels(45)
          .groupSpacing(0.1)
        ;
@@ -78,7 +84,7 @@ function drawCategories(data){
        chart.yAxis
          .axisLabel("Number of Items")
          .axisLabelDistance(-5)
-         .tickFormat(d3.format(',.01f'))
+         .tickFormat(d3.format(',.0f'))
        ;
        chart.dispatch.on('renderEnd', function(){
          nv.log('Render Complete');
@@ -109,7 +115,8 @@ function drawLineDeaths(data){
        .tickFormat(function (d){
              return d3.time.format('%B %Y')(new Date(d))
        })
-       .staggerLabels(true)
+       .showMaxMin(true)
+
    ;
    chart.yAxis
        .axisLabel('Deaths')
@@ -117,7 +124,7 @@ function drawLineDeaths(data){
            if (d == null) {
                return 'N/A';
            }
-           return d3.format(',.2f')(d);
+           return d3.format(',.01f')(d);
        })
    ;
 
@@ -151,7 +158,7 @@ function drawLineDollars(data){
             if (d == null) {
                 return 'N/A';
             }
-            return d3.format(',.2f')(d);
+            return d3.format(',.2s')(d);
         })
     ;
 
@@ -172,7 +179,7 @@ function drawPerCapitaCategories(data){
   ;
   chart.reduceXTicks(false).staggerLabels(true);
   chart.xAxis
-      .axisLabel("Categories")
+      .axisLabel("Items per Ten Thousand People")
       .axisLabelDistance(35)
       .showMaxMin(false)
       .tickValues(data.category_nums)
@@ -184,7 +191,7 @@ function drawPerCapitaCategories(data){
   chart.yAxis
       .axisLabel("Per Capita Number of Items")
       .axisLabelDistance(-5)
-      .tickFormat(d3.format(',.01e'))
+      .tickFormat(d3.format(',.01g'))
   ;
   chart.dispatch.on('renderEnd', function(){
       nv.log('Render Complete');
@@ -213,6 +220,7 @@ function drawAvgViolentCrime(data){
             ;
             chart.yAxis
                 .axisLabel('Violent Crime')
+                .tickFormat(d3.format(',.0f'))
             d3.select('#top-right svg')
                 .datum(data.avg_violent_crime)
                 .call(chart);
@@ -254,6 +262,7 @@ function drawAvgPropertyCrime(data){
             ;
             chart.yAxis
                 .axisLabel('Property Crime')
+                .tickFormat(d3.format(',.0f'))
             d3.select('#top-right svg')
                 .datum(data.avg_property_crime)
                 .call(chart);

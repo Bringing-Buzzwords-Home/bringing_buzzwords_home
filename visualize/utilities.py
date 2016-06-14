@@ -376,10 +376,10 @@ def make_per_capita_guns(state):
     category_nums = list(range(len(categories)))
 
     per_capita_guns = [{'key': 'Per Capita Guns and Knives Nationwide',
-                        'values': [dict(label=category, y=(count / us_population['total']), x=num) for category, count, num in zip(categories, counts, category_nums)],
+                        'values': [dict(label=category, y=(count / us_population['total'] * 10000), x=num) for category, count, num in zip(categories, counts, category_nums)],
                         },
                        {'key': 'Per Capita {} Guns and Knives'.format(states[state]),
-                        'values': [dict(label=category, y=(count / state_population['total']), x=num) for category, count, num in zip(categories, state_counts, category_nums)],
+                        'values': [dict(label=category, y=(count / state_population['total'] * 10000), x=num) for category, count, num in zip(categories, state_counts, category_nums)],
                         }]
     return per_capita_guns, category_nums
 
@@ -789,7 +789,7 @@ def get_categories_per_capita(state, category_data):
             values = []
             for position_dict in category_dict['values']:
                 values.append({'x': position_dict['x'],
-                               'y': (position_dict['y'] / us_population['total']),
+                               'y': (position_dict['y'] / us_population['total'] * 10000),
                                'label': position_dict['label']})
             categories_per_capita.insert(0, {'key': 'Per Capita Items Nationwide',
                                              'values': values})
@@ -797,7 +797,7 @@ def get_categories_per_capita(state, category_data):
             values = []
             for position_dict in category_dict['values']:
                 values.append({'x': position_dict['x'],
-                               'y': (position_dict['y'] / state_population['total']),
+                               'y': (position_dict['y'] / state_population['total'] * 10000),
                                'label': position_dict['label']})
             categories_per_capita.insert(1, {'key': '{} Per Capita Items'.format(states[state]),
                                              'values': values})
