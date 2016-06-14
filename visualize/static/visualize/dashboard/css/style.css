@@ -154,8 +154,8 @@
 .progress.blueDark .ui-progressbar-value,
 .sliderVertical.blueDark .ui-slider-range,
 .progressSlim.blueDark .ui-progressbar-value {
-	background: #2B5797 !important;
-	border-color: #2B5797 !important;
+	background: #6c93b9 !important;
+	border-color: #6c93b9 !important;
 	color: #fff;
 }
 
@@ -166,8 +166,8 @@
 .progress.blueLight .ui-progressbar-value,
 .sliderVertical.blueLight .ui-slider-range,
 .progressSlim.blueLight .ui-progressbar-value {
-	background: #EFF4FF !important;
-	border-color: #EFF4FF !important;
+	background: #A8D8F0 !important;
+	border-color: #A8D8F0 !important;
 	color: #fff;
 }
 
@@ -940,7 +940,6 @@ ul.messages li .message {
 	margin-top: 5px;
 	text-align: center;
 }
-
 /* Browsers Stats
 =================================================================== */
 
