@@ -129,11 +129,6 @@
 
 
   <script >
-  var militaryValue = "{{ ten_thirty_three_total }}"
-  var stateNum = "{{state_num}}"
-  var violentCrime = "{{ twenty_fourteen_violent }}"
-  var propertyCrime = "{{ twenty_fourteen_property }}"
-
   d3.json("{% url 'state_json' state %}", function(error, json) {
     if (error) return console.warn(error);
     data = json;
