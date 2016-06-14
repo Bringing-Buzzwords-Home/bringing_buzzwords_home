@@ -910,3 +910,181 @@ def format_money(number):
 
 def format_integer(number):
     return '{:20,d}'.format(number)
+
+def format_float(number):
+    return '{:20,f}'.format(number)
+
+def get_prop_crime_data(state, county_obj, total_num_counties_in_country,
+                        state_obj, num_counties_in_state, county):
+    country_property_county_avg = int(State.objects.all().aggregate(Sum('total_property_crime'))['total_property_crime__sum']/total_num_counties_in_country)
+    state_property_county_avg = int((state_obj.total_property_crime)/num_counties_in_state)
+    county_property = int(Crime.objects.filter(year='2014-01-01', county=county).aggregate(Sum('property_crime'))['property_crime__sum'])
+    national_values_prop = [{'x': 0,
+                        'y': country_property_county_avg,
+                        'label': 'Property Crime '}]
+    state_values_prop = [{'x': 0,
+                     'y': state_property_county_avg,
+                     'label': 'Property Crime'}]
+    county_values_prop = [{'x': 0,
+                     'y': county_property,
+                     'label': 'Property Crime'}]
+    average_state_crime_prop = [{'key': 'Avg County in US',
+                                'values': national_values_prop},
+                                {'key': 'Avg County in {}'.format(states[state]),
+                                'values': state_values_prop},
+                                {'key': '{} Crime'.format(county_obj.county_name),
+                                'values': county_values_prop}]
+    return average_state_crime_prop
+
+
+def get_prop_crime_data_per_cap(
+                        county_property, state, county_obj, us_population,
+                        state_pop, county_pop, state_obj):
+    national_values_prop_per_cap = [{'x': 0,
+                        'y': float(State.objects.all().aggregate(Sum('total_property_crime'))['total_property_crime__sum']/us_population),
+                        'label': 'Property Crime Per Capita'}]
+    state_values_prop_per_cap = [{'x': 0,
+                     'y': float((state_obj.total_property_crime)/state_pop),
+                     'label': 'Property Crime Per Capita'}]
+    county_values_prop_per_cap = [{'x': 0,
+                     'y': float(county_property/county_pop),
+                     'label': 'Property Crime Per Capita'}]
+    average_state_crime_prop_per_cap = [{'key': 'Avg US Citizen',
+                                        'values': national_values_prop_per_cap},
+                                        {'key': 'Avg {} Resident'.format(states[state]),
+                                        'values': state_values_prop_per_cap},
+                                        {'key': 'Avg {} Resident'.format(county_obj.county_name),
+                                        'values': county_values_prop_per_cap}]
+    return average_state_crime_prop_per_cap
+
+
+def get_viol_crime_data(state, county_obj, total_num_counties_in_country,
+                        state_obj, num_counties_in_state, county):
+    county_violent = int(Crime.objects.filter(year='2014-01-01', county=county).aggregate(Sum('violent_crime'))['violent_crime__sum'])
+    state_property_violent_avg = int((state_obj.total_violent_crime)/num_counties_in_state)
+    country_property_violent_avg = int(State.objects.all().aggregate(Sum('total_violent_crime'))['total_violent_crime__sum']/total_num_counties_in_country)
+
+    national_values_viol = [{'x': 0,
+                        'y': country_property_violent_avg,
+                        'label': 'Violent Crime'}]
+    state_values_viol = [{'x': 0,
+                     'y': state_property_violent_avg,
+                     'label': 'Violent Crime'}]
+    county_values_viol = [{'x': 0,
+                     'y': county_violent,
+                     'label': 'Violent Crime'}]
+
+    average_state_crime_viol = [{'key': 'Avg County in US',
+                                'values': national_values_viol},
+                                {'key': 'Avg County in {}'.format(states[state]),
+                                'values': state_values_viol},
+                                {'key': '{} Crime'.format(county_obj.county_name),
+                                'values': county_values_viol}]
+    return average_state_crime_viol
+
+def get_viol_crime_data_per_cap(
+                        county_violent, state, county_obj, us_population,
+                        state_pop, county_pop, state_obj):
+    national_values_prop_per_cap = [{'x': 0,
+                        'y':  float(State.objects.all().aggregate(Sum('total_violent_crime'))['total_violent_crime__sum']/us_population),
+                        'label': 'Violent Crime Per Capita'}]
+    state_values_prop_per_cap = [{'x': 0,
+                     'y': float((state_obj.total_violent_crime)/state_pop),
+                     'label': 'Violent Crime Per Capita'}]
+    county_values_prop_per_cap = [{'x': 0,
+                     'y': float(county_violent/county_pop),
+                     'label': 'Violent Crime Per Capita'}]
+    average_state_crime_viol_per_cap = [{'key': 'Avg US Citizen',
+                                        'values': national_values_prop_per_cap},
+                                        {'key': 'Avg {} Resident'.format(states[state]),
+                                        'values': state_values_prop_per_cap},
+                                        {'key': 'Avg {} Resident'.format(county_obj.county_name),
+                                        'values': county_values_prop_per_cap}]
+    return average_state_crime_viol_per_cap
+
+def get_fatal_encounters(state, county_obj, total_num_counties_in_country,
+                        state_obj, num_counties_in_state, county):
+        county_fatal_encounters = int(GuardianCounted.objects.filter(county=county, date__year=2015).count())
+        state_fatal_encounters_avg = float((state_obj.total_deaths_twentyfifteen)/num_counties_in_state)
+        country_fatal_encounters_avg = float(State.objects.all().aggregate(Sum('total_deaths_twentyfifteen'))['total_deaths_twentyfifteen__sum']/total_num_counties_in_country)
+        national_values_deaths = [{'x': 0,
+                            'y': country_fatal_encounters_avg,
+                            'label': 'Fatal Encounters'}]
+        state_values_deaths = [{'x': 0,
+                         'y': state_fatal_encounters_avg,
+                         'label': 'Fatal Encounters'}]
+        county_values_deaths = [{'x': 0,
+                         'y': county_fatal_encounters,
+                         'label': 'Fatal Encounters'}]
+
+
+        average_fatal_encounters = [{'key': 'Avg County in US',
+                                    'values': national_values_deaths},
+                                    {'key': 'Avg County in {}'.format(states[state]),
+                                    'values': state_values_deaths},
+                                    {'key': '{} Fatal Encounters'.format(county_obj.county_name),
+                                    'values': county_values_deaths}]
+        return average_fatal_encounters
+
+
+def get_fatal_encounters_per_cap(county_fatal_encounters, us_population,
+                        state_pop, state, county_obj, state_obj, county_pop):
+        national_values_deaths_per_cap = [{'x': 0,
+                            'y': float(State.objects.all().aggregate(Sum('total_deaths_twentyfifteen'))['total_deaths_twentyfifteen__sum']/us_population),
+                            'label': 'Fatal Encounters Per Capita'}]
+        state_values_deaths_per_cap  = [{'x': 0,
+                         'y': float((state_obj.total_deaths_twentyfifteen)/state_pop),
+                         'label': 'Fatal Encounters Per Capita'}]
+        county_values_deaths_per_cap  = [{'x': 0,
+                         'y': float(county_fatal_encounters/county_pop),
+                         'label': 'Fatal Encounters Per Capita'}]
+        average_fatal_encounters_per_cap = [{'key': 'Avg US Citizen',
+                                    'values': national_values_deaths_per_cap },
+                                    {'key': 'Avg {} Resident'.format(states[state]),
+                                    'values': state_values_deaths_per_cap},
+                                    {'key': 'Avg {} Resident'.format(county_obj.county_name),
+                                    'values': county_values_deaths_per_cap}]
+        return average_fatal_encounters_per_cap
+
+def get_military_value(state, county_obj, total_num_counties_in_country,
+                        state_obj, num_counties_in_state, county):
+    county_military_value = int(Item.objects.filter(county=county).aggregate(Sum('Total_Value'))['Total_Value__sum'])
+    country_military_value_county_avg = float(State.objects.all().aggregate(Sum('total_military_dollars'))['total_military_dollars__sum']/total_num_counties_in_country)
+    state_military_value_county_avg = ((state_obj.total_military_dollars)/num_counties_in_state)
+    national_value_military_avg= [{'x': 0,
+                        'y': country_military_value_county_avg,
+                        'label': 'Military Equpment Value'}]
+    state_value_military_avg = [{'x': 0,
+                     'y': state_military_value_county_avg,
+                     'label': 'Military Equpment Value'}]
+    county_value_military_avg= [{'x': 0,
+                     'y': county_military_value,
+                     'label': 'Military Equpment Value'}]
+    average_military_value = [{'key': 'Avg US County',
+                            'values': national_value_military_avg},
+                            {'key': 'Avg County in {}'.format(states[state]),
+                            'values': state_value_military_avg},
+                            {'key': '{}'.format(county_obj.county_name),
+                            'values': county_value_military_avg}]
+    return average_military_value
+
+def get_military_value_per_cap(us_population, state_pop, county_pop,
+                                county_military_value, state_obj, county_obj,
+                                state):
+    national_value_military_avg_per_cap = [{'x': 0,
+                        'y': float(State.objects.all().aggregate(Sum('total_military_dollars'))['total_military_dollars__sum']/us_population),
+                        'label': 'Military Equpment Value Per Capita'}]
+    state_value_military_avg_per_cap  = [{'x': 0,
+                     'y': float((state_obj.total_military_dollars)/state_pop),
+                     'label': 'Military Equpment Value Per Capita'}]
+    county_value_military_avg_per_cap = [{'x': 0,
+                     'y': float(county_military_value/county_pop),
+                     'label': 'Military Equpment Value Per Capita'}]
+
+    average_military_value_per_cap  = [{'key': 'Avg US Citizen',
+                                        'values': national_value_military_avg_per_cap},
+                                        {'key': 'Avg {} Resident'.format(states[state]),
+                                        'values': state_value_military_avg_per_cap},
+                                        {'key': 'Avg {} Resident'.format(county_obj.county_name),
+                                        'values': county_value_military_avg_per_cap}]
+    return average_military_value_per_cap

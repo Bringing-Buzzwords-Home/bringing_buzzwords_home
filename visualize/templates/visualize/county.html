@@ -102,11 +102,15 @@
     </table>
 
   <script>
-  state_crime = {{ state_crime }};
-  average_deaths = {{ average_deaths }};
+
+  average_fatal_encounters = {{ average_fatal_encounters }};
   military_value = {{ military_value }};
-  average_deaths_per_cap = {{ average_deaths_per_cap }};
+  average_fatal_encounters_per_cap = {{ average_fatal_encounters_per_cap }};
   military_value_per_cap = {{ military_value_per_cap }};
+  prop_crime = {{ prop_crime }};
+  viol_crime = {{ viol_crime }};
+  prop_crime_per_cap = {{ prop_crime_per_cap  }};
+  viol_crime_per_cap  = {{ viol_crime_per_cap  }};
 
   drawMilitaryValue(military_value)
   drawMilitaryValuePerCap(military_value_per_cap)
@@ -124,8 +128,8 @@
     .css('cursor', 'pointer')
     .click(function() {
         $('#stage').html('<div id="stage"><div class="row-fluid"><div id="stats-chart-2"  class="span6 widget green" onTablet="span8" onDesktop="span8"><div id="top-left"  style="height:300px" ><svg></svg></div></div><div id="stats-chart-2"  class="span6 widget green" onTablet="span8" onDesktop="span8"><div id="top-right"  style="height:300px"><svg></svg></div></div></div></div>')
-        drawFatalEncounters(average_deaths)
-        drawFatalEncountersPerCapita(average_deaths_per_cap)
+        drawFatalEncounters(average_fatal_encounters)
+        drawFatalEncountersPerCapita(average_fatal_encounters_per_cap)
 
   });
   $('#population')
@@ -138,15 +142,17 @@
   $('#violent_crime')
     .css('cursor', 'pointer')
     .click(function() {
-        $('#stage').html('<div id="stage"><div class="row-fluid"><div id="stats-chart-2"  class="span8 widget blue" onTablet="span8" onDesktop="span8"><div id="top-left"  style="height:300px" ><svg></svg></div></div><div id="stats-chart-2"  class="span4 widget blue" onTablet="span8" onDesktop="span8"><div id="top-right"  style="height:300px"><svg></svg></div></div></div></div>')
-        drawAvgCrime(state_crime)
+        $('#stage').html('<div id="stage"><div class="row-fluid"><div id="stats-chart-2"  class="span6 widget blue" onTablet="span8" onDesktop="span8"><div id="top-left"  style="height:300px" ><svg></svg></div></div><div id="stats-chart-2"  class="span6 widget blue" onTablet="span8" onDesktop="span8"><div id="top-right"  style="height:300px"><svg></svg></div></div></div></div>')
+        drawAvgViolCrime(viol_crime)
+        drawAvgViolCrimePerCap(viol_crime_per_cap)
 
   });
   $('#property_crime')
     .css('cursor', 'pointer')
     .click(function() {
-        $('#stage').html('<div id="stage"><div class="row-fluid"><div id="stats-chart-2"  class="span8 widget yellow" onTablet="span8" onDesktop="span8"><div id="top-left"  style="height:300px" ><svg></svg></div></div><div id="stats-chart-2"  class="span4 widget yellow" onTablet="span8" onDesktop="span8"><div id="top-right"  style="height:300px"><svg></svg></div></div></div></div>')
-        drawAvgCrime(state_crime)
+        $('#stage').html('<div id="stage"><div class="row-fluid"><div id="stats-chart-2"  class="span6 widget yellow" onTablet="span8" onDesktop="span8"><div id="top-left"  style="height:300px" ><svg></svg></div></div><div id="stats-chart-2"  class="span6 widget yellow" onTablet="span8" onDesktop="span8"><div id="top-right"  style="height:300px"><svg></svg></div></div></div></div>')
+        drawAvgPropCrime(prop_crime)
+        drawAvgPropCrimePerCap(prop_crime_per_cap)
     })
 
   </script>

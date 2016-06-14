@@ -8,6 +8,10 @@ from .utilities import get_state_deaths, get_state_deaths_over_time, make_state_
 from .utilities import get_state_violent_crime, get_county_deaths, create_counties_list
 from .utilities import create_county_crime, make_per_capita_guns, state_abbrev
 from .utilities import get_categories_per_capita, format_integer, get_state_property_crime
+from .utilities import get_prop_crime_data, get_prop_crime_data_per_cap, format_float
+from .utilities import get_viol_crime_data, get_viol_crime_data_per_cap, get_fatal_encounters
+from .utilities import get_fatal_encounters_per_cap, get_military_value
+from .utilities import get_military_value_per_cap
 from rest_framework import viewsets
 from .serializers import StateSerializer
 from django.db.models import Sum, Func, Count, F
@@ -80,122 +84,55 @@ def county(request, county):
     county_pop = county_obj.pop_est_2015
     state_pop = (State.objects.get(state=state)).total_population_twentyfifteen
     us_population = State.objects.all().aggregate(Sum('total_population_twentyfifteen'))['total_population_twentyfifteen__sum']
+    county_violent = int(Crime.objects.filter(year='2014-01-01', county=county).aggregate(Sum('violent_crime'))['violent_crime__sum'])
+    county_property = int(Crime.objects.filter(year='2014-01-01', county=county).aggregate(Sum('property_crime'))['property_crime__sum'])
+    county_military_value = int(Item.objects.filter(county=county).aggregate(Sum('Total_Value'))['Total_Value__sum'])
+    county_fatal_encounters = int(GuardianCounted.objects.filter(county=county, date__year=2015).count())
+    county_crime = [county_violent, county_property]
+    average_state_crime_prop = get_prop_crime_data(state, county_obj, total_num_counties_in_country,
+                            state_obj, num_counties_in_state, county)
+
+    average_state_crime_prop_per_cap = get_prop_crime_data_per_cap(
+                            county_property, state, county_obj, us_population,
+                            state_pop, county_pop, state_obj)
+
+    average_state_crime_viol = get_viol_crime_data(state, county_obj, total_num_counties_in_country,
+                            state_obj, num_counties_in_state, county)
 
 
-    twenty_fourteen_violent = int(Crime.objects.filter(year='2014-01-01', county=county).aggregate(Sum('violent_crime'))['violent_crime__sum'])
-    twenty_fourteen_property = int(Crime.objects.filter(year='2014-01-01', county=county).aggregate(Sum('property_crime'))['property_crime__sum'])
-    ten_thirty_three_total = int(Item.objects.filter(county=county).aggregate(Sum('Total_Value'))['Total_Value__sum'])
-    twenty_fifteen_kills = int(GuardianCounted.objects.filter(county=county, date__year=2015).count())
-    county_crime = [twenty_fourteen_violent, twenty_fourteen_property]
-    crimes_list = list(Crime.objects.filter(county=county))
+    average_state_crime_viol_per_cap = get_viol_crime_data_per_cap(
+                            county_violent, state, county_obj, us_population,
+                            state_pop, county_pop, state_obj)
 
 
-    county_twenty_fourteen_violent_state_avg = int((state_obj.total_violent_crime)/num_counties_in_state)
-    county_twenty_fourteen_property_state_avg = int((state_obj.total_property_crime)/num_counties_in_state)
-    state_ten_thirty_three_county_avg = ((state_obj.total_military_dollars)/num_counties_in_state)
-    state_county_deaths_avg = float((state_obj.total_deaths_twentyfifteen)/num_counties_in_state)
+    average_fatal_encounters = get_fatal_encounters(state, county_obj, total_num_counties_in_country,
+                            state_obj, num_counties_in_state, county)
 
 
-    county_twenty_fourteen_violent_country_avg = int(State.objects.all().aggregate(Sum('total_violent_crime'))['total_violent_crime__sum']/total_num_counties_in_country)
-    county_twenty_fourteen_property_country_avg = int(State.objects.all().aggregate(Sum('total_property_crime'))['total_property_crime__sum']/total_num_counties_in_country)
-    county_ten_thirty_three_country_avg = float(State.objects.all().aggregate(Sum('total_military_dollars'))['total_military_dollars__sum']/total_num_counties_in_country)
-    county_twenty_fifteen_fatalities_country_avg = float(State.objects.all().aggregate(Sum('total_deaths_twentyfifteen'))['total_deaths_twentyfifteen__sum']/total_num_counties_in_country)
+    average_fatal_encounters_per_cap = get_fatal_encounters_per_cap(county_fatal_encounters, us_population,
+                            state_pop, state, county_obj, state_obj, county_pop)
 
 
+    average_military_value = get_military_value(state, county_obj, total_num_counties_in_country,
+                            state_obj, num_counties_in_state, county)
 
-    national_values = [{'x': 0,
-                        'y': county_twenty_fourteen_violent_country_avg,
-                        'label': 'Violent Crime'},
-                       {'x': 1,
-                        'y': county_twenty_fourteen_property_country_avg,
-                        'label': 'Property Crime'}]
-    state_values = [{'x': 0,
-                     'y': county_twenty_fourteen_violent_state_avg,
-                     'label': 'Violent Crime'},
-                    {'x': 1,
-                     'y': county_twenty_fourteen_property_state_avg,
-                     'label': 'Property Crime'}]
-    county_values = [{'x': 0,
-                     'y': twenty_fourteen_violent,
-                     'label': 'Violent Crime'},
-                    {'x': 1,
-                     'y': twenty_fourteen_property,
-                     'label': 'Property Crime'}]
-
-
-    average_state_crime = [{'key': 'Average State Crime', 'values': national_values},{'key': '{} Crime'.format(states[state]),'values': state_values}, {'key': '{} Crime'.format(county_obj.county_name), 'values': county_values}]
-
-    national_values_deaths = [{'x': 0,
-                        'y': county_twenty_fifteen_fatalities_country_avg,
-                        'label': 'Deadly Encounters'}]
-    state_values_deaths = [{'x': 0,
-                     'y': state_county_deaths_avg,
-                     'label': 'Deadly Encounters'}]
-    county_values_deaths = [{'x': 0,
-                     'y': twenty_fifteen_kills,
-                     'label': 'Deadly Encounters'}]
-
-
-    average_deaths = [{'key': 'Average County Fatal Encounters in US', 'values': national_values_deaths}, {'key': '{} Average County Fatal Encounters'.format(states[state]),'values': state_values_deaths}, {'key': '{} Fatal Encounters'.format(county_obj.county_name), 'values': county_values_deaths}]
-
-    national_value_military_avg= [{'x': 0,
-                        'y': county_ten_thirty_three_country_avg,
-                        'label': 'Military Equpment Value'}]
-    state_value_military_avg = [{'x': 0,
-                     'y': state_ten_thirty_three_county_avg,
-                     'label': 'Military Equpment Value'}]
-    county_value_military_avg= [{'x': 0,
-                     'y': ten_thirty_three_total,
-                     'label': 'Military Equpment Value'}]
-
-
-    average_military_value = [{'key': 'Average US County', 'values': national_value_military_avg}, {'key': 'Average County in {}'.format(states[state]),'values': state_value_military_avg}, {'key': '{}'.format(county_obj.county_name), 'values': county_value_military_avg}]
-
-
-
-    national_value_military_avg_per_cap = [{'x': 0,
-                        'y': county_ten_thirty_three_country_avg/us_population,
-                        'label': 'Military Equpment Value'}]
-    state_value_military_avg_per_cap  = [{'x': 0,
-                     'y': state_ten_thirty_three_county_avg/state_pop,
-                     'label': 'Military Equpment Value'}]
-    county_value_military_avg_per_cap = [{'x': 0,
-                     'y': ten_thirty_three_total/county_pop,
-                     'label': 'Military Equpment Value'}]
-
-
-    average_military_value_per_cap  = [{'key': 'Average US County', 'values': national_value_military_avg_per_cap}, {'key': 'Average County in {}'.format(states[state]),'values': state_value_military_avg_per_cap}, {'key': '{}'.format(county_obj.county_name), 'values': county_value_military_avg_per_cap}]
-
-
-
-    national_values_deaths_per_cap = [{'x': 0,
-                        'y': county_twenty_fifteen_fatalities_country_avg/us_population,
-                        'label': 'Deadly Encounters'}]
-    state_values_deaths_per_cap = [{'x': 0,
-                     'y': state_county_deaths_avg/state_pop,
-                     'label': 'Deadly Encounters'}]
-    county_values_deaths_per_cap = [{'x': 0,
-                     'y': twenty_fifteen_kills/county_pop,
-                     'label': 'Deadly Encounters'}]
-
-
-    average_deaths_per_cap = [{'key': 'Average County Fatal Encounters in US', 'values': national_values_deaths_per_cap}, {'key': '{} Average County Fatal Encounters'.format(states[state]),'values': state_values_deaths_per_cap}, {'key': '{} Fatal Encounters'.format(county_obj.county_name), 'values': county_values_deaths_per_cap}]
-
-
-
+    average_military_value_per_cap  = get_military_value_per_cap(us_population, state_pop, county_pop,
+                                    county_military_value, state_obj, county_obj, state)
     context = {
         'military_value': mark_safe(json.dumps(average_military_value)),
         'military_value_per_cap': mark_safe(json.dumps(average_military_value_per_cap)),
-        'state_crime': mark_safe(json.dumps(average_state_crime)),
-        'average_deaths': mark_safe(json.dumps(average_deaths)),
-        'average_deaths_per_cap': mark_safe(json.dumps(average_deaths_per_cap)),
+        'prop_crime': mark_safe(json.dumps(average_state_crime_prop)),
+        "prop_crime_per_cap": mark_safe(json.dumps(average_state_crime_prop_per_cap)),
+        'viol_crime': mark_safe(json.dumps(average_state_crime_viol)),
+        "viol_crime_per_cap": mark_safe(json.dumps(average_state_crime_viol_per_cap)),
+        'average_fatal_encounters': mark_safe(json.dumps(average_fatal_encounters)),
+        'average_fatal_encounters_per_cap': mark_safe(json.dumps(average_fatal_encounters_per_cap)),
         'county': county,
         'county_obj': county_obj,
-        'crimes_list': crimes_list,
-        'twenty_fourteen_violent': format_integer(twenty_fourteen_violent),
-        'twenty_fourteen_property': format_integer(twenty_fourteen_property),
-        'twenty_fifteen_kills': format_integer(twenty_fifteen_kills),
-        'ten_thirty_three_total': format_money(ten_thirty_three_total),
+        'twenty_fourteen_violent': format_integer(county_violent),
+        'twenty_fourteen_property': format_integer(county_property),
+        'twenty_fifteen_kills': format_integer(county_fatal_encounters),
+        'ten_thirty_three_total': format_money(county_military_value),
         'counties_list': create_counties_list(state),
         'county_pop_twenty_fifteen': format_integer(county_obj.pop_est_2015)
         }
