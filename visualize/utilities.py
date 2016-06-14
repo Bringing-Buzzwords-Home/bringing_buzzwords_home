@@ -461,8 +461,8 @@ def get_state_deaths_over_time(state):
     deaths_per_month = [x['pk__count'] for x in ordered_months]
     state_deaths_per_month = [x['pk__count'] for x in state_ordered_months]
     deaths_over_time = [{'key': 'Average National Deaths Per Month',
-                         'values': [dict(x=make_jstimestamp_from_string(month), y=(deaths / 51)) for month, deaths in zip(month_list, deaths_per_month)],
-                         'color': '#3d40a2'},
+                         'values': [dict(x=make_jstimestamp_from_string(month), y=(deaths / 51)) for month, deaths in zip(month_list, deaths_per_month)]
+                         },
                         {'key': '{} Deaths Per Month'.format(states[state]),
                          'values': [dict(x=make_jstimestamp_from_string(month), y=deaths) for month, deaths in zip(month_list, state_deaths_per_month)],
                          'color': '#d64d4d'}]
@@ -771,8 +771,8 @@ def get_dollars_donated_by_year(state):
     national_money_years = [x['Total_Value__sum'] for x in national_ordered]
     state_money_years = [x['Total_Value__sum'] for x in state_ordered]
     dollars_by_year = [{'key': 'Average Dollar Value Donated Nationally',
-                        'values': [dict(x=num, y=(float(amount) / 51), label=year) for year, amount, num in zip(year_list, national_money_years, list(range(len(year_list))))],
-                        'color': '#3d40a2'},
+                        'values': [dict(x=num, y=(float(amount) / 51), label=year) for year, amount, num in zip(year_list, national_money_years, list(range(len(year_list))))]
+                        },
                        {'key': '{} Dollars Per Year'.format(states[state]),
                         'values': [dict(x=num, y=float(amount)) for year, amount, num in zip(year_list, state_money_years, list(range(len(year_list))))],
                         'color': '#d64d4d'}]

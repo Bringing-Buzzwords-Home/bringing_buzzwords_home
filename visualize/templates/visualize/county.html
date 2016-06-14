@@ -25,34 +25,34 @@
   </div>
   <div class="row-fluid">
 
-    <div id="1033" class="span4 statbox purple" onTablet="span6" onDesktop="span3">
+    <div id="1033" class="span4 statbox blueLight" onTablet="span6" onDesktop="span3">
       <div><h1>{{ ten_thirty_three_total }}</h1></div>
       <div><h2>Value of Military Equipment Donated to {{county_obj.county_name}}</h2></div>
     </div>
-    <div id="fatal_encounters" class="span2 statbox green" onTablet="span6" onDesktop="span3">
+    <div id="fatal_encounters" class="span2 statbox blueDark" onTablet="span6" onDesktop="span3">
       <div><h1>{{ twenty_fifteen_kills }}</h1></div>
       <div><h2>2015 Police Fatal Encounters</h2></div>
     </div>
-    <div id="violent_crime" class="span3 statbox blue" onTablet="span6" onDesktop="span3">
+    <div id="violent_crime" class="span3 statbox blueDark" onTablet="span6" onDesktop="span3">
       <div><h1> {{ twenty_fourteen_violent }}</h1></div>
       <div><h2>2014 Violent Crime</h2></div>
     </div>
-    <div id="property_crime" class="span3 statbox yellow" onTablet="span6" onDesktop="span3">
+    <div id="property_crime" class="span3 statbox blueDark" onTablet="span6" onDesktop="span3">
     <div><h1>{{ twenty_fourteen_property }}</h1></div>
     <div><h2>2014 Property Crime</h2></div>
   </div>
-
+</div>
 
 
   <div id="stage">
   <div class="row-fluid">
 
-    <div id="stats-chart-2"  class="span6 widget purple" onTablet="span8" onDesktop="span8">
+    <div id="stats-chart-2"  class="span6 widget blueLight" onTablet="span8" onDesktop="span8">
       <div id="top-left"  style="height:300px" >
          <svg></svg>
       </div>
     </div>
-    <div id="stats-chart-2"  class="span6 widget purple" onTablet="span8" onDesktop="span8">
+    <div id="stats-chart-2"  class="span6 widget blueLight" onTablet="span8" onDesktop="span8">
         <div id="top-right"  style="height:300px">
         <svg></svg>
       </div>
@@ -121,29 +121,26 @@
   $('#1033')
     .css('cursor', 'pointer')
     .click(function() {
-        $('#stage').html('<div id="stage"><div class="row-fluid"><div id="stats-chart-2"  class="span6 widget purple" onTablet="span8" onDesktop="span8"><div id="top-left"  style="height:300px" ><svg></svg></div></div><div id="stats-chart-2"  class="span6 widget purple" onTablet="span8" onDesktop="span8"><div id="top-right"  style="height:300px"><svg></svg></div></div></div><div class="row-fluid">')
+        toggleBlueLightDark.call(this);
+        $('#stage').html('<div id="stage"><div class="row-fluid"><div id="stats-chart-2"  class="span6 widget blueLight" onTablet="span8" onDesktop="span8"><div id="top-left"  style="height:300px" ><svg></svg></div></div><div id="stats-chart-2"  class="span6 widget blueLight" onTablet="span8" onDesktop="span8"><div id="top-right"  style="height:300px"><svg></svg></div></div></div><div class="row-fluid">')
         drawMilitaryValue(military_value)
         drawMilitaryValuePerCap(military_value_per_cap)
     })
   $('#fatal_encounters')
     .css('cursor', 'pointer')
     .click(function() {
-        $('#stage').html('<div id="stage"><div class="row-fluid"><div id="stats-chart-2"  class="span6 widget green" onTablet="span8" onDesktop="span8"><div id="top-left"  style="height:300px" ><svg></svg></div></div><div id="stats-chart-2"  class="span6 widget green" onTablet="span8" onDesktop="span8"><div id="top-right"  style="height:300px"><svg></svg></div></div></div></div>')
+        toggleBlueLightDark.call(this);
+        $('#stage').html('<div id="stage"><div class="row-fluid"><div id="stats-chart-2"  class="span6 widget blueLight" onTablet="span8" onDesktop="span8"><div id="top-left"  style="height:300px" ><svg></svg></div></div><div id="stats-chart-2"  class="span6 widget blueLight" onTablet="span8" onDesktop="span8"><div id="top-right"  style="height:300px"><svg></svg></div></div></div></div>')
         drawFatalEncounters(average_fatal_encounters)
         drawFatalEncountersPerCapita(average_fatal_encounters_per_cap)
 
   });
-  $('#population')
-    .css('cursor', 'pointer')
-    .click(
-        function(){
-            alert('Population!');
-        }
-  );
+
   $('#violent_crime')
     .css('cursor', 'pointer')
     .click(function() {
-        $('#stage').html('<div id="stage"><div class="row-fluid"><div id="stats-chart-2"  class="span6 widget blue" onTablet="span8" onDesktop="span8"><div id="top-left"  style="height:300px" ><svg></svg></div></div><div id="stats-chart-2"  class="span6 widget blue" onTablet="span8" onDesktop="span8"><div id="top-right"  style="height:300px"><svg></svg></div></div></div></div>')
+        toggleBlueLightDark.call(this);
+        $('#stage').html('<div id="stage"><div class="row-fluid"><div id="stats-chart-2"  class="span6 widget blueLight" onTablet="span8" onDesktop="span8"><div id="top-left"  style="height:300px" ><svg></svg></div></div><div id="stats-chart-2"  class="span6 widget blueLight" onTablet="span8" onDesktop="span8"><div id="top-right"  style="height:300px"><svg></svg></div></div></div></div>')
         drawAvgViolCrime(viol_crime)
         drawAvgViolCrimePerCap(viol_crime_per_cap)
 
@@ -151,7 +148,8 @@
   $('#property_crime')
     .css('cursor', 'pointer')
     .click(function() {
-        $('#stage').html('<div id="stage"><div class="row-fluid"><div id="stats-chart-2"  class="span6 widget yellow" onTablet="span8" onDesktop="span8"><div id="top-left"  style="height:300px" ><svg></svg></div></div><div id="stats-chart-2"  class="span6 widget yellow" onTablet="span8" onDesktop="span8"><div id="top-right"  style="height:300px"><svg></svg></div></div></div></div>')
+        toggleBlueLightDark.call(this);
+        $('#stage').html('<div id="stage"><div class="row-fluid"><div id="stats-chart-2"  class="span6 widget blueLight" onTablet="span8" onDesktop="span8"><div id="top-left"  style="height:300px" ><svg></svg></div></div><div id="stats-chart-2"  class="span6 widget blueLight" onTablet="span8" onDesktop="span8"><div id="top-right"  style="height:300px"><svg></svg></div></div></div></div>')
         drawAvgPropCrime(prop_crime)
         drawAvgPropCrimePerCap(prop_crime_per_cap)
     })
