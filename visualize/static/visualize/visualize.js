@@ -1,3 +1,7 @@
+function toggleBlueLightDark() {
+  $(this).removeClass('blueDark').addClass('blueLight').siblings().removeClass('blueLight').addClass('blueDark');
+}
+
 function drawStateDeaths(data){
     nv.addGraph(function() {
         var chart = nv.models.discreteBarChart()
