@@ -1,6 +1,3 @@
-# import matplotlib
-# matplotlib.use('Agg')
-# import matplotlib.pyplot as plt
 from django.core.exceptions import ObjectDoesNotExist
 from .models import County, GuardianCounted, Item, Crime, State
 import csv
@@ -376,10 +373,10 @@ def make_per_capita_guns(state):
     category_nums = list(range(len(categories)))
 
     per_capita_guns = [{'key': 'Per Capita Guns and Knives Nationwide',
-                        'values': [dict(label=category, y=(count / us_population['total']), x=num) for category, count, num in zip(categories, counts, category_nums)],
+                        'values': [dict(label=category, y=(count / us_population['total'] * 10000), x=num) for category, count, num in zip(categories, counts, category_nums)],
                         },
                        {'key': 'Per Capita {} Guns and Knives'.format(states[state]),
-                        'values': [dict(label=category, y=(count / state_population['total']), x=num) for category, count, num in zip(categories, state_counts, category_nums)],
+                        'values': [dict(label=category, y=(count / state_population['total'] * 10000), x=num) for category, count, num in zip(categories, state_counts, category_nums)],
                         }]
     return per_capita_guns, category_nums
 
@@ -632,7 +629,7 @@ def item_categories():
             item.save()
 
         elif item.Item_Name == 'MINE RESISTANT VEHICLE':
-            item.Category = 'Mine Resistant Vehicle'
+            item.Category = 'MRAP'
             item.save()
 
         elif item.Item_Name in ['ONLY COMPLETE COMBAT/ASSAULT/TACTICAL WHEELED VEHICLES',
@@ -792,7 +789,7 @@ def get_categories_per_capita(state, category_data):
             values = []
             for position_dict in category_dict['values']:
                 values.append({'x': position_dict['x'],
-                               'y': (position_dict['y'] / us_population['total']),
+                               'y': (position_dict['y'] / us_population['total'] * 10000),
                                'label': position_dict['label']})
             categories_per_capita.insert(0, {'key': 'Per Capita Items Nationwide',
                                              'values': values})
@@ -800,7 +797,7 @@ def get_categories_per_capita(state, category_data):
             values = []
             for position_dict in category_dict['values']:
                 values.append({'x': position_dict['x'],
-                               'y': (position_dict['y'] / state_population['total']),
+                               'y': (position_dict['y'] / state_population['total'] * 10000),
                                'label': position_dict['label']})
             categories_per_capita.insert(1, {'key': '{} Per Capita Items'.format(states[state]),
                                              'values': values})
@@ -822,10 +819,10 @@ def get_state_violent_crime(state_obj):
                                       'value': state_violent_crime}]}]
 
     per_capita_violent_crime = [{'key': '2014 Per Capita Violent Crime',
-                                'values': [{'label': 'National Violent Crime Per Capita',
-                                            'value': (national_violent_crime['total_violent_crime__sum'] / us_population['total'])},
-                                           {'label': '{} Violent Crime Per Capita'.format(states[state_obj.state]),
-                                            'value': state_violent_crime / state_population}]}]
+                                'values': [{'label': 'National Violent Crime Per Thousand',
+                                            'value': (national_violent_crime['total_violent_crime__sum'] / us_population['total'] * 1000)},
+                                           {'label': '{} Violent Crime Per Thousand'.format(states[state_obj.state]),
+                                            'value': (state_violent_crime / state_population * 1000)}]}]
     return avg_violent_crime, per_capita_violent_crime
 
 
@@ -843,10 +840,10 @@ def get_state_property_crime(state_obj):
                                       'value': state_property_crime}]}]
 
     per_capita_property_crime = [{'key': '2014 Per Capita Property Crime',
-                                  'values': [{'label': 'National Property Crime Per Capita',
-                                              'value': (national_property_crime['total_property_crime__sum'] / us_population['total'])},
-                                             {'label': '{} Property Crime Per Capita'.format(states[state_obj.state]),
-                                              'value': state_property_crime / state_population}]}]
+                                  'values': [{'label': 'National Property Crime Per Thousand',
+                                              'value': (national_property_crime['total_property_crime__sum'] / us_population['total'] * 1000)},
+                                             {'label': '{} Property Crime Per Thousand'.format(states[state_obj.state]),
+                                              'value': (state_property_crime / state_population * 1000)}]}]
     return avg_property_crime, per_capita_property_crime
 
 # def get_state_crime(state):

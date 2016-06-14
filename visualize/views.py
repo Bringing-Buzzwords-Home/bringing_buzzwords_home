@@ -46,7 +46,7 @@ def state(request, state):
                'categories': categories,
                'twenty_fourteen_violent': format_integer(state_obj.total_violent_crime),
                'twenty_fourteen_property': format_integer(state_obj.total_property_crime),
-               'twenty_fifteen_kills': twenty_fifteen_kills,
+               'twenty_fifteen_kills': str(twenty_fifteen_kills),
                'ten_thirty_three_total': format_money(ten_thirty_three_total),
                'twenty_fifteen_population': format_integer(twenty_fifteen_population),
                }
