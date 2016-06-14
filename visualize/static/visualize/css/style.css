@@ -1,7 +1,19 @@
-.statelist {
-    -webkit-columns: 100px 9; /* Chrome, Safari, Opera */
-    -moz-columns: 100px 9; /* Firefox */
-    columns: 100px 9;
+#instructions {
+  position: fixed;
+  top: 10%;
+  left: 48%;
+}
+
+#introText{
+  float: right;
+  position: absolute;
+  top: 11%;
+  right: 0px;
+  width: 290px;
+  height: 530px;
+  border: 3px solid #73AD21;
+  border-color: black;
+  padding: 10px;
 }
 
 /*HOMEPAGE - USA MAP*/
