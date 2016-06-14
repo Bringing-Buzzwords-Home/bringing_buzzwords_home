@@ -1,7 +1,7 @@
 function drawAvgPropCrime(prop_crime){
       nv.addGraph(function() {
           var chart = nv.models.multiBarChart()
-              .barColor(d3.scale.category20().range())
+              .color(["#1f77b4", "#ff7f0e", "#2ca02c"])
               .duration(300)
               .margin({bottom: 50, left: 70})
               .groupSpacing(0.1)

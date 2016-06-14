@@ -7,46 +7,46 @@
 <meta charset="utf-8">
 
 <head>
+
 </head>
 {% block content %}
+<script src="../static/visualize/uStates.js"></script> <!-- creates uStates. -->
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script src="../static/visualize/mapping.js"></script>
 <link rel="stylesheet" href="../static/visualize/css/style.css" type="text/css"
 charset="utf-8">
+<div class="container-fluid-full">
+<div  class="span12">
 
-<div  class="span10">
+
 
 
 <div class="row-fluid">
 
-  <div id="instructions">
-    Click a state for detailed statistical page
+  <div>
+    <p>Click a state for detailed statistical page</p>
   </div>
+</div>
 
+<div class="row-fluid">
+    <div id="tooltip"></div><!-- div to hold tooltip. -->
+    <div class="svg-container span9">
+        <svg viewBox="0 0 960 600" id="statesvg"></svg>
+      </div>
+      <div id="introText">
 
-        <div id="tooltip"></div><!-- div to hold tooltip. -->
-        <svg width="930" height="600" id="statesvg"></svg> <!-- svg to hold the map. -->
+            The scenes from Ferguson — the tear gas, the assault rifles, the tanks — this is what America’s police look like now. Our Boys in Blue have donned camo, and in doing so, have sparked a debate over the makeup of our local police forces. <br><br>
 
-        <script src="../static/visualize/uStates.js"></script> <!-- creates uStates. -->
-        <script src="//d3js.org/d3.v3.min.js"></script>
-        <script src="../static/visualize/mapping.js"></script>
+    They’re increasingly aggressive, heavily armed, and stocked by the military but without much military training. Protect and serve now goes hand in hand with shock and awe. <br><br>
+  </div>
+    </div>
+    <p>Heat Map: Darker blue states have higher military equipment donations, fatal police encounters, and violent crime, per capita.</p>
 
-        <div class="legend">
-          Heat Map: Darker blue states have higher military equipment donations, fatal police encounters, and violent crime, per capita.
-        </div>
-        <div id="introText">
-
-
-          The scenes from Ferguson — the tear gas, the assault rifles, the tanks — this is what America’s police look like now. Our Boys in Blue have donned camo, and in doing so, have sparked a debate over the makeup of our local police forces. <br><br>
-
-They’re increasingly aggressive, heavily armed, and stocked by the military but without much military training. Protect and serve now goes hand in hand with shock and awe. <br><br>
-
-As taxpayers and law-abiding citizens, we should be conscious of this military shift. Our civil liberties depend on it. Let’s not wait for another tragedy to re-spark this debate. <br><br>
-        </div>
   </div><!--/span-->
 </div><!--/row-->
 
 
 
-</div>
 
 
 {% endblock %}

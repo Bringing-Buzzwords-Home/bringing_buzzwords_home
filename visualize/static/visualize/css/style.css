@@ -5,15 +5,11 @@
 }
 
 #introText{
-  float: right;
-  position: absolute;
-  top: 11%;
-  right: 0px;
-  width: 290px;
-  height: 530px;
-  border: 3px solid #73AD21;
+  margin: auto;
+  width: auto;
+  height: auto;
   border-color: black;
-  padding: 10px;
+  padding: 5px;
 }
 
 /*HOMEPAGE - USA MAP*/
@@ -24,6 +20,15 @@
 }
 .state:hover{
   fill-opacity:0.5;
+}
+.svg-container {
+  width: 65em;
+}
+
+.center {
+    margin: auto;
+    width: 60em;
+    padding: 10px;
 }
 #tooltip {
   position: absolute;
