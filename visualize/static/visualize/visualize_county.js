@@ -56,9 +56,9 @@ function drawAvgPropCrimePerCap(prop_crime_per_cap){
               })
           ;
           chart.yAxis
-              .axisLabel("# of Crimes")
+              .axisLabel("# of Crimes Per Capita")
               .axisLabelDistance(-5)
-              .tickFormat(d3.format(',f'))
+              .tickFormat(d3.format(',.01e'))
           ;
           chart.dispatch.on('renderEnd', function(){
               nv.log('Render Complete');
@@ -136,9 +136,9 @@ function drawAvgViolCrimePerCap(viol_crime_per_cap){
               })
           ;
           chart.yAxis
-              .axisLabel("# of Crimes")
+              .axisLabel("# of Crimes Per Capita")
               .axisLabelDistance(-5)
-              .tickFormat(d3.format(',f'))
+              .tickFormat(d3.format(',.01e'))
           ;
           chart.dispatch.on('renderEnd', function(){
               nv.log('Render Complete');
@@ -157,7 +157,7 @@ function drawAvgViolCrimePerCap(viol_crime_per_cap){
 
 
 
-function drawFatalEncounters(average_deaths){
+function drawFatalEncounters(average_fatal_encounters){
       nv.addGraph(function() {
         chart = nv.models.multiBarChart()
             .barColor(d3.scale.category20().range())
@@ -171,20 +171,20 @@ function drawFatalEncounters(average_deaths){
             .axisLabelDistance(35)
             .showMaxMin(false)
             .tickFormat(function (d){
-                console.log(average_deaths[0].values[d].label)
-                return average_deaths[0].values[d].label;
+                console.log(average_fatal_encounters[0].values[d].label)
+                return average_fatal_encounters[0].values[d].label;
             })
         ;
         chart.yAxis
-            .axisLabel("# of Crimes")
+            .axisLabel("# of Fatal Encounters")
             .axisLabelDistance(-5)
-            .tickFormat(d3.format(',e'))
+            .tickFormat(d3.format(',.01e'))
         ;
         chart.dispatch.on('renderEnd', function(){
             nv.log('Render Complete');
         });
         d3.select('#top-left svg')
-            .datum(average_deaths)
+            .datum(average_fatal_encounters)
             .call(chart);
         nv.utils.windowResize(chart.update);
         chart.dispatch.on('stateChange', function(e) {
@@ -197,7 +197,7 @@ function drawFatalEncounters(average_deaths){
 
 
 
-function drawFatalEncountersPerCapita(average_deaths_per_cap){
+function drawFatalEncountersPerCapita(average_fatal_encounters_per_cap){
       nv.addGraph(function() {
         chart = nv.models.multiBarChart()
             .barColor(d3.scale.category20().range())
@@ -207,24 +207,23 @@ function drawFatalEncountersPerCapita(average_deaths_per_cap){
         ;
         chart.reduceXTicks(false).staggerLabels(true);
         chart.xAxis
-            .axisLabel("Crime Categories")
             .axisLabelDistance(35)
             .showMaxMin(false)
             .tickFormat(function (d){
-                console.log(average_deaths_per_cap[0].values[d].label)
-                return average_deaths_per_cap[0].values[d].label;
+                console.log(average_fatal_encounters_per_cap[0].values[d].label)
+                return average_fatal_encounters_per_cap[0].values[d].label;
             })
         ;
         chart.yAxis
-            .axisLabel("# of Crimes")
+            .axisLabel("# of Fatal Encounters")
             .axisLabelDistance(-5)
-            .tickFormat(d3.format(',e'))
+            .tickFormat(d3.format(',.01e'))
         ;
         chart.dispatch.on('renderEnd', function(){
             nv.log('Render Complete');
         });
         d3.select('#top-right svg')
-            .datum(average_deaths_per_cap)
+            .datum(average_fatal_encounters_per_cap)
             .call(chart);
         nv.utils.windowResize(chart.update);
         chart.dispatch.on('stateChange', function(e) {
@@ -245,8 +244,6 @@ function drawMilitaryValue(military_value){
         ;
         chart.reduceXTicks(false).staggerLabels(true);
         chart.xAxis
-            .axisLabel("Crime Categories")
-
             .showMaxMin(false)
             .tickFormat(function (d){
                 console.log(military_value[0].values[d].label)
@@ -254,9 +251,9 @@ function drawMilitaryValue(military_value){
             })
         ;
         chart.yAxis
-            .axisLabel("# of Crimes")
+            .axisLabel("Dollars")
             .axisLabelDistance(-5)
-            .tickFormat(d3.format(',e'))
+            .tickFormat(d3.format(',f'))
         ;
         chart.dispatch.on('renderEnd', function(){
             nv.log('Render Complete');
@@ -285,8 +282,6 @@ function drawMilitaryValuePerCap(military_value_per_cap){
         ;
         chart.reduceXTicks(false).staggerLabels(true);
         chart.xAxis
-            .axisLabel("Crime Categories")
-
             .showMaxMin(false)
             .tickFormat(function (d){
                 console.log(military_value_per_cap[0].values[d].label)
@@ -294,9 +289,9 @@ function drawMilitaryValuePerCap(military_value_per_cap){
             })
         ;
         chart.yAxis
-            .axisLabel("# of Crimes")
+            .axisLabel("Dollars Per Capita")
             .axisLabelDistance(-5)
-            .tickFormat(d3.format(',e'))
+            .tickFormat(d3.format(',.01f'))
         ;
         chart.dispatch.on('renderEnd', function(){
             nv.log('Render Complete');

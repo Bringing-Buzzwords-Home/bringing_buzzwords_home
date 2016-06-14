@@ -103,9 +103,9 @@
 
   <script>
 
-  average_deaths = {{ average_deaths }};
+  average_fatal_encounters = {{ average_fatal_encounters }};
   military_value = {{ military_value }};
-  average_deaths_per_cap = {{ average_deaths_per_cap }};
+  average_fatal_encounters_per_cap = {{ average_fatal_encounters_per_cap }};
   military_value_per_cap = {{ military_value_per_cap }};
   prop_crime = {{ prop_crime }};
   viol_crime = {{ viol_crime }};
@@ -128,8 +128,8 @@
     .css('cursor', 'pointer')
     .click(function() {
         $('#stage').html('<div id="stage"><div class="row-fluid"><div id="stats-chart-2"  class="span6 widget green" onTablet="span8" onDesktop="span8"><div id="top-left"  style="height:300px" ><svg></svg></div></div><div id="stats-chart-2"  class="span6 widget green" onTablet="span8" onDesktop="span8"><div id="top-right"  style="height:300px"><svg></svg></div></div></div></div>')
-        drawFatalEncounters(average_deaths)
-        drawFatalEncountersPerCapita(average_deaths_per_cap)
+        drawFatalEncounters(average_fatal_encounters)
+        drawFatalEncountersPerCapita(average_fatal_encounters_per_cap)
 
   });
   $('#population')
