@@ -134,7 +134,8 @@ def county(request, county):
         'twenty_fifteen_kills': format_integer(county_fatal_encounters),
         'ten_thirty_three_total': format_money(county_military_value),
         'counties_list': create_counties_list(state),
-        'county_pop_twenty_fifteen': format_integer(county_obj.pop_est_2015)
+        'county_pop_twenty_fifteen': format_integer(county_obj.pop_est_2015),
+        'state_abbrev': state,
         }
     return render(request, "visualize/county.html", context)
 
