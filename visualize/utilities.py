@@ -414,8 +414,8 @@ def get_state_deaths(state):
     twenty_sixteen_state_per_capita = twenty_sixteen_state_deaths / state_population['total']
     twenty_fifteen_per_capita = twenty_fifteen_deaths / us_population['total']
     twenty_sixteen_per_capita = twenty_sixteen_deaths / us_population['total']
-    state_deaths = {'2015 {} Fatal Encounters'.format(states[state]): twenty_fifteen_state_deaths,
-                    '2015 Average Fatal Encounters': twenty_fifteen_avg_deaths}
+    state_deaths = {'2015 Average Fatal Encounters': twenty_fifteen_avg_deaths,
+                    '2015 {} Fatal Encounters'.format(states[state]): twenty_fifteen_state_deaths}
     return state_deaths
 
 
