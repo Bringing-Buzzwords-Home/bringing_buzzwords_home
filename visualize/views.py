@@ -54,6 +54,7 @@ def state(request, state):
 
 
 def state_json(request, state):
+    state = state.upper()
     state_obj = get_object_or_404(State, state=state)
     state_deaths = get_state_deaths(state)
     category_data, category_nums = make_state_categories(state)
